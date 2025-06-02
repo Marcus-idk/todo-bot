@@ -9,33 +9,61 @@ public class ToDoBotCLI {
     
     private static final String HORIZONTAL_LINE = "____________________________________________________________";
     
-    private static void printGreeting() {
+    private TaskList taskList;
+    
+    public ToDoBotCLI() {
+        taskList = new TaskList();
+    }
+    
+    private void printGreeting() {
         System.out.println(HORIZONTAL_LINE);
         System.out.println(LOGO);
-        System.out.println(" What can I do for you?");
+        System.out.println(BotMessages.GREETING);
         System.out.println(HORIZONTAL_LINE);
     }
     
-    private static void handleUserInput() {
+    private void handleUserInput() {
         Scanner scanner = new Scanner(System.in);
         String input;
-        while (!(input = scanner.nextLine().trim()).equals("bye")) {
-            System.out.println();
-            System.out.println("Bot: " + input);
+        
+        while (true) {
+            input = scanner.nextLine();
+            Parser parser = new Parser(input);
+            
+            if (parser.isByeCommand()) {
+                break;
+            }
+            
+            if (parser.isEmptyInput()) {
+                System.out.println(BotMessages.EMPTY_INPUT);
+            } else if (parser.isInvalidTaskFormat()) {
+                System.out.println(BotMessages.INVALID_FORMAT);
+            } else if (parser.isListCommand()) {
+                System.out.println(taskList.listTasks());
+            } else if (parser.isAddTaskCommand()) {
+                if (taskList.isFull()) {
+                    System.out.println(BotMessages.TASK_LIMIT_REACHED);
+                } else {
+                    taskList.addTask(parser.getOriginalInput());
+                    System.out.println(BotMessages.formatAddedTask(parser.getOriginalInput()));
+                }
+            }
+            
             System.out.println(HORIZONTAL_LINE);
         }
         scanner.close();
     }
     
-    private static void printFarewell() {
-        System.out.println();
-        System.out.println("Bot: Bye. Hope to see you again soon!");
+    private void printFarewell() {
+        System.out.println(HORIZONTAL_LINE);
+        System.out.println(BotMessages.FAREWELL);
         System.out.println(HORIZONTAL_LINE);
     }
     
     public static void main(String[] args) {
-        printGreeting();
-        handleUserInput();
-        printFarewell();
+        ToDoBotCLI bot = new ToDoBotCLI();
+        bot.printGreeting();
+        bot.handleUserInput();
+        bot.printFarewell();
     }
 }
