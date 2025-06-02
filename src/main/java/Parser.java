@@ -1,6 +1,8 @@
 public class Parser {
     public static final String COMMAND_LIST = "list";
     public static final String COMMAND_BYE = "bye";
+    public static final String COMMAND_MARK = "mark";
+    public static final String COMMAND_UNMARK = "unmark";
     
     private String input;
     private String command;
@@ -43,21 +45,37 @@ public class Parser {
         return COMMAND_BYE.equals(command);
     }
     
+    public boolean isMarkCommand() {
+        return COMMAND_MARK.equals(command);
+    }
+    
+    public boolean isUnmarkCommand() {
+        return COMMAND_UNMARK.equals(command);
+    }
+    
     public boolean isEmptyInput() {
         return input.isEmpty();
     }
     
-    public boolean isValidTaskFormat() {
-        // Check if input has at least 2 words (action + task)
-        String[] words = input.split("\\s+");
-        return words.length >= 2;
+    public boolean hasSpacing() {
+        return input.contains(" ");
     }
     
     public boolean isAddTaskCommand() {
-        return !isListCommand() && !isByeCommand() && !isEmptyInput() && isValidTaskFormat();
+        return !isListCommand() && !isByeCommand() && !isMarkCommand() && !isUnmarkCommand() 
+               && !isEmptyInput() && hasSpacing();
     }
     
     public boolean isInvalidTaskFormat() {
-        return !isListCommand() && !isByeCommand() && !isEmptyInput() && !isValidTaskFormat();
+        return !isListCommand() && !isByeCommand() && !isMarkCommand() && !isUnmarkCommand() 
+               && !isEmptyInput() && !hasSpacing();
+    }
+    
+    public int getTaskNumber() {
+        try {
+            return Integer.parseInt(arguments);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
     }
 }

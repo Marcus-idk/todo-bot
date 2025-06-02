@@ -40,6 +40,10 @@ public class ToDoBotCLI {
                 System.out.println(BotMessages.INVALID_FORMAT);
             } else if (parser.isListCommand()) {
                 System.out.println(taskList.listTasks());
+            } else if (parser.isMarkCommand()) {
+                handleMarkCommand(parser);
+            } else if (parser.isUnmarkCommand()) {
+                handleUnmarkCommand(parser);
             } else if (parser.isAddTaskCommand()) {
                 if (taskList.isFull()) {
                     System.out.println(BotMessages.TASK_LIMIT_REACHED);
@@ -52,6 +56,30 @@ public class ToDoBotCLI {
             System.out.println(HORIZONTAL_LINE);
         }
         scanner.close();
+    }
+    
+    private void handleMarkCommand(Parser parser) {
+        int taskNumber = parser.getTaskNumber();
+        if (taskNumber == -1) {
+            System.out.println(BotMessages.INVALID_NUMBER_FORMAT);
+        } else if (!taskList.markTask(taskNumber)) {
+            System.out.println(BotMessages.INVALID_TASK_NUMBER);
+        } else {
+            Task task = taskList.getTask(taskNumber);
+            System.out.println(BotMessages.formatMarkedTask(task));
+        }
+    }
+    
+    private void handleUnmarkCommand(Parser parser) {
+        int taskNumber = parser.getTaskNumber();
+        if (taskNumber == -1) {
+            System.out.println(BotMessages.INVALID_NUMBER_FORMAT);
+        } else if (!taskList.unmarkTask(taskNumber)) {
+            System.out.println(BotMessages.INVALID_TASK_NUMBER);
+        } else {
+            Task task = taskList.getTask(taskNumber);
+            System.out.println(BotMessages.formatUnmarkedTask(task));
+        }
     }
     
     private void printFarewell() {

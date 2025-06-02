@@ -1,18 +1,18 @@
 public class TaskList {
-    private String[] tasks;
+    private Task[] tasks;
     private int taskCount;
     private static final int MAX_TASKS = 100;
     
     public TaskList() {
-        tasks = new String[MAX_TASKS];
+        tasks = new Task[MAX_TASKS];
         taskCount = 0;
     }
     
-    public boolean addTask(String task) {
+    public boolean addTask(String description) {
         if (taskCount >= MAX_TASKS) {
             return false;
         }
-        tasks[taskCount] = task;
+        tasks[taskCount] = new Task(description);
         taskCount++;
         return true;
     }
@@ -30,6 +30,29 @@ public class TaskList {
             }
         }
         return sb.toString();
+    }
+    
+    public boolean markTask(int taskNumber) {
+        if (taskNumber < 1 || taskNumber > taskCount) {
+            return false;
+        }
+        tasks[taskNumber - 1].markAsDone();
+        return true;
+    }
+    
+    public boolean unmarkTask(int taskNumber) {
+        if (taskNumber < 1 || taskNumber > taskCount) {
+            return false;
+        }
+        tasks[taskNumber - 1].markAsNotDone();
+        return true;
+    }
+    
+    public Task getTask(int taskNumber) {
+        if (taskNumber < 1 || taskNumber > taskCount) {
+            return null;
+        }
+        return tasks[taskNumber - 1];
     }
     
     public boolean isFull() {
