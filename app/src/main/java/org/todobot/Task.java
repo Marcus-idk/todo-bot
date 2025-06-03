@@ -1,5 +1,6 @@
 package org.todobot;
-public class Task {
+
+public abstract class Task {
     protected String description;
     protected boolean isDone;
 
@@ -34,8 +35,12 @@ public class Task {
         return description;
     }
 
+    // Abstract methods
+    public abstract String getTypeIcon();
+    public abstract String getDetailsString();
+
     @Override
     public String toString() {
-        return "[" + getStatusIcon() + "] " + description;
+        return "[" + getTypeIcon() + "][" + getStatusIcon() + "] " + description + getDetailsString();
     }
 }

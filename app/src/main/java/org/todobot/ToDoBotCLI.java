@@ -37,26 +37,76 @@ public class ToDoBotCLI {
             
             if (parser.isEmptyInput()) {
                 System.out.println(BotMessages.EMPTY_INPUT);
-            } else if (parser.isInvalidTaskFormat()) {
-                System.out.println(BotMessages.INVALID_FORMAT);
             } else if (parser.isListCommand()) {
                 System.out.println(taskList.listTasks());
             } else if (parser.isMarkCommand()) {
                 handleMarkCommand(parser);
             } else if (parser.isUnmarkCommand()) {
                 handleUnmarkCommand(parser);
-            } else if (parser.isAddTaskCommand()) {
-                if (taskList.isFull()) {
-                    System.out.println(BotMessages.TASK_LIMIT_REACHED);
-                } else {
-                    taskList.addTask(parser.getOriginalInput());
-                    System.out.println(BotMessages.formatAddedTask(parser.getOriginalInput()));
-                }
+            } else if (parser.isTodoCommand()) {
+                handleTodoCommand(parser);
+            } else if (parser.isDeadlineCommand()) {
+                handleDeadlineCommand(parser);
+            } else if (parser.isEventCommand()) {
+                handleEventCommand(parser);
+            } else {
+                System.out.println(BotMessages.INVALID_COMMAND);
             }
             
             System.out.println(HORIZONTAL_LINE);
         }
         scanner.close();
+    }
+    
+    private void handleTodoCommand(Parser parser) {
+        String description = parser.getTodoDescription();
+        if (description.isEmpty()) {
+            System.out.println(BotMessages.INVALID_TODO_FORMAT);
+            return;
+        }
+        
+        if (taskList.isFull()) {
+            System.out.println(BotMessages.TASK_LIMIT_REACHED);
+            return;
+        }
+        
+        Todo todo = new Todo(description);
+        taskList.addTask(todo);
+        System.out.println(BotMessages.formatAddedTask(todo, taskList.getTaskCount()));
+    }
+    
+    private void handleDeadlineCommand(Parser parser) {
+        String[] parsed = parser.parseDeadline();
+        if (parsed == null) {
+            System.out.println(BotMessages.INVALID_DEADLINE_FORMAT);
+            return;
+        }
+        
+        if (taskList.isFull()) {
+            System.out.println(BotMessages.TASK_LIMIT_REACHED);
+            return;
+        }
+        
+        Deadline deadline = new Deadline(parsed[0], parsed[1]);
+        taskList.addTask(deadline);
+        System.out.println(BotMessages.formatAddedTask(deadline, taskList.getTaskCount()));
+    }
+    
+    private void handleEventCommand(Parser parser) {
+        String[] parsed = parser.parseEvent();
+        if (parsed == null) {
+            System.out.println(BotMessages.INVALID_EVENT_FORMAT);
+            return;
+        }
+        
+        if (taskList.isFull()) {
+            System.out.println(BotMessages.TASK_LIMIT_REACHED);
+            return;
+        }
+        
+        Event event = new Event(parsed[0], parsed[1], parsed[2]);
+        taskList.addTask(event);
+        System.out.println(BotMessages.formatAddedTask(event, taskList.getTaskCount()));
     }
     
     private void handleMarkCommand(Parser parser) {

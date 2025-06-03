@@ -1,4 +1,5 @@
 package org.todobot;
+
 public class TaskList {
     private Task[] tasks;
     private int taskCount;
@@ -9,26 +10,24 @@ public class TaskList {
         taskCount = 0;
     }
     
-    public boolean addTask(String description) {
+    public boolean addTask(Task task) {
         if (taskCount >= MAX_TASKS) {
             return false;
         }
-        tasks[taskCount] = new Task(description);
+        tasks[taskCount] = task;
         taskCount++;
         return true;
     }
     
     public String listTasks() {
         if (taskCount == 0) {
-            return "No tasks found! Your to-do list is as empty as my brain! 🤖";
+            return " Here are the tasks in your list:\n No tasks found! Your to-do list is as empty as my brain! 🤖";
         }
         
         StringBuilder sb = new StringBuilder();
+        sb.append(" Here are the tasks in your list:");
         for (int i = 0; i < taskCount; i++) {
-            sb.append(" ").append(i + 1).append(". ").append(tasks[i]);
-            if (i < taskCount - 1) {
-                sb.append("\n");
-            }
+            sb.append("\n ").append(i + 1).append(".").append(tasks[i]);
         }
         return sb.toString();
     }

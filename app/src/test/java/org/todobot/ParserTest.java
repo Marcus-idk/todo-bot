@@ -1,92 +1,103 @@
 package org.todobot;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 public class ParserTest {
     
-    private static final String TEST_LIST_COMMAND = "list";
-    private static final String TEST_BYE_COMMAND = "bye";
-    private static final String TEST_MARK_COMMAND = "mark 5";
-    private static final String TEST_UNMARK_COMMAND = "unmark 3";
-    private static final String TEST_ADD_TASK = "todo read book";
-    private static final String TEST_INVALID_FORMAT = "invalidcommand";
-    private static final String TEST_EMPTY_INPUT = "";
-    private static final String TEST_WHITESPACE_INPUT = "   ";
-    
     @Test
     void shouldParseListCommand() {
-        Parser parser = new Parser(TEST_LIST_COMMAND);
+        Parser parser = new Parser("list");
         assertTrue(parser.isListCommand());
         assertEquals("list", parser.getCommand());
         assertEquals("", parser.getArguments());
-        assertEquals(TEST_LIST_COMMAND, parser.getOriginalInput());
     }
     
     @Test
     void shouldParseByeCommand() {
-        Parser parser = new Parser(TEST_BYE_COMMAND);
+        Parser parser = new Parser("bye");
         assertTrue(parser.isByeCommand());
         assertEquals("bye", parser.getCommand());
         assertEquals("", parser.getArguments());
-        assertEquals(TEST_BYE_COMMAND, parser.getOriginalInput());
     }
     
     @Test
     void shouldParseMarkCommand() {
-        Parser parser = new Parser(TEST_MARK_COMMAND);
+        Parser parser = new Parser("mark 5");
         assertTrue(parser.isMarkCommand());
         assertEquals("mark", parser.getCommand());
         assertEquals("5", parser.getArguments());
-        assertEquals(TEST_MARK_COMMAND, parser.getOriginalInput());
     }
     
     @Test
     void shouldParseUnmarkCommand() {
-        Parser parser = new Parser(TEST_UNMARK_COMMAND);
+        Parser parser = new Parser("unmark 3");
         assertTrue(parser.isUnmarkCommand());
         assertEquals("unmark", parser.getCommand());
         assertEquals("3", parser.getArguments());
-        assertEquals(TEST_UNMARK_COMMAND, parser.getOriginalInput());
     }
     
     @Test
-    void shouldParseAddTaskCommand() {
-        Parser parser = new Parser(TEST_ADD_TASK);
-        assertTrue(parser.isAddTaskCommand());
+    void shouldParseTodoCommand() {
+        Parser parser = new Parser("todo read book");
+        assertTrue(parser.isTodoCommand());
         assertEquals("todo", parser.getCommand());
         assertEquals("read book", parser.getArguments());
-        assertEquals(TEST_ADD_TASK, parser.getOriginalInput());
+    }
+    
+    @Test
+    void shouldParseDeadlineCommand() {
+        Parser parser = new Parser("deadline submit report /by Friday");
+        assertTrue(parser.isDeadlineCommand());
+        assertEquals("deadline", parser.getCommand());
+        assertEquals("submit report /by Friday", parser.getArguments());
+    }
+    
+    @Test
+    void shouldParseEventCommand() {
+        Parser parser = new Parser("event meeting /from Mon 2pm /to 4pm");
+        assertTrue(parser.isEventCommand());
+        assertEquals("event", parser.getCommand());
+        assertEquals("meeting /from Mon 2pm /to 4pm", parser.getArguments());
     }
     
     @Test
     void shouldDetectEmptyInput() {
-        Parser parser = new Parser(TEST_EMPTY_INPUT);
+        Parser parser = new Parser("");
         assertTrue(parser.isEmptyInput());
         assertEquals("", parser.getCommand());
         assertEquals("", parser.getArguments());
-        assertEquals("", parser.getOriginalInput());
     }
     
     @Test
-    void shouldDetectInvalidTaskFormat() {
-        Parser parser = new Parser(TEST_INVALID_FORMAT);
-        assertTrue(parser.isInvalidTaskFormat());
-        assertFalse(parser.isAddTaskCommand());
-        assertFalse(parser.hasSpacing());
+    void shouldDetectValidCommands() {
+        assertTrue(new Parser("list").isValidCommand());
+        assertTrue(new Parser("bye").isValidCommand());
+        assertTrue(new Parser("mark 1").isValidCommand());
+        assertTrue(new Parser("unmark 1").isValidCommand());
+        assertTrue(new Parser("todo something").isValidCommand());
+        assertTrue(new Parser("deadline task /by date").isValidCommand());
+        assertTrue(new Parser("event task /from start /to end").isValidCommand());
+    }
+    
+    @Test
+    void shouldDetectInvalidCommands() {
+        assertTrue(new Parser("invalidcommand").isInvalidCommand());
+        assertTrue(new Parser("xyz").isInvalidCommand());
+        assertFalse(new Parser("list").isInvalidCommand());
+        assertFalse(new Parser("").isInvalidCommand());
     }
     
     @Test
     void shouldHandleCaseInsensitiveCommands() {
-        Parser upperParser = new Parser("LIST");
-        Parser mixedParser = new Parser("ByE");
-        Parser lowerParser = new Parser("mark 1");
-        
-        assertTrue(upperParser.isListCommand());
-        assertTrue(mixedParser.isByeCommand());
-        assertTrue(lowerParser.isMarkCommand());
+        assertTrue(new Parser("LIST").isListCommand());
+        assertTrue(new Parser("ByE").isByeCommand());
+        assertTrue(new Parser("MARK 1").isMarkCommand());
+        assertTrue(new Parser("TODO something").isTodoCommand());
     }
     
     @Test
@@ -97,31 +108,44 @@ public class ParserTest {
     
     @Test
     void shouldReturnNegativeOneForInvalidTaskNumber() {
-        Parser parser1 = new Parser("mark abc");
-        Parser parser2 = new Parser("unmark !@#");
-        Parser parser3 = new Parser("mark");
-        
-        assertEquals(-1, parser1.getTaskNumber());
-        assertEquals(-1, parser2.getTaskNumber());
-        assertEquals(-1, parser3.getTaskNumber());
+        assertEquals(-1, new Parser("mark abc").getTaskNumber());
+        assertEquals(-1, new Parser("unmark !@#").getTaskNumber());
+        assertEquals(-1, new Parser("mark").getTaskNumber());
     }
     
     @Test
-    void shouldHandleZeroTaskNumber() {
-        Parser parser = new Parser("mark 0");
-        assertEquals(0, parser.getTaskNumber());
+    void shouldGetTodoDescription() {
+        Parser parser = new Parser("todo read a book");
+        assertEquals("read a book", parser.getTodoDescription());
     }
     
     @Test
-    void shouldHandleNegativeTaskNumber() {
-        Parser parser = new Parser("unmark -5");
-        assertEquals(-5, parser.getTaskNumber());
+    void shouldParseValidDeadline() {
+        Parser parser = new Parser("deadline submit report /by Friday 5pm");
+        String[] result = parser.parseDeadline();
+        assertArrayEquals(new String[]{"submit report", "Friday 5pm"}, result);
     }
     
     @Test
-    void shouldHandleLargeTaskNumber() {
-        Parser parser = new Parser("mark 999999");
-        assertEquals(999999, parser.getTaskNumber());
+    void shouldReturnNullForInvalidDeadlineFormat() {
+        assertNull(new Parser("deadline submit report").parseDeadline());
+        assertNull(new Parser("deadline /by Friday").parseDeadline());
+        assertNull(new Parser("deadline submit report /by").parseDeadline());
+    }
+    
+    @Test
+    void shouldParseValidEvent() {
+        Parser parser = new Parser("event project meeting /from Mon 2pm /to 4pm");
+        String[] result = parser.parseEvent();
+        assertArrayEquals(new String[]{"project meeting", "Mon 2pm", "4pm"}, result);
+    }
+    
+    @Test
+    void shouldReturnNullForInvalidEventFormat() {
+        assertNull(new Parser("event meeting").parseEvent());
+        assertNull(new Parser("event meeting /from Mon").parseEvent());
+        assertNull(new Parser("event meeting /to 4pm").parseEvent());
+        assertNull(new Parser("event /from Mon /to 4pm").parseEvent());
     }
     
     @Test
@@ -133,19 +157,10 @@ public class ParserTest {
     
     @Test
     void shouldHandleWhitespaceOnlyInput() {
-        Parser parser = new Parser(TEST_WHITESPACE_INPUT);
+        Parser parser = new Parser("   ");
         assertTrue(parser.isEmptyInput());
         assertEquals("", parser.getCommand());
         assertEquals("", parser.getArguments());
-    }
-    
-    @Test
-    void shouldDetectSpacingCorrectly() {
-        Parser withSpacing = new Parser("todo read book");
-        Parser withoutSpacing = new Parser("list");
-        
-        assertTrue(withSpacing.hasSpacing());
-        assertFalse(withoutSpacing.hasSpacing());
     }
     
     @Test
@@ -153,71 +168,20 @@ public class ParserTest {
         Parser parser = new Parser("todo    read    multiple    books");
         assertEquals("todo", parser.getCommand());
         assertEquals("read    multiple    books", parser.getArguments());
-        assertTrue(parser.isAddTaskCommand());
+        assertTrue(parser.isTodoCommand());
     }
     
     @Test
-    void shouldHandleCommandWithExtraArguments() {
-        Parser parser = new Parser("list extra arguments");
-        assertTrue(parser.isListCommand());
-        assertEquals("list", parser.getCommand());
-        assertEquals("extra arguments", parser.getArguments());
+    void shouldHandleComplexDeadlineParsing() {
+        Parser parser = new Parser("deadline finish assignment with multiple words /by next Tuesday evening");
+        String[] result = parser.parseDeadline();
+        assertArrayEquals(new String[]{"finish assignment with multiple words", "next Tuesday evening"}, result);
     }
     
     @Test
-    void shouldNotConfuseSimilarCommandNames() {
-        Parser parser1 = new Parser("listing");
-        Parser parser2 = new Parser("marker");
-        Parser parser3 = new Parser("goodbye");
-        
-        assertFalse(parser1.isListCommand());
-        assertFalse(parser2.isMarkCommand());
-        assertFalse(parser3.isByeCommand());
-        
-        assertTrue(parser1.isInvalidTaskFormat());
-        assertTrue(parser2.isInvalidTaskFormat());
-        assertTrue(parser3.isInvalidTaskFormat());
-    }
-
-    @Test
-    void shouldTreatInvalidCommandWithSpacingAsAddTask() {
-        Parser parser = new Parser("marker 5");
-        
-        assertFalse(parser.isMarkCommand());
-        assertTrue(parser.isAddTaskCommand());
-        assertEquals("marker", parser.getCommand());
-        assertEquals("5", parser.getArguments());
-    }
-    
-    @Test
-    void shouldHandleTaskNumberWithDecimal() {
-        Parser parser = new Parser("mark 5.5");
-        assertEquals(-1, parser.getTaskNumber());
-    }
-    
-    @Test
-    void shouldHandleTaskNumberWithLeadingZeros() {
-        Parser parser = new Parser("unmark 007");
-        assertEquals(7, parser.getTaskNumber());
-    }
-    
-    @Test
-    void shouldReturnCorrectBooleanCombinations() {
-        // Test that only one command type returns true for any input
-        Parser listParser = new Parser("list");
-        assertTrue(listParser.isListCommand());
-        assertFalse(listParser.isByeCommand());
-        assertFalse(listParser.isMarkCommand());
-        assertFalse(listParser.isUnmarkCommand());
-        assertFalse(listParser.isAddTaskCommand());
-        assertFalse(listParser.isInvalidTaskFormat());
-        
-        Parser addParser = new Parser("todo something");
-        assertFalse(addParser.isListCommand());
-        assertFalse(addParser.isByeCommand());
-        assertFalse(addParser.isMarkCommand());
-        assertFalse(addParser.isUnmarkCommand());
-        assertTrue(addParser.isAddTaskCommand());
-        assertFalse(addParser.isInvalidTaskFormat());
+    void shouldHandleComplexEventParsing() {
+        Parser parser = new Parser("event team project discussion meeting /from Monday 2pm /to Wednesday 5pm");
+        String[] result = parser.parseEvent();
+        assertArrayEquals(new String[]{"team project discussion meeting", "Monday 2pm", "Wednesday 5pm"}, result);
     }
 }
