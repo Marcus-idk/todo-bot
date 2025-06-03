@@ -1,3 +1,4 @@
+package org.todobot;
 public class Parser {
     public static final String COMMAND_LIST = "list";
     public static final String COMMAND_BYE = "bye";

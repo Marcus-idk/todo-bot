@@ -1,3 +1,4 @@
+package org.todobot;
 import java.util.Scanner;
 
 public class ToDoBotCLI {

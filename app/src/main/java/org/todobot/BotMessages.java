@@ -1,3 +1,4 @@
+package org.todobot;
 public class BotMessages {
     // ANSI color codes
     private static final String RED = "\u001B[31m";
