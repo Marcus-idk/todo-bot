@@ -1,4 +1,4 @@
-package org.todobot;
+package org.todobot.tasks;
 
 public class Event extends Task {
     private String from;

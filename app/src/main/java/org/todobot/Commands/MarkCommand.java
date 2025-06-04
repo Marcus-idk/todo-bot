@@ -1,8 +1,9 @@
-package org.todobot.Commands;
+
+package org.todobot.commands;
 
 import org.todobot.BotMessages;
-import org.todobot.Task;
 import org.todobot.TaskList;
+import org.todobot.tasks.Task;
 
 public class MarkCommand extends Command {
     private final boolean isMarkOperation;

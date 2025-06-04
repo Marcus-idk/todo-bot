@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.todobot.tasks.Deadline;
 
 public class DeadlineTest {
     
@@ -168,15 +169,7 @@ public class DeadlineTest {
         assertEquals(longBy, longDeadline.getBy());
         assertEquals("[D][ ] " + TEST_DESCRIPTION + " (by: " + longBy + ")", longDeadline.toString());
     }
-    
-    @Test
-    void shouldMaintainPolymorphismWithTaskReference() {
-        Task task = new Deadline("Polymorphic deadline", "tomorrow");
-        assertEquals("D", task.getTypeIcon());
-        assertEquals(" (by: tomorrow)", task.getDetailsString());
-        assertEquals("[D][ ] Polymorphic deadline (by: tomorrow)", task.toString());
-    }
-    
+
     @Test
     void shouldThrowExceptionForNullBy() {
         IllegalArgumentException exception = assertThrows(

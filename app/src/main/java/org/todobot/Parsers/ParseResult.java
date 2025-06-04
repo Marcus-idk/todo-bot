@@ -1,4 +1,4 @@
-package org.todobot.Parsers;
+package org.todobot.parsers;
 
 public class ParseResult {
     private String commandType;

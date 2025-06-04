@@ -1,10 +1,10 @@
-package org.todobot.Commands;
+package org.todobot.commands;
 import org.todobot.BotMessages;
-import org.todobot.Deadline;
-import org.todobot.Event;
-import org.todobot.Task;
 import org.todobot.TaskList;
-import org.todobot.Todo;
+import org.todobot.tasks.Deadline;
+import org.todobot.tasks.Event;
+import org.todobot.tasks.Task;
+import org.todobot.tasks.Todo;
 
 public class AddCommand extends Command {
     private final String taskType;

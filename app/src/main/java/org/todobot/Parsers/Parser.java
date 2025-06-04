@@ -1,4 +1,4 @@
-package org.todobot.Parsers;
+package org.todobot.parsers;
 import org.todobot.BotMessages;
 
 public class Parser {

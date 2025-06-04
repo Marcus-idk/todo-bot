@@ -1,5 +1,7 @@
 package org.todobot;
 
+import org.todobot.tasks.Task;
+
 public class BotMessages {
     // ANSI color codes
     private static final String RED = "\u001B[31m";

@@ -1,5 +1,7 @@
 package org.todobot;
 
+import org.todobot.tasks.Task;
+
 public class TaskList {
     private Task[] tasks;
     private int taskCount;

@@ -1,4 +1,4 @@
-package org.todobot.Commands;
+package org.todobot.commands;
 import org.todobot.TaskList;
 
 public abstract class Command {

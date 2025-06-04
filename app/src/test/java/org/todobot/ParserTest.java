@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
-import org.todobot.Parsers.ParseResult;
-import org.todobot.Parsers.Parser;
+import org.todobot.parsers.ParseResult;
+import org.todobot.parsers.Parser;
 
 public class ParserTest {
     

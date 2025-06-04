@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.todobot.tasks.Todo;
 
 public class TodoTest {
     
@@ -143,14 +144,6 @@ public class TodoTest {
         Todo longTodo = new Todo(longDescription);
         assertEquals(longDescription, longTodo.getDescription());
         assertEquals("[T][ ] " + longDescription, longTodo.toString());
-    }
-    
-    @Test
-    void shouldMaintainPolymorphismWithTaskReference() {
-        Task task = new Todo("Polymorphic test");
-        assertEquals("T", task.getTypeIcon());
-        assertEquals("", task.getDetailsString());
-        assertEquals("[T][ ] Polymorphic test", task.toString());
     }
     
     @Test

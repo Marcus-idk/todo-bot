@@ -1,12 +1,12 @@
 package org.todobot;
 import java.util.Scanner;
 
-import org.todobot.Commands.AddCommand;
-import org.todobot.Commands.Command;
-import org.todobot.Commands.ListCommand;
-import org.todobot.Commands.MarkCommand;
-import org.todobot.Parsers.ParseResult;
-import org.todobot.Parsers.Parser;
+import org.todobot.commands.AddCommand;
+import org.todobot.commands.Command;
+import org.todobot.commands.ListCommand;
+import org.todobot.commands.MarkCommand;
+import org.todobot.parsers.ParseResult;
+import org.todobot.parsers.Parser;
 
 public class ToDoBotCLI {
     private static final String LOGO = " _  ___   _ _   _    ____   ___ _____ \n"
