@@ -1,11 +1,19 @@
 package org.todobot;
-
 import org.todobot.tasks.Task;
 
 public class BotMessages {
     // ANSI color codes
     private static final String RED = "\u001B[31m";
     private static final String RESET = "\u001B[0m";
+    
+    // Display constants
+    public static final String LOGO = " _  ___   _ _   _    ____   ___ _____ \n"
+            + "| |/ / | | | \\ | |  | __ ) / _ \\_   _|\n"
+            + "| ' /| | | |  \\| |  |  _ \\| | | || |  \n"
+            + "| . \\| |_| | |\\  |  | |_) | |_| || |  \n"
+            + "|_|\\_\\\\___/|_| \\_|  |____/ \\___/ |_|  \n";
+    
+    public static final String HORIZONTAL_LINE = "____________________________________________________________";
     
     // Error messages
     public static final String EMPTY_INPUT = RED + " Oops! We need an input! I can't read your mind... yet! 🤔" + RESET;

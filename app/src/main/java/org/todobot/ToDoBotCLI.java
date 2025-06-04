@@ -1,5 +1,4 @@
 package org.todobot;
-import java.util.Scanner;
 
 import org.todobot.commands.AddCommand;
 import org.todobot.commands.Command;
@@ -7,50 +6,36 @@ import org.todobot.commands.ListCommand;
 import org.todobot.commands.MarkCommand;
 import org.todobot.parsers.ParseResult;
 import org.todobot.parsers.Parser;
+import org.todobot.ui.UI;
 
 public class ToDoBotCLI {
-    private static final String LOGO = " _  ___   _ _   _    ____   ___ _____ \n"
-            + "| |/ / | | | \\ | |  | __ ) / _ \\_   _|\n"
-            + "| ' /| | | |  \\| |  |  _ \\| | | || |  \n"
-            + "| . \\| |_| | |\\  |  | |_) | |_| || |  \n"
-            + "|_|\\_\\\\___/|_| \\_|  |____/ \\___/ |_|  \n";
-    
-    private static final String HORIZONTAL_LINE = "____________________________________________________________";
-    
     private final TaskList taskList;
+    private final UI ui;
     
     public ToDoBotCLI() {
         taskList = new TaskList();
-    }
-    
-    private void printGreeting() {
-        System.out.println(HORIZONTAL_LINE);
-        System.out.println(LOGO);
-        System.out.println(BotMessages.GREETING);
-        System.out.println(HORIZONTAL_LINE);
+        ui = new UI();
     }
     
     private void handleUserInput() {
-        Scanner scanner = new Scanner(System.in);
         String input;
         
         while (true) {
-            input = scanner.nextLine();
+            input = ui.readCommand();
             ParseResult result = Parser.parse(input);
             
             if (!result.isValid()) {
-                System.out.println(result.getErrorMessage());
+                ui.showResponse(result.getErrorMessage());
             } else if (result.getCommandType().equals("bye")) {
                 break;
             } else {
                 Command command = createCommand(result.getCommandType());
                 String output = command.execute(result.getArguments());
-                System.out.println(output);
+                ui.showResponse(output);
             }
             
-            System.out.println(HORIZONTAL_LINE);
+            ui.showLine();
         }
-        scanner.close();
     }
     
     private Command createCommand(String commandType) {
@@ -71,16 +56,11 @@ public class ToDoBotCLI {
         }
     }
     
-    private void printFarewell() {
-        System.out.println(HORIZONTAL_LINE);
-        System.out.println(BotMessages.FAREWELL);
-        System.out.println(HORIZONTAL_LINE);
-    }
-    
     public static void main(String[] args) {
         ToDoBotCLI bot = new ToDoBotCLI();
-        bot.printGreeting();
+        bot.ui.showGreeting();
         bot.handleUserInput();
-        bot.printFarewell();
+        bot.ui.showFarewell();
+        bot.ui.close();
     }
 }
