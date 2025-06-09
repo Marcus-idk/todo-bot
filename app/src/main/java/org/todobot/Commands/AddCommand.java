@@ -1,5 +1,6 @@
 package org.todobot.commands;
 import org.todobot.BotMessages;
+import org.todobot.CommandType;
 import org.todobot.TaskList;
 import org.todobot.tasks.Deadline;
 import org.todobot.tasks.Event;
@@ -7,9 +8,9 @@ import org.todobot.tasks.Task;
 import org.todobot.tasks.Todo;
 
 public class AddCommand extends Command {
-    private final String taskType;
+    private final CommandType taskType;
     
-    public AddCommand(TaskList taskList, String taskType) {
+    public AddCommand(TaskList taskList, CommandType taskType) {
         super(taskList);
         this.taskType = taskType;
     }
@@ -22,13 +23,13 @@ public class AddCommand extends Command {
         
         Task task;
         switch (taskType) {
-            case "todo":
+            case TODO:
                 task = new Todo(arguments[0]);
                 break;
-            case "deadline":
+            case DEADLINE:
                 task = new Deadline(arguments[0], arguments[1]);
                 break;
-            case "event":
+            case EVENT:
                 task = new Event(arguments[0], arguments[1], arguments[2]);
                 break;
             default:

@@ -1,6 +1,7 @@
 package org.todobot.parsers;
 
 import org.todobot.BotMessages;
+import org.todobot.CommandType;
 
 public class DeadlineParser extends CommandParser {
     @Override
@@ -21,7 +22,7 @@ public class DeadlineParser extends CommandParser {
             return new ParseResult(BotMessages.INVALID_DEADLINE_FORMAT);
         }
         
-        return new ParseResult("deadline", new String[]{description, by});
+        return new ParseResult(CommandType.DEADLINE, new String[]{description, by});
     }
     
     @Override

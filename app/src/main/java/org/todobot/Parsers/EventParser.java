@@ -1,6 +1,7 @@
 package org.todobot.parsers;
 
 import org.todobot.BotMessages;
+import org.todobot.CommandType;
 
 public class EventParser extends CommandParser {
     @Override
@@ -29,7 +30,7 @@ public class EventParser extends CommandParser {
             return new ParseResult(BotMessages.INVALID_EVENT_FORMAT);
         }
         
-        return new ParseResult("event", new String[]{description, from, to});
+        return new ParseResult(CommandType.EVENT, new String[]{description, from, to});
     }
     
     @Override

@@ -16,7 +16,7 @@ public abstract class Task {
     }
 
     public String getStatusIcon() {
-        return (isDone ? "X" : " ");
+        return (isDone ? TaskStatusIcon.DONE.getIcon() : TaskStatusIcon.NOT_DONE.getIcon());
     }
 
     public void markAsDone() {

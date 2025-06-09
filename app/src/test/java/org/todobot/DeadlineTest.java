@@ -15,6 +15,7 @@ public class DeadlineTest {
     private static final String TEST_BY = "Friday 5pm";
     
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         deadline = new Deadline(TEST_DESCRIPTION, TEST_BY);
     }

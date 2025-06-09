@@ -1,6 +1,7 @@
 package org.todobot.parsers;
 
 import org.todobot.BotMessages;
+import org.todobot.CommandType;
 
 public class TodoParser extends CommandParser {
     @Override
@@ -8,7 +9,7 @@ public class TodoParser extends CommandParser {
         if (arguments.trim().isEmpty()) {
             return new ParseResult(BotMessages.INVALID_TODO_FORMAT);
         }
-        return new ParseResult("todo", new String[]{arguments});
+        return new ParseResult(CommandType.TODO, new String[]{arguments});
     }
     
     @Override

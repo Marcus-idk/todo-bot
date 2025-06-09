@@ -26,7 +26,7 @@ public class ToDoBotCLI {
             
             if (!result.isValid()) {
                 ui.showResponse(result.getErrorMessage());
-            } else if (result.getCommandType().equals("bye")) {
+            } else if (result.getCommandType() == CommandType.BYE) {
                 break;
             } else {
                 Command command = createCommand(result.getCommandType());
@@ -38,17 +38,17 @@ public class ToDoBotCLI {
         }
     }
     
-    private Command createCommand(String commandType) {
+    private Command createCommand(CommandType commandType) {
         switch (commandType) {
-            case "todo":
-            case "deadline":
-            case "event":
+            case TODO:
+            case DEADLINE:
+            case EVENT:
                 return new AddCommand(taskList, commandType);
-            case "list":
+            case LIST:
                 return new ListCommand(taskList);
-            case "mark":
+            case MARK:
                 return new MarkCommand(taskList, true);
-            case "unmark":
+            case UNMARK:
                 return new MarkCommand(taskList, false);
             default:
                 // This shouldn't happen since Parser validates commands

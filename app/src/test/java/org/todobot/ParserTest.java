@@ -14,7 +14,7 @@ public class ParserTest {
     void shouldParseListCommand() {
         ParseResult result = Parser.parse("list");
         assertTrue(result.isValid());
-        assertEquals("list", result.getCommandType());
+        assertEquals(CommandType.LIST, result.getCommandType());
         assertArrayEquals(new String[0], result.getArguments());
     }
     
@@ -22,7 +22,7 @@ public class ParserTest {
     void shouldParseByeCommand() {
         ParseResult result = Parser.parse("bye");
         assertTrue(result.isValid());
-        assertEquals("bye", result.getCommandType());
+        assertEquals(CommandType.BYE, result.getCommandType());
         assertArrayEquals(new String[0], result.getArguments());
     }
     
@@ -30,7 +30,7 @@ public class ParserTest {
     void shouldParseMarkCommand() {
         ParseResult result = Parser.parse("mark 5");
         assertTrue(result.isValid());
-        assertEquals("mark", result.getCommandType());
+        assertEquals(CommandType.MARK, result.getCommandType());
         assertArrayEquals(new String[]{"5"}, result.getArguments());
     }
     
@@ -38,7 +38,7 @@ public class ParserTest {
     void shouldParseUnmarkCommand() {
         ParseResult result = Parser.parse("unmark 3");
         assertTrue(result.isValid());
-        assertEquals("unmark", result.getCommandType());
+        assertEquals(CommandType.UNMARK, result.getCommandType());
         assertArrayEquals(new String[]{"3"}, result.getArguments());
     }
     
@@ -46,7 +46,7 @@ public class ParserTest {
     void shouldParseTodoCommand() {
         ParseResult result = Parser.parse("todo read book");
         assertTrue(result.isValid());
-        assertEquals("todo", result.getCommandType());
+        assertEquals(CommandType.TODO, result.getCommandType());
         assertArrayEquals(new String[]{"read book"}, result.getArguments());
     }
     
@@ -54,7 +54,7 @@ public class ParserTest {
     void shouldParseDeadlineCommand() {
         ParseResult result = Parser.parse("deadline submit report /by Friday");
         assertTrue(result.isValid());
-        assertEquals("deadline", result.getCommandType());
+        assertEquals(CommandType.DEADLINE, result.getCommandType());
         assertArrayEquals(new String[]{"submit report", "Friday"}, result.getArguments());
     }
     
@@ -62,7 +62,7 @@ public class ParserTest {
     void shouldParseEventCommand() {
         ParseResult result = Parser.parse("event meeting /from Mon 2pm /to 4pm");
         assertTrue(result.isValid());
-        assertEquals("event", result.getCommandType());
+        assertEquals(CommandType.EVENT, result.getCommandType());
         assertArrayEquals(new String[]{"meeting", "Mon 2pm", "4pm"}, result.getArguments());
     }
     
@@ -95,15 +95,15 @@ public class ParserTest {
     void shouldHandleCaseInsensitiveCommands() {
         ParseResult result1 = Parser.parse("LIST");
         assertTrue(result1.isValid());
-        assertEquals("list", result1.getCommandType());
+        assertEquals(CommandType.LIST, result1.getCommandType());
         
         ParseResult result2 = Parser.parse("ByE");
         assertTrue(result2.isValid());
-        assertEquals("bye", result2.getCommandType());
+        assertEquals(CommandType.BYE, result2.getCommandType());
         
         ParseResult result3 = Parser.parse("TODO something");
         assertTrue(result3.isValid());
-        assertEquals("todo", result3.getCommandType());
+        assertEquals(CommandType.TODO, result3.getCommandType());
     }
     
     @Test
@@ -158,14 +158,14 @@ public class ParserTest {
     void shouldTrimWhitespaceInput() {
         ParseResult result = Parser.parse("  list  ");
         assertTrue(result.isValid());
-        assertEquals("list", result.getCommandType());
+        assertEquals(CommandType.LIST, result.getCommandType());
     }
     
     @Test
     void shouldHandleMultipleSpacesInArguments() {
         ParseResult result = Parser.parse("todo    read    multiple    books");
         assertTrue(result.isValid());
-        assertEquals("todo", result.getCommandType());
+        assertEquals(CommandType.TODO, result.getCommandType());
         assertArrayEquals(new String[]{"read    multiple    books"}, result.getArguments());
     }
     
@@ -173,7 +173,7 @@ public class ParserTest {
     void shouldHandleComplexDeadlineParsing() {
         ParseResult result = Parser.parse("deadline finish assignment with multiple words /by next Tuesday evening");
         assertTrue(result.isValid());
-        assertEquals("deadline", result.getCommandType());
+        assertEquals(CommandType.DEADLINE, result.getCommandType());
         assertArrayEquals(new String[]{"finish assignment with multiple words", "next Tuesday evening"}, result.getArguments());
     }
     
@@ -181,7 +181,7 @@ public class ParserTest {
     void shouldHandleComplexEventParsing() {
         ParseResult result = Parser.parse("event team project discussion meeting /from Monday 2pm /to Wednesday 5pm");
         assertTrue(result.isValid());
-        assertEquals("event", result.getCommandType());
+        assertEquals(CommandType.EVENT, result.getCommandType());
         assertArrayEquals(new String[]{"team project discussion meeting", "Monday 2pm", "Wednesday 5pm"}, result.getArguments());
     }
     
@@ -197,22 +197,22 @@ public class ParserTest {
         // Test all bye command variants map to canonical "bye" command
         ParseResult result1 = Parser.parse("exit");
         assertTrue(result1.isValid());
-        assertEquals("bye", result1.getCommandType());
+        assertEquals(CommandType.BYE, result1.getCommandType());
         assertArrayEquals(new String[0], result1.getArguments());
         
         ParseResult result2 = Parser.parse("quit");
         assertTrue(result2.isValid());
-        assertEquals("bye", result2.getCommandType());
+        assertEquals(CommandType.BYE, result2.getCommandType());
         assertArrayEquals(new String[0], result2.getArguments());
         
         ParseResult result3 = Parser.parse("goodbye");
         assertTrue(result3.isValid());
-        assertEquals("bye", result3.getCommandType());
+        assertEquals(CommandType.BYE, result3.getCommandType());
         assertArrayEquals(new String[0], result3.getArguments());
         
         ParseResult result4 = Parser.parse("done");
         assertTrue(result4.isValid());
-        assertEquals("bye", result4.getCommandType());
+        assertEquals(CommandType.BYE, result4.getCommandType());
         assertArrayEquals(new String[0], result4.getArguments());
     }
     
@@ -221,17 +221,17 @@ public class ParserTest {
         // Test all list command variants map to canonical "list" command
         ParseResult result1 = Parser.parse("ls");
         assertTrue(result1.isValid());
-        assertEquals("list", result1.getCommandType());
+        assertEquals(CommandType.LIST, result1.getCommandType());
         assertArrayEquals(new String[0], result1.getArguments());
         
         ParseResult result2 = Parser.parse("show");
         assertTrue(result2.isValid());
-        assertEquals("list", result2.getCommandType());
+        assertEquals(CommandType.LIST, result2.getCommandType());
         assertArrayEquals(new String[0], result2.getArguments());
         
         ParseResult result3 = Parser.parse("display");
         assertTrue(result3.isValid());
-        assertEquals("list", result3.getCommandType());
+        assertEquals(CommandType.LIST, result3.getCommandType());
         assertArrayEquals(new String[0], result3.getArguments());
     }
     
@@ -240,23 +240,23 @@ public class ParserTest {
         // Test case insensitive handling for new command variants
         ParseResult result1 = Parser.parse("EXIT");
         assertTrue(result1.isValid());
-        assertEquals("bye", result1.getCommandType());
+        assertEquals(CommandType.BYE, result1.getCommandType());
         
         ParseResult result2 = Parser.parse("QUIT");
         assertTrue(result2.isValid());
-        assertEquals("bye", result2.getCommandType());
+        assertEquals(CommandType.BYE, result2.getCommandType());
         
         ParseResult result3 = Parser.parse("LS");
         assertTrue(result3.isValid());
-        assertEquals("list", result3.getCommandType());
+        assertEquals(CommandType.LIST, result3.getCommandType());
         
         ParseResult result4 = Parser.parse("SHOW");
         assertTrue(result4.isValid());
-        assertEquals("list", result4.getCommandType());
+        assertEquals(CommandType.LIST, result4.getCommandType());
         
         ParseResult result5 = Parser.parse("DiSpLaY");
         assertTrue(result5.isValid());
-        assertEquals("list", result5.getCommandType());
+        assertEquals(CommandType.LIST, result5.getCommandType());
     }
     
     @Test
@@ -264,10 +264,10 @@ public class ParserTest {
         // Test whitespace handling for new command variants
         ParseResult result1 = Parser.parse("  exit  ");
         assertTrue(result1.isValid());
-        assertEquals("bye", result1.getCommandType());
+        assertEquals(CommandType.BYE, result1.getCommandType());
         
         ParseResult result2 = Parser.parse("  ls  ");
         assertTrue(result2.isValid());
-        assertEquals("list", result2.getCommandType());
+        assertEquals(CommandType.LIST, result2.getCommandType());
     }
 }

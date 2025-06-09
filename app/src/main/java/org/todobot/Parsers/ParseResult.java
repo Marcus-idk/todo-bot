@@ -1,12 +1,14 @@
 package org.todobot.parsers;
 
+import org.todobot.CommandType;
+
 public class ParseResult {
-    private String commandType;
+    private CommandType commandType;
     private String[] arguments;
     private boolean isValid;
     private String errorMessage;
     
-    public ParseResult(String commandType, String[] arguments, boolean isValid, String errorMessage) {
+    public ParseResult(CommandType commandType, String[] arguments, boolean isValid, String errorMessage) {
         this.commandType = commandType;
         this.arguments = arguments;
         this.isValid = isValid;
@@ -14,16 +16,16 @@ public class ParseResult {
     }
     
     // Success constructor
-    public ParseResult(String commandType, String[] arguments) {
+    public ParseResult(CommandType commandType, String[] arguments) {
         this(commandType, arguments, true, "");
     }
     
     // Error constructor
     public ParseResult(String errorMessage) {
-        this("", new String[0], false, errorMessage);
+        this(null, new String[0], false, errorMessage);
     }
     
-    public String getCommandType() {
+    public CommandType getCommandType() {
         return commandType;
     }
     
@@ -40,6 +42,6 @@ public class ParseResult {
     }
     
     public boolean isEmpty() {
-        return commandType.isEmpty() && arguments.length == 0;
+        return commandType == null && arguments.length == 0;
     }
 }
