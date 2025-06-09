@@ -31,4 +31,9 @@ public class EventParser extends CommandParser {
         
         return new ParseResult("event", new String[]{description, from, to});
     }
+    
+    @Override
+    public String[] getCommandKeywords() {
+        return new String[]{"event"};
+    }
 }

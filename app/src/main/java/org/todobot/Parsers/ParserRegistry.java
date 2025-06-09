@@ -7,33 +7,20 @@ public class ParserRegistry {
     private static final Map<String, CommandParser> parsers = new HashMap<>();
     
     static {
-        // Task creation parsers
-        registerParser("todo", new TodoParser());
-        registerParser("deadline", new DeadlineParser());
-        registerParser("event", new EventParser());
-        
-        // Task management parsers
-        registerParser("mark", new MarkUnmarkParser("mark"));
-        registerParser("unmark", new MarkUnmarkParser("unmark"));
-        
-        // List command parser - register all variants
-        ListParser listParser = new ListParser();
-        registerParser("list", listParser);
-        registerParser("ls", listParser);
-        registerParser("show", listParser);
-        registerParser("display", listParser);
-        
-        // Bye command parser - register all variants
-        ByeParser byeParser = new ByeParser();
-        registerParser("bye", byeParser);
-        registerParser("exit", byeParser);
-        registerParser("quit", byeParser);
-        registerParser("goodbye", byeParser);
-        registerParser("done", byeParser);
+        // Register parsers - each declares its own keywords
+        registerParser(new TodoParser());
+        registerParser(new DeadlineParser());
+        registerParser(new EventParser());
+        registerParser(new MarkParser());
+        registerParser(new UnmarkParser());
+        registerParser(new ListParser());
+        registerParser(new ByeParser());
     }
     
-    public static void registerParser(String command, CommandParser parser) {
-        parsers.put(command, parser);
+    private static void registerParser(CommandParser parser) {
+        for (String keyword : parser.getCommandKeywords()) {
+            parsers.put(keyword, parser);
+        }
     }
     
     public static CommandParser getParser(String command) {

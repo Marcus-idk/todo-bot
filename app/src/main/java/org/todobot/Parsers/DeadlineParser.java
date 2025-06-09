@@ -23,4 +23,9 @@ public class DeadlineParser extends CommandParser {
         
         return new ParseResult("deadline", new String[]{description, by});
     }
+    
+    @Override
+    public String[] getCommandKeywords() {
+        return new String[]{"deadline"};
+    }
 }

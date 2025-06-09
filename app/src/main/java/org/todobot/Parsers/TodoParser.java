@@ -10,4 +10,9 @@ public class TodoParser extends CommandParser {
         }
         return new ParseResult("todo", new String[]{arguments});
     }
+    
+    @Override
+    public String[] getCommandKeywords() {
+        return new String[]{"todo"};
+    }
 }
