@@ -18,7 +18,7 @@ public class BotMessages {
     // Error messages
     public static final String EMPTY_INPUT = RED + " Oops! We need an input! I can't read your mind... yet! 🤔" + RESET;
     public static final String INVALID_COMMAND = RED + " Hey there! I don't recognize that command! " +
-            "Try: todo, deadline, event, list, mark, unmark, or bye! 😅🤖" + RESET;
+            "Type 'help' if you need to see available commands! 😅🤖" + RESET;
     public static final String TASK_LIMIT_REACHED = RED + " Whoa there! You've hit the 100-task limit! " +
             "I'm not a miracle worker! Please delete some tasks first! 😅" + RESET;
     public static final String INVALID_TASK_NUMBER = RED + " Hmm, that task number doesn't exist! " +

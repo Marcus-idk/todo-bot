@@ -191,4 +191,83 @@ public class ParserTest {
         assertFalse(result.isValid());
         assertEquals(BotMessages.EMPTY_INPUT, result.getErrorMessage());
     }
+    
+    @Test
+    void shouldParseByeCommandVariants() {
+        // Test all bye command variants map to canonical "bye" command
+        ParseResult result1 = Parser.parse("exit");
+        assertTrue(result1.isValid());
+        assertEquals("bye", result1.getCommandType());
+        assertArrayEquals(new String[0], result1.getArguments());
+        
+        ParseResult result2 = Parser.parse("quit");
+        assertTrue(result2.isValid());
+        assertEquals("bye", result2.getCommandType());
+        assertArrayEquals(new String[0], result2.getArguments());
+        
+        ParseResult result3 = Parser.parse("goodbye");
+        assertTrue(result3.isValid());
+        assertEquals("bye", result3.getCommandType());
+        assertArrayEquals(new String[0], result3.getArguments());
+        
+        ParseResult result4 = Parser.parse("done");
+        assertTrue(result4.isValid());
+        assertEquals("bye", result4.getCommandType());
+        assertArrayEquals(new String[0], result4.getArguments());
+    }
+    
+    @Test
+    void shouldParseListCommandVariants() {
+        // Test all list command variants map to canonical "list" command
+        ParseResult result1 = Parser.parse("ls");
+        assertTrue(result1.isValid());
+        assertEquals("list", result1.getCommandType());
+        assertArrayEquals(new String[0], result1.getArguments());
+        
+        ParseResult result2 = Parser.parse("show");
+        assertTrue(result2.isValid());
+        assertEquals("list", result2.getCommandType());
+        assertArrayEquals(new String[0], result2.getArguments());
+        
+        ParseResult result3 = Parser.parse("display");
+        assertTrue(result3.isValid());
+        assertEquals("list", result3.getCommandType());
+        assertArrayEquals(new String[0], result3.getArguments());
+    }
+    
+    @Test
+    void shouldHandleCaseInsensitiveCommandVariants() {
+        // Test case insensitive handling for new command variants
+        ParseResult result1 = Parser.parse("EXIT");
+        assertTrue(result1.isValid());
+        assertEquals("bye", result1.getCommandType());
+        
+        ParseResult result2 = Parser.parse("QUIT");
+        assertTrue(result2.isValid());
+        assertEquals("bye", result2.getCommandType());
+        
+        ParseResult result3 = Parser.parse("LS");
+        assertTrue(result3.isValid());
+        assertEquals("list", result3.getCommandType());
+        
+        ParseResult result4 = Parser.parse("SHOW");
+        assertTrue(result4.isValid());
+        assertEquals("list", result4.getCommandType());
+        
+        ParseResult result5 = Parser.parse("DiSpLaY");
+        assertTrue(result5.isValid());
+        assertEquals("list", result5.getCommandType());
+    }
+    
+    @Test
+    void shouldTrimWhitespaceForCommandVariants() {
+        // Test whitespace handling for new command variants
+        ParseResult result1 = Parser.parse("  exit  ");
+        assertTrue(result1.isValid());
+        assertEquals("bye", result1.getCommandType());
+        
+        ParseResult result2 = Parser.parse("  ls  ");
+        assertTrue(result2.isValid());
+        assertEquals("list", result2.getCommandType());
+    }
 }
