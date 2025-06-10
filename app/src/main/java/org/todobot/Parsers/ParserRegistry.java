@@ -14,6 +14,7 @@ public class ParserRegistry {
         registerParser(new MarkParser());
         registerParser(new UnmarkParser());
         registerParser(new ListParser());
+        registerParser(new HelpParser());
         registerParser(new ByeParser());
     }
     

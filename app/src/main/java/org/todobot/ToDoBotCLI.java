@@ -2,6 +2,7 @@ package org.todobot;
 
 import org.todobot.commands.AddCommand;
 import org.todobot.commands.Command;
+import org.todobot.commands.HelpCommand;
 import org.todobot.commands.ListCommand;
 import org.todobot.commands.MarkCommand;
 import org.todobot.parsers.ParseResult;
@@ -50,6 +51,8 @@ public class ToDoBotCLI {
                 return new MarkCommand(taskList, true);
             case UNMARK:
                 return new MarkCommand(taskList, false);
+            case HELP:
+                return new HelpCommand(taskList);
             default:
                 // This shouldn't happen since Parser validates commands
                 return null;
