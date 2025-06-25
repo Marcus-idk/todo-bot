@@ -22,5 +22,31 @@ text-ui-test/EXPECTED-UNIX.TXT
 # Ignore Gradle build output directory
 build
 
+# Generated files
+data/
+*.log
+
+# IDE files
+.vscode/
+*.swp
+*.swo
+
+# OS files
+Thumbs.db
+*.tmp
+*.temp
+
+# Java/Build
+*.class
+target/
+.settings/
+.project
+.classpath
+
+# Runtime/Config
+*.pid
+.env
+application-local.properties
+
 .claude/
 fornexttime.md
