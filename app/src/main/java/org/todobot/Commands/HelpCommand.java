@@ -22,7 +22,7 @@ public class HelpCommand extends Command {
         help.append("   list, ls, show, display                - Show all tasks\n");
         help.append("   mark [number]                          - Mark task as done\n");
         help.append("   unmark [number]                        - Mark task as not done\n");
-        help.append("   delete, del, d [number]                - Delete a task\n\n");
+        help.append("   delete, del, d, remove, rm [number]    - Delete a task\n\n");
         
         help.append(" Other:\n");
         help.append("   help, h, ?, commands                   - Show this help message\n");
