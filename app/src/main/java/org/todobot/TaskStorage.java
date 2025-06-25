@@ -33,27 +33,13 @@ public class TaskStorage {
     
     public ArrayList<Task> loadTasks() {
         try {
-            if (!Files.exists(FILE_PATH)) {
-                return new ArrayList<>();
-            }
-            
-            String json = Files.readString(FILE_PATH);
-            if (json.trim().isEmpty()) {
+            String json = readJsonContent();
+            if (json == null) {
                 return new ArrayList<>();
             }
             
             JsonArray jsonArray = gson.fromJson(json, JsonArray.class);
-            ArrayList<Task> tasks = new ArrayList<>();
-            
-            for (JsonElement element : jsonArray) {
-                JsonObject taskObj = element.getAsJsonObject();
-                Task task = parseTask(taskObj);
-                if (task != null) {
-                    tasks.add(task);
-                }
-            }
-            
-            return tasks;
+            return jsonArrayToTasks(jsonArray);
             
         } catch (IOException | JsonSyntaxException e) {
             System.err.println("Error loading tasks: " + e.getMessage());
@@ -63,30 +49,64 @@ public class TaskStorage {
     
     public void saveTasks(ArrayList<Task> tasks) {
         try {
-            createDataDirectoryIfNeeded();
-            
-            JsonArray jsonArray = new JsonArray();
-            for (Task task : tasks) {
-                JsonObject taskObj = new JsonObject();
-                taskObj.addProperty("type", task.getClass().getSimpleName());
-                taskObj.addProperty("description", task.getDescription());
-                taskObj.addProperty("isDone", task.isDone());
-                
-                if (task instanceof Deadline) {
-                    taskObj.addProperty("by", ((Deadline) task).getBy());
-                } else if (task instanceof Event) {
-                    taskObj.addProperty("from", ((Event) task).getFrom());
-                    taskObj.addProperty("to", ((Event) task).getTo());
-                }
-                
-                jsonArray.add(taskObj);
-            }
-            
+            JsonArray jsonArray = tasksToJsonArray(tasks);
             String json = gson.toJson(jsonArray);
-            Files.writeString(FILE_PATH, json);
+            writeJsonToFile(json);
         } catch (IOException e) {
             System.err.println("Error saving tasks: " + e.getMessage());
         }
+    }
+    
+    private String readJsonContent() throws IOException {
+        if (!Files.exists(FILE_PATH)) {
+            return null;
+        }
+        
+        String json = Files.readString(FILE_PATH);
+        return json.trim().isEmpty() ? null : json;
+    }
+    
+    private JsonObject taskToJsonObject(Task task) {
+        JsonObject taskObj = new JsonObject();
+        taskObj.addProperty("type", task.getClass().getSimpleName());
+        taskObj.addProperty("description", task.getDescription());
+        taskObj.addProperty("isDone", task.isDone());
+        
+        if (task instanceof Deadline) {
+            taskObj.addProperty("by", ((Deadline) task).getBy());
+        } else if (task instanceof Event) {
+            taskObj.addProperty("from", ((Event) task).getFrom());
+            taskObj.addProperty("to", ((Event) task).getTo());
+        }
+        
+        return taskObj;
+    }
+    
+    private JsonArray tasksToJsonArray(ArrayList<Task> tasks) {
+        JsonArray jsonArray = new JsonArray();
+        for (Task task : tasks) {
+            jsonArray.add(taskToJsonObject(task));
+        }
+        return jsonArray;
+    }
+    
+    private ArrayList<Task> jsonArrayToTasks(JsonArray jsonArray) {
+        ArrayList<Task> tasks = new ArrayList<>();
+        
+        for (JsonElement element : jsonArray) {
+            JsonObject taskObj = element.getAsJsonObject();
+            Task task = parseTask(taskObj);
+            if (task != null) {
+                tasks.add(task);
+            }
+        }
+        
+        return tasks;
+    }
+    
+    private void writeJsonToFile(String json) throws IOException {
+        createDataDirectoryIfNeeded();
+        Files.writeString(FILE_PATH, json);
     }
     
     private void createDataDirectoryIfNeeded() throws IOException {
