@@ -1,30 +1,24 @@
 package org.todobot.parsers;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.todobot.BotMessages;
 import org.todobot.CommandType;
 
 public class EventParser extends CommandParser {
+    private static final Pattern EVENT_PATTERN = Pattern.compile("^(.+?)\\s*/from\\s+(.+?)\\s*/to\\s+(.+)$");
+    
     @Override
     public ParseResult parse(String arguments) {
-        if (!arguments.contains("/from") || !arguments.contains("/to")) {
+        Matcher matcher = EVENT_PATTERN.matcher(arguments);
+        
+        if (!matcher.matches()) {
             return new ParseResult(BotMessages.INVALID_EVENT_FORMAT);
         }
         
-        String[] fromSplit = arguments.split("/from", 2);
-        if (fromSplit.length != 2) {
-            return new ParseResult(BotMessages.INVALID_EVENT_FORMAT);
-        }
-        
-        String description = fromSplit[0].trim();
-        String remaining = fromSplit[1].trim();
-        
-        String[] toSplit = remaining.split("/to", 2);
-        if (toSplit.length != 2) {
-            return new ParseResult(BotMessages.INVALID_EVENT_FORMAT);
-        }
-        
-        String from = toSplit[0].trim();
-        String to = toSplit[1].trim();
+        String description = matcher.group(1).trim();
+        String from = matcher.group(2).trim();
+        String to = matcher.group(3).trim();
         
         if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
             return new ParseResult(BotMessages.INVALID_EVENT_FORMAT);
