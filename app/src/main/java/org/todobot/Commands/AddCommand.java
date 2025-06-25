@@ -23,17 +23,12 @@ public class AddCommand extends Command {
         
         Task task;
         switch (taskType) {
-            case TODO:
-                task = new Todo(arguments[0]);
-                break;
-            case DEADLINE:
-                task = new Deadline(arguments[0], arguments[1]);
-                break;
-            case EVENT:
-                task = new Event(arguments[0], arguments[1], arguments[2]);
-                break;
-            default:
+            case TODO -> task = new Todo(arguments[0]);
+            case DEADLINE -> task = new Deadline(arguments[0], arguments[1]);
+            case EVENT -> task = new Event(arguments[0], arguments[1], arguments[2]);
+            default -> {
                 return BotMessages.INVALID_COMMAND;
+            }
         }
         
         taskList.addTask(task);

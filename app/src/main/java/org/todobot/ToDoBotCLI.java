@@ -19,51 +19,52 @@ public class ToDoBotCLI {
     }
     
     private void handleUserInput() {
-        String input;
-        
         while (true) {
-            input = ui.readCommand();
+            String input = ui.readCommand();
             ParseResult result = Parser.parse(input);
             
-            if (!result.isValid()) {
-                ui.showResponse(result.getErrorMessage());
-            } else if (result.getCommandType() == CommandType.BYE) {
+            if (shouldExit(result)) {
                 break;
-            } else {
-                Command command = createCommand(result.getCommandType());
-                String output = command.execute(result.getArguments());
-                ui.showResponse(output);
             }
             
+            processCommand(result);
             ui.showLine();
         }
     }
     
-    private Command createCommand(CommandType commandType) {
-        switch (commandType) {
-            case TODO:
-            case DEADLINE:
-            case EVENT:
-                return new AddCommand(taskList, commandType);
-            case LIST:
-                return new ListCommand(taskList);
-            case MARK:
-                return new MarkCommand(taskList, true);
-            case UNMARK:
-                return new MarkCommand(taskList, false);
-            case HELP:
-                return new HelpCommand(taskList);
-            default:
-                // This shouldn't happen since Parser validates commands
-                return null;
-        }
+    private boolean shouldExit(ParseResult result) {
+        return result.isValid() && result.getCommandType() == CommandType.BYE;
     }
     
-    public static void main(String[] args) {
-        ToDoBotCLI bot = new ToDoBotCLI();
-        bot.ui.showGreeting();
-        bot.handleUserInput();
-        bot.ui.showFarewell();
-        bot.ui.close();
+    private void processCommand(ParseResult result) {
+        if (!result.isValid()) {
+            ui.showResponse(result.getErrorMessage());
+            return;
+        }
+        
+        Command command = createCommand(result.getCommandType());
+        String output = command.execute(result.getArguments());
+        ui.showResponse(output);
+    }
+    
+    private Command createCommand(CommandType commandType) {
+        return switch (commandType) {
+            case TODO, DEADLINE, EVENT -> new AddCommand(taskList, commandType);
+            case LIST -> new ListCommand(taskList);
+            case MARK -> new MarkCommand(taskList, true);
+            case UNMARK -> new MarkCommand(taskList, false);
+            case HELP -> new HelpCommand(taskList);
+            default -> null;
+        };
+    }
+    
+    public void run() {
+        ui.showGreeting();
+        handleUserInput();
+        ui.showFarewell();
+    }
+    
+    public void cleanup() {
+        ui.close();
     }
 }
