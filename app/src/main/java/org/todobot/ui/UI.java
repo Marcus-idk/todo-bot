@@ -2,7 +2,7 @@ package org.todobot.ui;
 
 import java.util.Scanner;
 
-import org.todobot.BotMessages;
+import org.todobot.common.BotMessages;
 
 public class UI {
     private final Scanner scanner;

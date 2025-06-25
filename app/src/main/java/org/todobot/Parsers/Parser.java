@@ -1,5 +1,5 @@
 package org.todobot.parsers;
-import org.todobot.BotMessages;
+import org.todobot.common.BotMessages;
 
 public class Parser {
     public static ParseResult parse(String input) {

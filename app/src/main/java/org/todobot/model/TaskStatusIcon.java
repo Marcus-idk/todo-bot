@@ -1,4 +1,4 @@
-package org.todobot.tasks;
+package org.todobot.model;
 
 public enum TaskStatusIcon {
     DONE("X"),

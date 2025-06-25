@@ -1,4 +1,4 @@
-package org.todobot.tasks;
+package org.todobot.model;
 
 public class Deadline extends Task {
     private String by;

@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.todobot.tasks.Event;
-import org.todobot.tasks.Task;
+import org.todobot.model.Event;
+import org.todobot.model.Task;
 
 public class EventTest {
     

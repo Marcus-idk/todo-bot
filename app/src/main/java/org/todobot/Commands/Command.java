@@ -1,5 +1,5 @@
 package org.todobot.commands;
-import org.todobot.TaskList;
+import org.todobot.service.TaskList;
 
 public abstract class Command {
     protected TaskList taskList;

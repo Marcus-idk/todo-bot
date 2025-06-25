@@ -1,8 +1,8 @@
 package org.todobot.commands;
 
-import org.todobot.BotMessages;
-import org.todobot.TaskList;
-import org.todobot.tasks.Task;
+import org.todobot.common.BotMessages;
+import org.todobot.model.Task;
+import org.todobot.service.TaskList;
 
 public class DeleteCommand extends Command {
     

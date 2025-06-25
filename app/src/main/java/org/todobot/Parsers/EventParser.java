@@ -2,8 +2,9 @@ package org.todobot.parsers;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.todobot.BotMessages;
-import org.todobot.CommandType;
+
+import org.todobot.common.BotMessages;
+import org.todobot.common.CommandType;
 
 public class EventParser extends CommandParser {
     private static final Pattern EVENT_PATTERN = Pattern.compile("^(.+?)\\s*/from\\s+(.+?)\\s*/to\\s+(.+)$");

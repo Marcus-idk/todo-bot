@@ -1,4 +1,4 @@
-package org.todobot;
+package org.todobot.app;
 
 import org.todobot.commands.AddCommand;
 import org.todobot.commands.Command;
@@ -6,8 +6,11 @@ import org.todobot.commands.DeleteCommand;
 import org.todobot.commands.HelpCommand;
 import org.todobot.commands.ListCommand;
 import org.todobot.commands.MarkCommand;
+import org.todobot.common.CommandType;
 import org.todobot.parsers.ParseResult;
 import org.todobot.parsers.Parser;
+import org.todobot.service.TaskList;
+import org.todobot.storage.TaskStorage;
 import org.todobot.ui.UI;
 
 public class ToDoBotCLI {

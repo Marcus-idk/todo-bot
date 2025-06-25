@@ -1,4 +1,4 @@
-package org.todobot;
+package org.todobot.common;
 
 public enum CommandType {
     TODO("todo"),

@@ -1,6 +1,6 @@
 package org.todobot.commands;
 
-import org.todobot.TaskList;
+import org.todobot.service.TaskList;
 
 public class ListCommand extends Command {
     public ListCommand(TaskList taskList) {

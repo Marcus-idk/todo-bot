@@ -1,4 +1,4 @@
-package org.todobot;
+package org.todobot.storage;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -6,10 +6,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import org.todobot.tasks.Deadline;
-import org.todobot.tasks.Event;
-import org.todobot.tasks.Task;
-import org.todobot.tasks.Todo;
+import org.todobot.model.Deadline;
+import org.todobot.model.Event;
+import org.todobot.model.Task;
+import org.todobot.model.Todo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

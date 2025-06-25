@@ -1,7 +1,7 @@
 package org.todobot.parsers;
 
-import org.todobot.BotMessages;
-import org.todobot.CommandType;
+import org.todobot.common.BotMessages;
+import org.todobot.common.CommandType;
 
 public class TodoParser extends CommandParser {
     @Override

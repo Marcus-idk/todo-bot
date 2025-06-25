@@ -1,8 +1,8 @@
-package org.todobot;
+package org.todobot.service;
 
 import java.util.ArrayList;
 
-import org.todobot.tasks.Task;
+import org.todobot.model.Task;
 
 public class TaskList {
     private final ArrayList<Task> tasks;

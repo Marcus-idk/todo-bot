@@ -1,5 +1,5 @@
-package org.todobot;
-import org.todobot.tasks.Task;
+package org.todobot.common;
+import org.todobot.model.Task;
 
 public class BotMessages {
     // ANSI color codes

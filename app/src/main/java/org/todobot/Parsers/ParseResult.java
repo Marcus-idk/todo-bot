@@ -1,6 +1,6 @@
 package org.todobot.parsers;
 
-import org.todobot.CommandType;
+import org.todobot.common.CommandType;
 
 public class ParseResult {
     private CommandType commandType;

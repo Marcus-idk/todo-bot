@@ -1,4 +1,4 @@
-package org.todobot.tasks;
+package org.todobot.model;
 
 public abstract class Task {
     protected String description;

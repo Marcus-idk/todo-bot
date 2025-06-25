@@ -1,4 +1,4 @@
-package org.todobot;
+package org.todobot.app;
 
 public class Main {
     public static void main(String[] args) {

@@ -1,7 +1,7 @@
 package org.todobot.commands;
 
-import org.todobot.BotMessages;
-import org.todobot.TaskList;
+import org.todobot.common.BotMessages;
+import org.todobot.service.TaskList;
 
 public class ByeCommand extends Command {
     public ByeCommand(TaskList taskList) {
