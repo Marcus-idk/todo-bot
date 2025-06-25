@@ -7,6 +7,7 @@ public enum CommandType {
     LIST("list"),
     MARK("mark"),
     UNMARK("unmark"),
+    DELETE("delete"),
     HELP("help"),
     BYE("bye");
     

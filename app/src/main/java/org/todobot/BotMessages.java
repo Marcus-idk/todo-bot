@@ -48,6 +48,11 @@ public class BotMessages {
         return " OK, I've marked this task as not done yet:\n   " + task;
     }
     
+    public static String formatDeletedTask(Task task, int remainingTasks) {
+        return " Noted. I've removed this task:\n   " + task + 
+               "\n Now you have " + remainingTasks + " tasks in the list.";
+    }
+    
     // System messages
     public static final String FAREWELL = " Bye. Hope to see you again soon!";
     public static final String GREETING = " What can I do for you?";

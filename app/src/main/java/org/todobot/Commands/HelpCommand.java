@@ -21,7 +21,8 @@ public class HelpCommand extends Command {
         help.append(" Managing tasks:\n");
         help.append("   list, ls, show, display                - Show all tasks\n");
         help.append("   mark [number]                          - Mark task as done\n");
-        help.append("   unmark [number]                        - Mark task as not done\n\n");
+        help.append("   unmark [number]                        - Mark task as not done\n");
+        help.append("   delete, del, d [number]                - Delete a task\n\n");
         
         help.append(" Other:\n");
         help.append("   help, h, ?, commands                   - Show this help message\n");
@@ -32,6 +33,7 @@ public class HelpCommand extends Command {
         help.append("   deadline submit report /by Friday 5pm\n");
         help.append("   event team meeting /from Mon 2pm /to 4pm\n");
         help.append("   mark 1\n");
+        help.append("   delete 3\n");
         help.append("   list");
         
         return help.toString();

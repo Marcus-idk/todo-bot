@@ -67,4 +67,11 @@ public class TaskList {
     public int getTaskCount() {
         return tasks.size();
     }
+    
+    public Task deleteTask(int taskNumber) {
+        if (taskNumber < 1 || taskNumber > tasks.size()) {
+            return null;
+        }
+        return tasks.remove(taskNumber - 1);
+    }
 }

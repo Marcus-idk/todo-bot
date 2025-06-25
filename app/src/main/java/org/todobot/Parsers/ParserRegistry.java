@@ -13,6 +13,7 @@ public class ParserRegistry {
         registerParser(new EventParser());
         registerParser(new MarkParser());
         registerParser(new UnmarkParser());
+        registerParser(new DeleteParser());
         registerParser(new ListParser());
         registerParser(new HelpParser());
         registerParser(new ByeParser());
