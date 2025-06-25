@@ -12,11 +12,16 @@ import org.todobot.ui.UI;
 
 public class ToDoBotCLI {
     private final TaskList taskList;
+    private final TaskStorage storage;
     private final UI ui;
     
     public ToDoBotCLI() {
-        taskList = new TaskList();
-        ui = new UI();
+        this.storage = new TaskStorage();
+        this.taskList = new TaskList();
+        this.ui = new UI();
+        
+        // Load tasks on startup
+        taskList.setTasks(storage.loadTasks());
     }
     
     private void handleUserInput() {
@@ -46,6 +51,11 @@ public class ToDoBotCLI {
         Command command = createCommand(result.getCommandType());
         String output = command.execute(result.getArguments());
         ui.showResponse(output);
+        
+        // Save tasks after any command that might modify them
+        if (isModifyingCommand(result.getCommandType())) {
+            storage.saveTasks(taskList.getAllTasks());
+        }
     }
     
     private Command createCommand(CommandType commandType) {
@@ -64,6 +74,15 @@ public class ToDoBotCLI {
         ui.showGreeting();
         handleUserInput();
         ui.showFarewell();
+    }
+    
+    private boolean isModifyingCommand(CommandType commandType) {
+        return commandType == CommandType.TODO ||
+               commandType == CommandType.DEADLINE ||
+               commandType == CommandType.EVENT ||
+               commandType == CommandType.MARK ||
+               commandType == CommandType.UNMARK ||
+               commandType == CommandType.DELETE;
     }
     
     public void cleanup() {

@@ -9,7 +9,7 @@ public class TaskList {
     private static final int MAX_TASKS = 100;
     
     public TaskList() {
-        tasks = new ArrayList<>();
+        this.tasks = new ArrayList<>();
     }
     
     public boolean addTask(Task task) {
@@ -73,5 +73,14 @@ public class TaskList {
             return null;
         }
         return tasks.remove(taskNumber - 1);
+    }
+    
+    public ArrayList<Task> getAllTasks() {
+        return new ArrayList<>(tasks);
+    }
+    
+    public void setTasks(ArrayList<Task> tasks) {
+        this.tasks.clear();
+        this.tasks.addAll(tasks);
     }
 }
