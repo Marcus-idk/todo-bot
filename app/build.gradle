@@ -37,7 +37,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'org.todobot.Main'
+    mainClass = 'org.todobot.app.Main'
 }
 
 tasks.named('test') {

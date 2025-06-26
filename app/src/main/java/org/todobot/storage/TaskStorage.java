@@ -21,7 +21,7 @@ import com.google.gson.JsonSyntaxException;
 
 public class TaskStorage {
     private static final String DATA_DIR = "./data";
-    private static final String FILE_NAME = "duke.txt";
+    private static final String FILE_NAME = "KunBot.txt";
     private static final Path FILE_PATH = Paths.get(DATA_DIR, FILE_NAME);
     
     private final Gson gson;
