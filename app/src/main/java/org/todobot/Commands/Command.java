@@ -1,4 +1,5 @@
 package org.todobot.commands;
+import org.todobot.parsers.ParseResult;
 import org.todobot.service.TaskList;
 
 public abstract class Command {
@@ -9,4 +10,8 @@ public abstract class Command {
     }
     
     public abstract String execute(String[] arguments);
+    
+    public String execute(ParseResult parseResult) {
+        return execute(parseResult.getArguments());
+    }
 }

@@ -1,25 +1,26 @@
 package org.todobot.model;
 
-public class Event extends Task {
-    private String from;
-    private String to;
+import java.time.LocalDateTime;
+import org.todobot.parsers.DateTimeParser;
 
-    public Event(String description, String from, String to) {
+public class Event extends Task {
+    private LocalDateTime from;
+    private LocalDateTime to;
+    private boolean hasFromTime;
+    private boolean hasToTime;
+
+    public Event(String description, LocalDateTime from, boolean hasFromTime, LocalDateTime to, boolean hasToTime) {
         super(description);
         if (from == null) {
             throw new IllegalArgumentException("Event from time cannot be null");
         }
-        if (from.trim().isEmpty()) {
-            throw new IllegalArgumentException("Event from time cannot be empty");
-        }
         if (to == null) {
             throw new IllegalArgumentException("Event to time cannot be null");
         }
-        if (to.trim().isEmpty()) {
-            throw new IllegalArgumentException("Event to time cannot be empty");
-        }
         this.from = from;
+        this.hasFromTime = hasFromTime;
         this.to = to;
+        this.hasToTime = hasToTime;
     }
 
     @Override
@@ -29,14 +30,31 @@ public class Event extends Task {
 
     @Override
     public String getDetailsString() {
-        return " (from: " + from + " to: " + to + ")";
+        return " (from: " + DateTimeParser.formatDateTime(from, hasFromTime) + 
+               " to: " + DateTimeParser.formatDateTime(to, hasToTime) + ")";
     }
 
     public String getFrom() {
-        return from;
+        return DateTimeParser.formatDateTime(from, hasFromTime);
     }
 
     public String getTo() {
+        return DateTimeParser.formatDateTime(to, hasToTime);
+    }
+    
+    public LocalDateTime getFromDateTime() {
+        return from;
+    }
+    
+    public LocalDateTime getToDateTime() {
         return to;
+    }
+    
+    public boolean hasFromTime() {
+        return hasFromTime;
+    }
+    
+    public boolean hasToTime() {
+        return hasToTime;
     }
 }

@@ -1,5 +1,6 @@
 package org.todobot.parsers;
 
+import java.time.format.DateTimeParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +26,20 @@ public class EventParser extends CommandParser {
             return new ParseResult(BotMessages.INVALID_EVENT_FORMAT);
         }
         
-        return new ParseResult(CommandType.EVENT, new String[]{description, from, to});
+        // Validate and parse both dates
+        try {
+            DateTimeParser.DateTimeResult fromResult = DateTimeParser.parseDateTime(from);
+            DateTimeParser.DateTimeResult toResult = DateTimeParser.parseDateTime(to);
+            
+            Object[] timeData = {
+                fromResult.getDateTime(), fromResult.hasTime(),
+                toResult.getDateTime(), toResult.hasTime()
+            };
+            
+            return new ParseResult(CommandType.EVENT, new String[]{description}, timeData);
+        } catch (DateTimeParseException e) {
+            return new ParseResult("Invalid date format for event. Expected: DD-MM-YYYY or DD-MM-YYYY HH:MM");
+        }
     }
     
     @Override

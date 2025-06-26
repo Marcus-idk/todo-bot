@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.todobot.model.Deadline;
@@ -73,10 +74,15 @@ public class TaskStorage {
         taskObj.addProperty("isDone", task.isDone());
         
         if (task instanceof Deadline) {
-            taskObj.addProperty("by", ((Deadline) task).getBy());
+            Deadline deadline = (Deadline) task;
+            taskObj.addProperty("by", deadline.getByDateTime().toString());
+            taskObj.addProperty("hasTime", deadline.hasTimeInfo());
         } else if (task instanceof Event) {
-            taskObj.addProperty("from", ((Event) task).getFrom());
-            taskObj.addProperty("to", ((Event) task).getTo());
+            Event event = (Event) task;
+            taskObj.addProperty("from", event.getFromDateTime().toString());
+            taskObj.addProperty("hasFromTime", event.hasFromTime());
+            taskObj.addProperty("to", event.getToDateTime().toString());
+            taskObj.addProperty("hasToTime", event.hasToTime());
         }
         
         return taskObj;
@@ -128,13 +134,19 @@ public class TaskStorage {
                     task = new Todo(description);
                     break;
                 case "Deadline":
-                    String by = taskObj.get("by").getAsString();
-                    task = new Deadline(description, by);
+                    String byStr = taskObj.get("by").getAsString();
+                    boolean hasTime = taskObj.get("hasTime").getAsBoolean();
+                    LocalDateTime by = LocalDateTime.parse(byStr);
+                    task = new Deadline(description, by, hasTime);
                     break;
                 case "Event":
-                    String from = taskObj.get("from").getAsString();
-                    String to = taskObj.get("to").getAsString();
-                    task = new Event(description, from, to);
+                    String fromStr = taskObj.get("from").getAsString();
+                    boolean hasFromTime = taskObj.get("hasFromTime").getAsBoolean();
+                    String toStr = taskObj.get("to").getAsString();
+                    boolean hasToTime = taskObj.get("hasToTime").getAsBoolean();
+                    LocalDateTime from = LocalDateTime.parse(fromStr);
+                    LocalDateTime to = LocalDateTime.parse(toStr);
+                    task = new Event(description, from, hasFromTime, to, hasToTime);
                     break;
                 default:
                     System.err.println("Unknown task type: " + type);

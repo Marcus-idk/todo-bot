@@ -52,7 +52,7 @@ public class ToDoBotCLI {
         }
         
         Command command = createCommand(result.getCommandType());
-        String output = command.execute(result.getArguments());
+        String output = command.execute(result);
         ui.showResponse(output);
         
         // Save tasks after any command that might modify them
