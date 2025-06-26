@@ -38,7 +38,7 @@ public class EventParser extends CommandParser {
             
             return new ParseResult(CommandType.EVENT, new String[]{description}, timeData);
         } catch (DateTimeParseException e) {
-            return new ParseResult("Invalid date format for event. Expected: DD-MM-YYYY or DD-MM-YYYY HH:MM");
+            return new ParseResult(BotMessages.INVALID_DATE_FORMAT);
         }
     }
     

@@ -31,7 +31,7 @@ public class DeadlineParser extends CommandParser {
             Object[] timeData = {result.getDateTime(), result.hasTime()};
             return new ParseResult(CommandType.DEADLINE, new String[]{description}, timeData);
         } catch (DateTimeParseException e) {
-            return new ParseResult("Invalid date format for deadline. Expected: DD-MM-YYYY or DD-MM-YYYY HH:MM");
+            return new ParseResult(BotMessages.INVALID_DATE_FORMAT);
         }
     }
     
