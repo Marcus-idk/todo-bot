@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.todobot.model.Task;
-import org.todobot.model.Todo;
+import org.todobot.model.ToDo;
 
 public class TaskListTest {
     
@@ -31,16 +31,16 @@ public class TaskListTest {
     
     @Test
     void shouldAddSingleTask() {
-        assertTrue(taskList.addTask(new Todo(TEST_TASK_1)));
+        assertTrue(taskList.addTask(new ToDo(TEST_TASK_1)));
         assertFalse(taskList.isEmpty());
         assertEquals(1, taskList.getTaskCount());
     }
     
     @Test
     void shouldAddMultipleTasks() {
-        assertTrue(taskList.addTask(new Todo(TEST_TASK_1)));
-        assertTrue(taskList.addTask(new Todo(TEST_TASK_2)));
-        assertTrue(taskList.addTask(new Todo(TEST_TASK_3)));
+        assertTrue(taskList.addTask(new ToDo(TEST_TASK_1)));
+        assertTrue(taskList.addTask(new ToDo(TEST_TASK_2)));
+        assertTrue(taskList.addTask(new ToDo(TEST_TASK_3)));
         
         assertEquals(3, taskList.getTaskCount());
         assertFalse(taskList.isEmpty());
@@ -50,13 +50,13 @@ public class TaskListTest {
     @Test
     void shouldRejectTaskWhenFull() {
         for (int i = 1; i <= 100; i++) {
-            assertTrue(taskList.addTask(new Todo("Task " + i)));
+            assertTrue(taskList.addTask(new ToDo("Task " + i)));
         }
         
         assertTrue(taskList.isFull());
         assertEquals(100, taskList.getTaskCount());
         
-        assertFalse(taskList.addTask(new Todo("Overflow task")));
+        assertFalse(taskList.addTask(new ToDo("Overflow task")));
         assertEquals(100, taskList.getTaskCount());
     }
     
@@ -68,16 +68,16 @@ public class TaskListTest {
     
     @Test
     void shouldListSingleTask() {
-        taskList.addTask(new Todo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_1));
         String expected = " Here are the tasks in your list:\n 1.[T][ ] " + TEST_TASK_1;
         assertEquals(expected, taskList.listTasks());
     }
     
     @Test
     void shouldListMultipleTasks() {
-        taskList.addTask(new Todo(TEST_TASK_1));
-        taskList.addTask(new Todo(TEST_TASK_2));
-        taskList.addTask(new Todo(TEST_TASK_3));
+        taskList.addTask(new ToDo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_2));
+        taskList.addTask(new ToDo(TEST_TASK_3));
         
         String expected = " Here are the tasks in your list:\n" +
                          " 1.[T][ ] " + TEST_TASK_1 + "\n" +
@@ -88,9 +88,9 @@ public class TaskListTest {
     
     @Test
     void shouldListTasksWithMixedStatus() {
-        taskList.addTask(new Todo(TEST_TASK_1));
-        taskList.addTask(new Todo(TEST_TASK_2));
-        taskList.addTask(new Todo(TEST_TASK_3));
+        taskList.addTask(new ToDo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_2));
+        taskList.addTask(new ToDo(TEST_TASK_3));
         
         taskList.markTask(2);
         
@@ -103,7 +103,7 @@ public class TaskListTest {
     
     @Test
     void shouldMarkValidTask() {
-        taskList.addTask(new Todo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_1));
         assertTrue(taskList.markTask(1));
         
         Task task = taskList.getTask(1);
@@ -112,7 +112,7 @@ public class TaskListTest {
     
     @Test
     void shouldRejectMarkingInvalidTaskNumber() {
-        taskList.addTask(new Todo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_1));
         
         assertFalse(taskList.markTask(0));
         assertFalse(taskList.markTask(-1));
@@ -127,7 +127,7 @@ public class TaskListTest {
     
     @Test
     void shouldUnmarkValidTask() {
-        taskList.addTask(new Todo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_1));
         taskList.markTask(1);
         assertTrue(taskList.unmarkTask(1));
         
@@ -137,7 +137,7 @@ public class TaskListTest {
     
     @Test
     void shouldRejectUnmarkingInvalidTaskNumber() {
-        taskList.addTask(new Todo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_1));
         
         assertFalse(taskList.unmarkTask(0));
         assertFalse(taskList.unmarkTask(-1));
@@ -152,8 +152,8 @@ public class TaskListTest {
     
     @Test
     void shouldGetValidTask() {
-        taskList.addTask(new Todo(TEST_TASK_1));
-        taskList.addTask(new Todo(TEST_TASK_2));
+        taskList.addTask(new ToDo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_2));
         
         Task task1 = taskList.getTask(1);
         Task task2 = taskList.getTask(2);
@@ -164,7 +164,7 @@ public class TaskListTest {
     
     @Test
     void shouldReturnNullForInvalidTask() {
-        taskList.addTask(new Todo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_1));
         
         assertNull(taskList.getTask(0));
         assertNull(taskList.getTask(-1));
@@ -181,13 +181,13 @@ public class TaskListTest {
     void shouldTrackTaskCount() {
         assertEquals(0, taskList.getTaskCount());
         
-        taskList.addTask(new Todo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_1));
         assertEquals(1, taskList.getTaskCount());
         
-        taskList.addTask(new Todo(TEST_TASK_2));
+        taskList.addTask(new ToDo(TEST_TASK_2));
         assertEquals(2, taskList.getTaskCount());
         
-        taskList.addTask(new Todo(TEST_TASK_3));
+        taskList.addTask(new ToDo(TEST_TASK_3));
         assertEquals(3, taskList.getTaskCount());
     }
     
@@ -196,7 +196,7 @@ public class TaskListTest {
         assertFalse(taskList.isFull());
         
         for (int i = 1; i <= 100; i++) {
-            taskList.addTask(new Todo("Task " + i));
+            taskList.addTask(new ToDo("Task " + i));
         }
         
         assertTrue(taskList.isFull());
@@ -206,15 +206,15 @@ public class TaskListTest {
     void shouldDetectEmptyList() {
         assertTrue(taskList.isEmpty());
         
-        taskList.addTask(new Todo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_1));
         assertFalse(taskList.isEmpty());
     }
     
     @Test
     void shouldHandleTaskNumberingCorrectly() {
-        taskList.addTask(new Todo("First task"));
-        taskList.addTask(new Todo("Second task"));
-        taskList.addTask(new Todo("Third task"));
+        taskList.addTask(new ToDo("First task"));
+        taskList.addTask(new ToDo("Second task"));
+        taskList.addTask(new ToDo("Third task"));
         
         assertEquals("First task", taskList.getTask(1).getDescription());
         assertEquals("Second task", taskList.getTask(2).getDescription());
@@ -225,7 +225,7 @@ public class TaskListTest {
     
     @Test
     void shouldHandleMarkUnmarkSequence() {
-        taskList.addTask(new Todo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_1));
         
         assertFalse(taskList.getTask(1).isDone());
         

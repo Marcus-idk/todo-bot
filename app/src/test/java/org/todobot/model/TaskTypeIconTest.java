@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class TaskTypeIconTest {
     
     @Test
-    void shouldReturnCorrectIconForTodo() {
+    void shouldReturnCorrectIconForToDo() {
         assertEquals("T", TaskTypeIcon.TODO.getIcon());
     }
     

@@ -7,19 +7,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class TodoTest {
+public class ToDoTest {
     
-    private Todo todo;
+    private ToDo todo;
     private static final String TEST_DESCRIPTION = "Read a book";
     
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
-        todo = new Todo(TEST_DESCRIPTION);
+        todo = new ToDo(TEST_DESCRIPTION);
     }
     
     @Test
-    void shouldCreateTodoWithDescription() {
+    void shouldCreateToDoWithDescription() {
         assertEquals(TEST_DESCRIPTION, todo.getDescription());
     }
     
@@ -29,13 +29,13 @@ public class TodoTest {
     }
     
     @Test
-    void shouldMarkTodoAsDone() {
+    void shouldMarkToDoAsDone() {
         todo.markAsDone();
         assertTrue(todo.isDone());
     }
     
     @Test
-    void shouldMarkTodoAsNotDone() {
+    void shouldMarkToDoAsNotDone() {
         todo.markAsDone();
         todo.markAsNotDone();
         assertFalse(todo.isDone());
@@ -99,7 +99,7 @@ public class TodoTest {
     void shouldThrowExceptionForNullDescription() {
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class, 
-            () -> new Todo(null)
+            () -> new ToDo(null)
         );
         assertEquals("Task description cannot be null", exception.getMessage());
     }
@@ -108,7 +108,7 @@ public class TodoTest {
     void shouldThrowExceptionForEmptyDescription() {
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class, 
-            () -> new Todo("")
+            () -> new ToDo("")
         );
         assertEquals("Task description cannot be empty", exception.getMessage());
     }
@@ -117,7 +117,7 @@ public class TodoTest {
     void shouldThrowExceptionForWhitespaceOnlyDescription() {
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class, 
-            () -> new Todo("   ")
+            () -> new ToDo("   ")
         );
         assertEquals("Task description cannot be empty", exception.getMessage());
     }
@@ -125,40 +125,40 @@ public class TodoTest {
     @Test
     void shouldHandleDescriptionWithSpaces() {
         String spaceyDescription = "Go to the   grocery    store";
-        Todo spaceyTodo = new Todo(spaceyDescription);
-        assertEquals(spaceyDescription, spaceyTodo.getDescription());
-        assertEquals("[T][ ] " + spaceyDescription, spaceyTodo.toString());
+        ToDo spaceyToDo = new ToDo(spaceyDescription);
+        assertEquals(spaceyDescription, spaceyToDo.getDescription());
+        assertEquals("[T][ ] " + spaceyDescription, spaceyToDo.toString());
     }
     
     @Test
     void shouldHandleSpecialCharacters() {
         String specialDescription = "Buy $100 worth of groceries @#$%^&*()";
-        Todo specialTodo = new Todo(specialDescription);
-        assertEquals(specialDescription, specialTodo.getDescription());
-        assertEquals("[T][ ] " + specialDescription, specialTodo.toString());
+        ToDo specialToDo = new ToDo(specialDescription);
+        assertEquals(specialDescription, specialToDo.getDescription());
+        assertEquals("[T][ ] " + specialDescription, specialToDo.toString());
     }
     
     @Test
     void shouldHandleVeryLongDescription() {
         String longDescription = "This is a very long task description that goes on and on and on because sometimes people write really long task descriptions that test the limits of our patience and string handling capabilities";
-        Todo longTodo = new Todo(longDescription);
-        assertEquals(longDescription, longTodo.getDescription());
-        assertEquals("[T][ ] " + longDescription, longTodo.toString());
+        ToDo longToDo = new ToDo(longDescription);
+        assertEquals(longDescription, longToDo.getDescription());
+        assertEquals("[T][ ] " + longDescription, longToDo.toString());
     }
     
     @Test
     void shouldHandleUnicodeCharacters() {
         String unicodeDescription = "Learn 中文 and العربية and русский";
-        Todo unicodeTodo = new Todo(unicodeDescription);
-        assertEquals(unicodeDescription, unicodeTodo.getDescription());
-        assertEquals("[T][ ] " + unicodeDescription, unicodeTodo.toString());
+        ToDo unicodeToDo = new ToDo(unicodeDescription);
+        assertEquals(unicodeDescription, unicodeToDo.getDescription());
+        assertEquals("[T][ ] " + unicodeDescription, unicodeToDo.toString());
     }
     
     @Test
     void shouldHandleDescriptionWithNewlines() {
         String newlineDescription = "Multi\nline\ndescription";
-        Todo newlineTodo = new Todo(newlineDescription);
-        assertEquals(newlineDescription, newlineTodo.getDescription());
-        assertEquals("[T][ ] " + newlineDescription, newlineTodo.toString());
+        ToDo newlineToDo = new ToDo(newlineDescription);
+        assertEquals(newlineDescription, newlineToDo.getDescription());
+        assertEquals("[T][ ] " + newlineDescription, newlineToDo.toString());
     }
 }

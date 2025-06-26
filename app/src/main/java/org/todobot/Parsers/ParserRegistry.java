@@ -8,7 +8,7 @@ public class ParserRegistry {
     
     static {
         // Register parsers - each declares its own keywords
-        registerParser(new TodoParser());
+        registerParser(new ToDoParser());
         registerParser(new DeadlineParser());
         registerParser(new EventParser());
         registerParser(new MarkParser());

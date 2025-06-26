@@ -27,7 +27,7 @@ public class BotMessages {
             "I may be a bot, but I still know what numbers look like! 🤖🔢" + RESET;
     
     // Format error messages
-    public static final String INVALID_TODO_FORMAT = RED + " Oops! Todo format should be: todo [description] " +
+    public static final String INVALID_TODO_FORMAT = RED + " Oops! ToDo format should be: todo [description] " +
             "Come on, give me something to do! 😄" + RESET;
     public static final String INVALID_DEADLINE_FORMAT = RED + " Hey! Deadline format should be: deadline [description] /by [date] " +
             "Don't forget the /by part! I need to know when! ⏰🤖" + RESET;

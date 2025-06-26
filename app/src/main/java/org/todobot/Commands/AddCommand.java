@@ -6,7 +6,7 @@ import org.todobot.common.CommandType;
 import org.todobot.model.Deadline;
 import org.todobot.model.Event;
 import org.todobot.model.Task;
-import org.todobot.model.Todo;
+import org.todobot.model.ToDo;
 import org.todobot.parsers.ParseResult;
 import org.todobot.service.TaskList;
 
@@ -35,7 +35,7 @@ public class AddCommand extends Command {
         
         Task task;
         switch (taskType) {
-            case TODO -> task = new Todo(description);
+            case TODO -> task = new ToDo(description);
             case DEADLINE -> {
                 if (timeData == null || timeData.length < 2) {
                     return BotMessages.INVALID_DATE_FORMAT;

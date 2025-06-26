@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import org.todobot.model.Deadline;
 import org.todobot.model.Event;
 import org.todobot.model.Task;
-import org.todobot.model.Todo;
+import org.todobot.model.ToDo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -130,8 +130,8 @@ public class TaskStorage {
             
             Task task;
             switch (type) {
-                case "Todo":
-                    task = new Todo(description);
+                case "ToDo":
+                    task = new ToDo(description);
                     break;
                 case "Deadline":
                     String byStr = taskObj.get("by").getAsString();

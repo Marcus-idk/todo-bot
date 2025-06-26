@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 public class TaskTest {
     
-    private Todo todo;
+    private ToDo todo;
     private Deadline deadline;
     private Event event;
     private static final String TEST_DESCRIPTION = "Test task";
@@ -20,7 +20,7 @@ public class TaskTest {
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
-        todo = new Todo(TEST_DESCRIPTION);
+        todo = new ToDo(TEST_DESCRIPTION);
         deadline = new Deadline(TEST_DESCRIPTION, TEST_DATE, false);
         event = new Event(TEST_DESCRIPTION, TEST_DATE, false, TEST_DATE, false);
     }
@@ -29,7 +29,7 @@ public class TaskTest {
     void shouldThrowExceptionForNullDescription() {
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class, 
-            () -> new Todo(null)
+            () -> new ToDo(null)
         );
         assertEquals("Task description cannot be null", exception.getMessage());
     }
@@ -38,7 +38,7 @@ public class TaskTest {
     void shouldThrowExceptionForEmptyDescription() {
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class, 
-            () -> new Todo("")
+            () -> new ToDo("")
         );
         assertEquals("Task description cannot be empty", exception.getMessage());
     }
@@ -47,7 +47,7 @@ public class TaskTest {
     void shouldThrowExceptionForWhitespaceOnlyDescription() {
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class, 
-            () -> new Todo("   ")
+            () -> new ToDo("   ")
         );
         assertEquals("Task description cannot be empty", exception.getMessage());
     }
@@ -114,27 +114,27 @@ public class TaskTest {
     @Test
     void shouldHandleDescriptionWithSpaces() {
         String spaceyDescription = "Task with   multiple   spaces";
-        Todo spaceyTodo = new Todo(spaceyDescription);
-        assertEquals(spaceyDescription, spaceyTodo.getDescription());
+        ToDo spaceyToDo = new ToDo(spaceyDescription);
+        assertEquals(spaceyDescription, spaceyToDo.getDescription());
     }
     
     @Test
     void shouldHandleSpecialCharactersInDescription() {
         String specialDescription = "Task with @#$%^&*() symbols!";
-        Todo specialTodo = new Todo(specialDescription);
-        assertEquals(specialDescription, specialTodo.getDescription());
+        ToDo specialToDo = new ToDo(specialDescription);
+        assertEquals(specialDescription, specialToDo.getDescription());
     }
     
     @Test
     void shouldHandleVeryLongDescription() {
         String longDescription = "This is a very long task description that goes on and on to test string handling capabilities";
-        Todo longTodo = new Todo(longDescription);
-        assertEquals(longDescription, longTodo.getDescription());
+        ToDo longToDo = new ToDo(longDescription);
+        assertEquals(longDescription, longToDo.getDescription());
     }
     
     @Test
     void shouldSupportPolymorphismWithTaskReference() {
-        Task task = new Todo("Polymorphic todo");
+        Task task = new ToDo("Polymorphic todo");
         assertEquals("T", task.getTypeIcon());
         assertEquals("", task.getDetailsString());
         assertEquals("[T][ ] Polymorphic todo", task.toString());
@@ -142,7 +142,7 @@ public class TaskTest {
     
     @Test
     void shouldMaintainPolymorphicBehaviorForAllSubtypes() {
-        Task todoTask = new Todo("Todo task");
+        Task todoTask = new ToDo("ToDo task");
         Task deadlineTask = new Deadline("Deadline task", TEST_DATE, false);
         Task eventTask = new Event("Event task", TEST_DATE, false, TEST_DATE, false);
         
