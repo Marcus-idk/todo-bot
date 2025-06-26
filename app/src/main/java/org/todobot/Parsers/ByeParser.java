@@ -11,6 +11,6 @@ public class ByeParser extends CommandParser {
     
     @Override
     public String[] getCommandKeywords() {
-        return new String[]{"bye", "exit", "quit", "goodbye", "done"};
+        return new String[]{"bye", "exit", "quit", "goodbye"};
     }
 }

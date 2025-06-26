@@ -26,12 +26,13 @@ public class HelpCommand extends Command {
         
         help.append(" Other:\n");
         help.append("   help, h, ?, commands                   - Show this help message\n");
-        help.append("   bye, exit, quit, goodbye, done         - Exit the program\n\n");
+        help.append("   bye, exit, quit, goodbye               - Exit the program\n\n");
         
         help.append(" Examples:\n");
         help.append("   todo read a book\n");
-        help.append("   deadline submit report /by Friday 5pm\n");
-        help.append("   event team meeting /from Mon 2pm /to 4pm\n");
+        help.append("   deadline submit report /by 25-12-2024\n");
+        help.append("   deadline submit report /by 25-12-2024 17:00\n");
+        help.append("   event team meeting /from 25-12-2024 14:00 /to 25-12-2024 16:00\n");
         help.append("   mark 1\n");
         help.append("   delete 3\n");
         help.append("   list");
