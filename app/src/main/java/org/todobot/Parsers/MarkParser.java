@@ -1,24 +1,11 @@
 package org.todobot.parsers;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.todobot.common.BotMessages;
 import org.todobot.common.CommandType;
 
-public class MarkParser extends CommandParser {
-    private static final Pattern POSITIVE_INTEGER_PATTERN = Pattern.compile("^\\s*([1-9]\\d*)\\s*$");
-    
+public class MarkParser extends NumericParser {
     @Override
-    public ParseResult parse(String arguments) {
-        Matcher matcher = POSITIVE_INTEGER_PATTERN.matcher(arguments);
-        
-        if (!matcher.matches()) {
-            return new ParseResult(BotMessages.INVALID_NUMBER_FORMAT);
-        }
-        
-        String taskNumber = matcher.group(1);
-        return new ParseResult(CommandType.MARK, new String[]{taskNumber});
+    protected CommandType getCommandType() {
+        return CommandType.MARK;
     }
     
     @Override
