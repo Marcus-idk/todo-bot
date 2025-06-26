@@ -1,4 +1,4 @@
-package org.todobot;
+package org.todobot.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.todobot.model.Task;
 import org.todobot.model.Todo;
-import org.todobot.service.TaskList;
 
 public class TaskListTest {
     

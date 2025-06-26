@@ -1,4 +1,4 @@
-package org.todobot;
+package org.todobot.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.todobot.model.Todo;
 
 public class TodoTest {
     
@@ -14,6 +13,7 @@ public class TodoTest {
     private static final String TEST_DESCRIPTION = "Read a book";
     
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         todo = new Todo(TEST_DESCRIPTION);
     }
