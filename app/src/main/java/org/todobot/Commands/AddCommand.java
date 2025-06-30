@@ -55,7 +55,11 @@ public class AddCommand extends Command {
                 boolean hasFromTime = (Boolean) timeData[1];
                 LocalDateTime toDateTime = (LocalDateTime) timeData[2];
                 boolean hasToTime = (Boolean) timeData[3];
-                task = new Event(description, fromDateTime, hasFromTime, toDateTime, hasToTime);
+                try {
+                    task = new Event(description, fromDateTime, hasFromTime, toDateTime, hasToTime);
+                } catch (IllegalArgumentException e) {
+                    return BotMessages.INVALID_EVENT_TIME_ORDER;
+                }
             }
             default -> {
                 return BotMessages.INVALID_COMMAND;

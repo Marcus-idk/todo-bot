@@ -35,6 +35,8 @@ public class BotMessages {
             "I need both /from and /to! Time is important! 📅😅" + RESET;
     public static final String INVALID_DATE_FORMAT = RED + " Oops! Date format should be DD-MM-YYYY or DD-MM-YYYY HH:MM " +
             "Let's keep time organized! ⏰🤖" + RESET;
+    public static final String INVALID_EVENT_TIME_ORDER = RED + " Hey! Event start time must be before end time! " +
+            "Time doesn't go backwards! ⏰😅" + RESET;
     
     // Success messages
     public static String formatAddedTask(Task task, int totalTasks) {

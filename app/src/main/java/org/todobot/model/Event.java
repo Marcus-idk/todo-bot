@@ -17,6 +17,9 @@ public class Event extends Task {
         if (to == null) {
             throw new IllegalArgumentException("Event to time cannot be null");
         }
+        if (from.isAfter(to)) {
+            throw new IllegalArgumentException("Event start time must be before end time");
+        }
         this.from = from;
         this.hasFromTime = hasFromTime;
         this.to = to;
