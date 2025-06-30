@@ -238,4 +238,157 @@ public class TaskListTest {
         assertTrue(taskList.markTask(1));
         assertTrue(taskList.getTask(1).isDone());
     }
+    
+    @Test
+    void shouldReturnNullForInvalidDeleteIndices() {
+        taskList.addTask(new ToDo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_2));
+        
+        assertNull(taskList.deleteTask(0));
+        assertNull(taskList.deleteTask(-1));
+        assertNull(taskList.deleteTask(3));
+        assertNull(taskList.deleteTask(100));
+        
+        assertEquals(2, taskList.getTaskCount());
+    }
+    
+    @Test
+    void shouldReturnNullForDeleteFromEmptyList() {
+        assertNull(taskList.deleteTask(1));
+        assertTrue(taskList.isEmpty());
+    }
+    
+    @Test
+    void shouldDeleteFirstTask() {
+        taskList.addTask(new ToDo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_2));
+        taskList.addTask(new ToDo(TEST_TASK_3));
+        
+        Task deletedTask = taskList.deleteTask(1);
+        
+        assertEquals(TEST_TASK_1, deletedTask.getDescription());
+        assertEquals(2, taskList.getTaskCount());
+        assertEquals(TEST_TASK_2, taskList.getTask(1).getDescription());
+        assertEquals(TEST_TASK_3, taskList.getTask(2).getDescription());
+    }
+    
+    @Test
+    void shouldDeleteMiddleTask() {
+        taskList.addTask(new ToDo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_2));
+        taskList.addTask(new ToDo(TEST_TASK_3));
+        
+        Task deletedTask = taskList.deleteTask(2);
+        
+        assertEquals(TEST_TASK_2, deletedTask.getDescription());
+        assertEquals(2, taskList.getTaskCount());
+        assertEquals(TEST_TASK_1, taskList.getTask(1).getDescription());
+        assertEquals(TEST_TASK_3, taskList.getTask(2).getDescription());
+    }
+    
+    @Test
+    void shouldDeleteLastTask() {
+        taskList.addTask(new ToDo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_2));
+        taskList.addTask(new ToDo(TEST_TASK_3));
+        
+        Task deletedTask = taskList.deleteTask(3);
+        
+        assertEquals(TEST_TASK_3, deletedTask.getDescription());
+        assertEquals(2, taskList.getTaskCount());
+        assertEquals(TEST_TASK_1, taskList.getTask(1).getDescription());
+        assertEquals(TEST_TASK_2, taskList.getTask(2).getDescription());
+        assertNull(taskList.getTask(3));
+    }
+    
+    @Test
+    void shouldDeleteOnlyTask() {
+        taskList.addTask(new ToDo(TEST_TASK_1));
+        
+        Task deletedTask = taskList.deleteTask(1);
+        
+        assertEquals(TEST_TASK_1, deletedTask.getDescription());
+        assertEquals(0, taskList.getTaskCount());
+        assertTrue(taskList.isEmpty());
+        assertNull(taskList.getTask(1));
+    }
+    
+    @Test
+    void shouldHandleIndexShiftingAfterDeletion() {
+        taskList.addTask(new ToDo("Task A"));
+        taskList.addTask(new ToDo("Task B"));
+        taskList.addTask(new ToDo("Task C"));
+        taskList.addTask(new ToDo("Task D"));
+        
+        taskList.deleteTask(2);
+        
+        assertEquals("Task A", taskList.getTask(1).getDescription());
+        assertEquals("Task C", taskList.getTask(2).getDescription());
+        assertEquals("Task D", taskList.getTask(3).getDescription());
+        assertNull(taskList.getTask(4));
+        assertEquals(3, taskList.getTaskCount());
+    }
+    
+    @Test
+    void shouldDeleteMarkedTask() {
+        taskList.addTask(new ToDo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_2));
+        taskList.markTask(2);
+        
+        Task deletedTask = taskList.deleteTask(2);
+        
+        assertEquals(TEST_TASK_2, deletedTask.getDescription());
+        assertTrue(deletedTask.isDone());
+        assertEquals(1, taskList.getTaskCount());
+        assertEquals(TEST_TASK_1, taskList.getTask(1).getDescription());
+    }
+    
+    @Test
+    void shouldHandleMultipleDeletions() {
+        taskList.addTask(new ToDo("Task A"));
+        taskList.addTask(new ToDo("Task B"));
+        taskList.addTask(new ToDo("Task C"));
+        taskList.addTask(new ToDo("Task D"));
+        taskList.addTask(new ToDo("Task E"));
+        
+        taskList.deleteTask(2);
+        taskList.deleteTask(2);
+        
+        assertEquals("Task A", taskList.getTask(1).getDescription());
+        assertEquals("Task D", taskList.getTask(2).getDescription());
+        assertEquals("Task E", taskList.getTask(3).getDescription());
+        assertNull(taskList.getTask(4));
+        assertEquals(3, taskList.getTaskCount());
+    }
+    
+    @Test
+    void shouldHandleDeleteThenAdd() {
+        taskList.addTask(new ToDo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_2));
+        
+        taskList.deleteTask(1);
+        taskList.addTask(new ToDo(TEST_TASK_3));
+        
+        assertEquals(2, taskList.getTaskCount());
+        assertEquals(TEST_TASK_2, taskList.getTask(1).getDescription());
+        assertEquals(TEST_TASK_3, taskList.getTask(2).getDescription());
+    }
+    
+    @Test
+    void shouldMaintainTaskOrderAfterDeletion() {
+        taskList.addTask(new ToDo("First"));
+        taskList.addTask(new ToDo("Second"));
+        taskList.addTask(new ToDo("Third"));
+        taskList.addTask(new ToDo("Fourth"));
+        taskList.addTask(new ToDo("Fifth"));
+        
+        taskList.deleteTask(3);
+        
+        String expected = " Here are the tasks in your list:\n" +
+                         " 1.[T][ ] First\n" +
+                         " 2.[T][ ] Second\n" +
+                         " 3.[T][ ] Fourth\n" +
+                         " 4.[T][ ] Fifth";
+        assertEquals(expected, taskList.listTasks());
+    }
 }
