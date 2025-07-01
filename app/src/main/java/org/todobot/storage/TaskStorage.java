@@ -20,13 +20,18 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 public class TaskStorage {
-    private static final String DATA_DIR = "./data";
+    private static final String DEFAULT_DATA_DIR = "./data";
     private static final String FILE_NAME = "KunBot.txt";
-    private static final Path FILE_PATH = Paths.get(DATA_DIR, FILE_NAME);
     
+    private final Path filePath;
     private final Gson gson;
     
     public TaskStorage() {
+        this(DEFAULT_DATA_DIR);
+    }
+    
+    public TaskStorage(String dataDir) {
+        this.filePath = Paths.get(dataDir, FILE_NAME);
         this.gson = new GsonBuilder()
             .setPrettyPrinting()
             .create();
@@ -59,11 +64,11 @@ public class TaskStorage {
     }
     
     private String readJsonContent() throws IOException {
-        if (!Files.exists(FILE_PATH)) {
+        if (!Files.exists(filePath)) {
             return null;
         }
         
-        String json = Files.readString(FILE_PATH);
+        String json = Files.readString(filePath);
         return json.trim().isEmpty() ? null : json;
     }
     
@@ -112,11 +117,11 @@ public class TaskStorage {
     
     private void writeJsonToFile(String json) throws IOException {
         createDataDirectoryIfNeeded();
-        Files.writeString(FILE_PATH, json);
+        Files.writeString(filePath, json);
     }
     
     private void createDataDirectoryIfNeeded() throws IOException {
-        Path dataDir = Paths.get(DATA_DIR);
+        Path dataDir = filePath.getParent();
         if (!Files.exists(dataDir)) {
             Files.createDirectories(dataDir);
         }
