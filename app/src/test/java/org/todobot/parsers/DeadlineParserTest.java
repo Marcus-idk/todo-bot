@@ -48,7 +48,7 @@ public class DeadlineParserTest {
         Object[] timeData = result.getTimeData();
         LocalDateTime expectedDateTime = LocalDateTime.of(2023, 12, 25, 0, 0);
         assertEquals(expectedDateTime, timeData[0]);
-        assertEquals(false, timeData[1]); // hasTime = false
+        assertFalse((Boolean) timeData[1]); // hasTime = false
     }
     
     @Test
@@ -62,7 +62,7 @@ public class DeadlineParserTest {
         Object[] timeData = result.getTimeData();
         LocalDateTime expectedDateTime = LocalDateTime.of(2024, 1, 1, 14, 30);
         assertEquals(expectedDateTime, timeData[0]);
-        assertEquals(true, timeData[1]); // hasTime = true
+        assertTrue((Boolean) timeData[1]); // hasTime = true
     }
     
     @Test
@@ -76,7 +76,7 @@ public class DeadlineParserTest {
         Object[] timeData = result.getTimeData();
         LocalDateTime expectedDateTime = LocalDateTime.of(2023, 12, 25, 0, 0);
         assertEquals(expectedDateTime, timeData[0]);
-        assertEquals(false, timeData[1]);
+        assertFalse((Boolean) timeData[1]);
     }
     
     @Test
@@ -90,7 +90,7 @@ public class DeadlineParserTest {
         Object[] timeData = result.getTimeData();
         LocalDateTime expectedDateTime = LocalDateTime.of(2023, 12, 31, 23, 59);
         assertEquals(expectedDateTime, timeData[0]);
-        assertEquals(true, timeData[1]);
+        assertTrue((Boolean) timeData[1]);
     }
     
     @Test
@@ -104,7 +104,7 @@ public class DeadlineParserTest {
         Object[] timeData = result.getTimeData();
         LocalDateTime expectedDateTime = LocalDateTime.of(2024, 6, 15, 0, 0);
         assertEquals(expectedDateTime, timeData[0]);
-        assertEquals(false, timeData[1]);
+        assertFalse((Boolean) timeData[1]);
     }
     
     @Test
@@ -114,6 +114,11 @@ public class DeadlineParserTest {
         assertTrue(result.isValid());
         assertEquals(CommandType.DEADLINE, result.getCommandType());
         assertEquals("buy groceries & cook dinner", result.getArguments()[0]);
+        
+        Object[] timeData = result.getTimeData();
+        LocalDateTime expectedDateTime = LocalDateTime.of(2024, 7, 20, 0, 0);
+        assertEquals(expectedDateTime, timeData[0]);
+        assertFalse((Boolean) timeData[1]);
     }
     
     // Invalid deadline formats - regex pattern failures

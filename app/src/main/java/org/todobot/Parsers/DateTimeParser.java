@@ -30,9 +30,12 @@ public class DateTimeParser {
     }
     
     public static DateTimeResult parseDateTime(String input) throws DateTimeParseException {
-        if (input == null || input.trim().isEmpty()) {
-            throw new DateTimeParseException("Date/time input cannot be empty", input, 0);
+         if (input == null) {
+            throw new DateTimeParseException("Date/time input cannot be empty", "", 0);
         }
+        if (input.trim().isEmpty()) {
+            throw new DateTimeParseException("Date/time input cannot be empty", input, 0);
+        }             
         
         String trimmedInput = input.trim();
         

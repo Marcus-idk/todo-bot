@@ -175,7 +175,7 @@ public class NumericParserTest {
     }
     
     @Test
-    void shouldRejectVeryLargeNumber() {
+    void shouldAcceptVeryLargeNumber() {
         // Test with a very large number to ensure regex handles it
         ParseResult result = markParser.parse("123456789012345");
         

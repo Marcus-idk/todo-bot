@@ -50,9 +50,9 @@ public class EventParserTest {
         LocalDateTime expectedToDateTime = LocalDateTime.of(2023, 12, 26, 0, 0);
         
         assertEquals(expectedFromDateTime, timeData[0]); // from dateTime
-        assertEquals(false, timeData[1]); // from hasTime
+        assertFalse((Boolean) timeData[1]); // from hasTime
         assertEquals(expectedToDateTime, timeData[2]); // to dateTime
-        assertEquals(false, timeData[3]); // to hasTime
+        assertFalse((Boolean) timeData[3]); // to hasTime
     }
     
     @Test
@@ -68,9 +68,9 @@ public class EventParserTest {
         LocalDateTime expectedToDateTime = LocalDateTime.of(2024, 1, 1, 17, 0);
         
         assertEquals(expectedFromDateTime, timeData[0]);
-        assertEquals(true, timeData[1]); // from hasTime
+        assertTrue((Boolean) timeData[1]); // from hasTime
         assertEquals(expectedToDateTime, timeData[2]);
-        assertEquals(true, timeData[3]); // to hasTime
+        assertTrue((Boolean) timeData[3]); // to hasTime
     }
     
     @Test
@@ -86,9 +86,9 @@ public class EventParserTest {
         LocalDateTime expectedToDateTime = LocalDateTime.of(2024, 6, 15, 18, 0);
         
         assertEquals(expectedFromDateTime, timeData[0]);
-        assertEquals(false, timeData[1]); // from date only
+        assertFalse((Boolean) timeData[1]); // from date only
         assertEquals(expectedToDateTime, timeData[2]);
-        assertEquals(true, timeData[3]); // to has time
+        assertTrue((Boolean) timeData[3]); // to has time
     }
     
     @Test
@@ -104,7 +104,9 @@ public class EventParserTest {
         LocalDateTime expectedToDateTime = LocalDateTime.of(2023, 12, 26, 0, 0);
         
         assertEquals(expectedFromDateTime, timeData[0]);
+        assertFalse((Boolean) timeData[1]); // from hasTime
         assertEquals(expectedToDateTime, timeData[2]);
+        assertFalse((Boolean) timeData[3]); // to hasTime
     }
     
     @Test
@@ -120,9 +122,9 @@ public class EventParserTest {
         LocalDateTime expectedToDateTime = LocalDateTime.of(2024, 7, 3, 17, 30);
         
         assertEquals(expectedFromDateTime, timeData[0]);
-        assertEquals(true, timeData[1]);
+        assertTrue((Boolean) timeData[1]); // from hasTime
         assertEquals(expectedToDateTime, timeData[2]);
-        assertEquals(true, timeData[3]);
+        assertTrue((Boolean) timeData[3]); // to hasTime
     }
     
     @Test
@@ -138,7 +140,9 @@ public class EventParserTest {
         LocalDateTime expectedToDateTime = LocalDateTime.of(2024, 6, 15, 9, 30);
         
         assertEquals(expectedFromDateTime, timeData[0]);
+        assertTrue((Boolean) timeData[1]); // from hasTime
         assertEquals(expectedToDateTime, timeData[2]);
+        assertTrue((Boolean) timeData[3]); // to hasTime
     }
     
     // Invalid event formats - regex pattern failures
@@ -312,6 +316,15 @@ public class EventParserTest {
         assertTrue(result.isValid());
         assertEquals(CommandType.EVENT, result.getCommandType());
         assertEquals("journey from home to office", result.getArguments()[0]);
+        
+        Object[] timeData = result.getTimeData();
+        LocalDateTime expectedFromDateTime = LocalDateTime.of(2023, 12, 25, 0, 0);
+        LocalDateTime expectedToDateTime = LocalDateTime.of(2023, 12, 26, 0, 0);
+        
+        assertEquals(expectedFromDateTime, timeData[0]);
+        assertFalse((Boolean) timeData[1]); // from hasTime
+        assertEquals(expectedToDateTime, timeData[2]);
+        assertFalse((Boolean) timeData[3]); // to hasTime
     }
     
     @Test
@@ -321,6 +334,15 @@ public class EventParserTest {
         assertTrue(result.isValid());
         assertEquals(CommandType.EVENT, result.getCommandType());
         assertEquals("read a/b testing manual", result.getArguments()[0]);
+        
+        Object[] timeData = result.getTimeData();
+        LocalDateTime expectedFromDateTime = LocalDateTime.of(2023, 12, 25, 0, 0);
+        LocalDateTime expectedToDateTime = LocalDateTime.of(2023, 12, 26, 0, 0);
+        
+        assertEquals(expectedFromDateTime, timeData[0]);
+        assertFalse((Boolean) timeData[1]); // from hasTime
+        assertEquals(expectedToDateTime, timeData[2]);
+        assertFalse((Boolean) timeData[3]); // to hasTime
     }
     
     @Test
@@ -330,6 +352,15 @@ public class EventParserTest {
         assertTrue(result.isValid());
         assertEquals(CommandType.EVENT, result.getCommandType());
         assertEquals("meeting room 101 booking", result.getArguments()[0]);
+        
+        Object[] timeData = result.getTimeData();
+        LocalDateTime expectedFromDateTime = LocalDateTime.of(2023, 12, 25, 9, 0);
+        LocalDateTime expectedToDateTime = LocalDateTime.of(2023, 12, 25, 17, 0);
+        
+        assertEquals(expectedFromDateTime, timeData[0]);
+        assertTrue((Boolean) timeData[1]); // from hasTime
+        assertEquals(expectedToDateTime, timeData[2]);
+        assertTrue((Boolean) timeData[3]); // to hasTime
     }
     
     @Test
@@ -339,6 +370,15 @@ public class EventParserTest {
         assertTrue(result.isValid());
         assertEquals(CommandType.EVENT, result.getCommandType());
         assertEquals("Q&A session & networking", result.getArguments()[0]);
+        
+        Object[] timeData = result.getTimeData();
+        LocalDateTime expectedFromDateTime = LocalDateTime.of(2023, 12, 25, 0, 0);
+        LocalDateTime expectedToDateTime = LocalDateTime.of(2023, 12, 26, 0, 0);
+        
+        assertEquals(expectedFromDateTime, timeData[0]);
+        assertFalse((Boolean) timeData[1]); // from hasTime
+        assertEquals(expectedToDateTime, timeData[2]);
+        assertFalse((Boolean) timeData[3]); // to hasTime
     }
     
     @Test
@@ -358,6 +398,15 @@ public class EventParserTest {
         assertTrue(result.isValid());
         assertEquals(CommandType.EVENT, result.getCommandType());
         assertEquals(longTask, result.getArguments()[0]);
+        
+        Object[] timeData = result.getTimeData();
+        LocalDateTime expectedFromDateTime = LocalDateTime.of(2023, 12, 25, 0, 0);
+        LocalDateTime expectedToDateTime = LocalDateTime.of(2023, 12, 26, 0, 0);
+        
+        assertEquals(expectedFromDateTime, timeData[0]);
+        assertFalse((Boolean) timeData[1]); // from hasTime
+        assertEquals(expectedToDateTime, timeData[2]);
+        assertFalse((Boolean) timeData[3]); // to hasTime
     }
     
     @Test
