@@ -20,6 +20,7 @@ public class HelpCommand extends Command {
         
         help.append(" Managing tasks:\n");
         help.append("   list, ls, show, display                - Show all tasks\n");
+        help.append("   find, search [keyword]                 - Find tasks by keyword\n");
         help.append("   mark [number]                          - Mark task as done\n");
         help.append("   unmark [number]                        - Mark task as not done\n");
         help.append("   delete, del, d, remove, rm [number]    - Delete a task\n\n");
@@ -33,6 +34,7 @@ public class HelpCommand extends Command {
         help.append("   deadline submit report /by 25-12-2024\n");
         help.append("   deadline submit report /by 25-12-2024 17:00\n");
         help.append("   event team meeting /from 25-12-2024 14:00 /to 25-12-2024 16:00\n");
+        help.append("   find book\n");
         help.append("   mark 1\n");
         help.append("   delete 3\n");
         help.append("   list");

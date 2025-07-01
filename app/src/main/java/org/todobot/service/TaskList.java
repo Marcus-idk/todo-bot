@@ -83,4 +83,31 @@ public class TaskList {
         this.tasks.clear();
         this.tasks.addAll(tasks);
     }
+    
+    public String findTasks(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return " Please provide a keyword to search for.";
+        }
+        
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+        String lowerKeyword = keyword.toLowerCase().trim();
+        
+        for (Task task : tasks) {
+            if (task.getDescription().toLowerCase().contains(lowerKeyword)) {
+                matchingTasks.add(task);
+            }
+        }
+        
+        if (matchingTasks.isEmpty()) {
+            return " No matching tasks found for keyword: " + keyword;
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append(" Here are the matching tasks in your list:");
+        for (int i = 0; i < matchingTasks.size(); i++) {
+            int originalIndex = tasks.indexOf(matchingTasks.get(i)) + 1;
+            sb.append("\n ").append(originalIndex).append(".").append(matchingTasks.get(i));
+        }
+        return sb.toString();
+    }
 }

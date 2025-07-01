@@ -3,6 +3,7 @@ package org.todobot.app;
 import org.todobot.commands.AddCommand;
 import org.todobot.commands.Command;
 import org.todobot.commands.DeleteCommand;
+import org.todobot.commands.FindCommand;
 import org.todobot.commands.HelpCommand;
 import org.todobot.commands.ListCommand;
 import org.todobot.commands.MarkCommand;
@@ -68,6 +69,7 @@ public class ToDoBotCLI {
             case MARK -> new MarkCommand(taskList, true);
             case UNMARK -> new MarkCommand(taskList, false);
             case DELETE -> new DeleteCommand(taskList);
+            case FIND -> new FindCommand(taskList);
             case HELP -> new HelpCommand(taskList);
             default -> null;
         };
