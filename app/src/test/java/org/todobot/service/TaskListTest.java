@@ -391,4 +391,72 @@ public class TaskListTest {
                          " 4.[T][ ] Fifth";
         assertEquals(expected, taskList.listTasks());
     }
+    
+    @Test
+    void shouldFindMatchingTasks() {
+        taskList.addTask(new ToDo("Read a book"));
+        taskList.addTask(new ToDo("Do homework"));
+        taskList.addTask(new ToDo("Buy book"));
+        
+        String result = taskList.findTasks("book");
+        String expected = " Here are the matching tasks in your list:\n" +
+                         " 1.[T][ ] Read a book\n" +
+                         " 3.[T][ ] Buy book";
+        assertEquals(expected, result);
+    }
+    
+    @Test
+    void shouldReturnNoMatchesWhenNotFound() {
+        taskList.addTask(new ToDo("Read a book"));
+        taskList.addTask(new ToDo("Do homework"));
+        
+        String result = taskList.findTasks("movie");
+        String expected = " No matching tasks found for keyword: movie";
+        assertEquals(expected, result);
+    }
+    
+    @Test
+    void shouldHandleEmptyList() {
+        String result = taskList.findTasks("book");
+        String expected = " No matching tasks found for keyword: book";
+        assertEquals(expected, result);
+    }
+    
+    @Test
+    void shouldPerformCaseInsensitiveSearch() {
+        taskList.addTask(new ToDo("Read a book"));
+        taskList.addTask(new ToDo("Do homework"));
+        
+        String result = taskList.findTasks("BOOK");
+        String expected = " Here are the matching tasks in your list:\n" +
+                         " 1.[T][ ] Read a book";
+        assertEquals(expected, result);
+    }
+    
+    @Test
+    void shouldHandleEmptyKeyword() {
+        taskList.addTask(new ToDo("Read a book"));
+        
+        String result = taskList.findTasks("");
+        String expected = " Please provide a keyword to search for.";
+        assertEquals(expected, result);
+        
+        String resultNull = taskList.findTasks(null);
+        assertEquals(expected, resultNull);
+    }
+    
+    @Test
+    void shouldMaintainOriginalTaskNumbers() {
+        taskList.addTask(new ToDo("Task A"));
+        taskList.addTask(new ToDo("Task B"));
+        taskList.addTask(new ToDo("Find this task"));
+        taskList.addTask(new ToDo("Task D"));
+        taskList.addTask(new ToDo("Find this too"));
+        
+        String result = taskList.findTasks("Find");
+        String expected = " Here are the matching tasks in your list:\n" +
+                         " 3.[T][ ] Find this task\n" +
+                         " 5.[T][ ] Find this too";
+        assertEquals(expected, result);
+    }
 }
