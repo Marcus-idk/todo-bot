@@ -13,15 +13,21 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.todobot.service.ToDoBotService;
 
 public class ToDoBotGUI extends Application {
     private VBox chatArea;
     private ScrollPane scrollPane;
     private TextField inputField;
     private Button sendButton;
+    private ToDoBotService service;
+    private Stage primaryStage;
 
     @Override
     public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+        this.service = new ToDoBotService();
+        
         primaryStage.setTitle("TODO Bot");
 
         // Create main layout
@@ -44,7 +50,7 @@ public class ToDoBotGUI extends Application {
         inputArea.setAlignment(Pos.CENTER);
 
         inputField = new TextField();
-        inputField.setPromptText("Type your message here...");
+        inputField.setPromptText("Type a command (e.g., todo buy milk, list, help)...");
         HBox.setHgrow(inputField, Priority.ALWAYS);
 
         sendButton = new Button("Send");
@@ -58,6 +64,7 @@ public class ToDoBotGUI extends Application {
 
         // Add initial welcome message
         addBotMessage("Hello! I'm your TODO Bot. What can I do for you?");
+        addBotMessage("Type commands like: todo buy milk, list, help, bye");
 
         // Set up event handlers
         setupEventHandlers();
@@ -65,6 +72,12 @@ public class ToDoBotGUI extends Application {
         // Create scene and show stage
         Scene scene = new Scene(root, 600, 500);
         primaryStage.setScene(scene);
+        
+        // Handle window close event
+        primaryStage.setOnCloseRequest(e -> {
+            service.cleanup();
+        });
+        
         primaryStage.show();
 
         // Focus on input field
@@ -88,8 +101,24 @@ public class ToDoBotGUI extends Application {
             // Clear input field
             inputField.clear();
             
-            // Echo the message back as bot response
-            addBotMessage(message);
+            // Check if bye command
+            if (service.shouldExit(message)) {
+                addBotMessage(" Bye. Hope to see you again soon!");
+                // Close after short delay to show message
+                javafx.application.Platform.runLater(() -> {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                    service.cleanup();
+                    primaryStage.close();
+                });
+            } else {
+                // Process command through service
+                String response = service.processCommand(message);
+                addBotMessage(response);
+            }
             
             // Scroll to bottom
             scrollToBottom();
