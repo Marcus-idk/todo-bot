@@ -23,6 +23,9 @@ public class ToDoBotGUI extends Application {
     private ScrollPane scrollPane;
     private TextField inputField;
     private Button sendButton;
+    private Button toggleButton;
+    private HBox inputArea;
+    private boolean textInputVisible = false; // Default is hidden
     private ToDoBotService service;
     private Stage primaryStage;
 
@@ -30,6 +33,9 @@ public class ToDoBotGUI extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.service = new ToDoBotService();
+        
+        // Set initial mode to match GUI state
+        service.setTextInputMode(textInputVisible);
         
         primaryStage.setTitle("TODO Bot");
 
@@ -53,7 +59,7 @@ public class ToDoBotGUI extends Application {
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
         // Create input area
-        HBox inputArea = new HBox(10);
+        inputArea = new HBox(10);
         inputArea.setPadding(new Insets(10));
         inputArea.setAlignment(Pos.CENTER);
 
@@ -64,15 +70,37 @@ public class ToDoBotGUI extends Application {
         sendButton = new Button("Send");
         sendButton.setMinWidth(80);
 
+        toggleButton = new Button("▲");
+        toggleButton.setMinWidth(40);
+        toggleButton.setStyle("-fx-font-size: 14px;");
+
         inputArea.getChildren().addAll(inputField, sendButton);
+        
+        // Initially hide the input area
+        inputArea.setVisible(textInputVisible);
+        inputArea.setManaged(textInputVisible);
+
+        // Create toggle button container that's always visible
+        HBox toggleContainer = new HBox();
+        toggleContainer.setAlignment(Pos.CENTER);
+        toggleContainer.setPadding(new Insets(5));
+        toggleContainer.getChildren().add(toggleButton);
+
+        // Create bottom container to hold both toggle and input area
+        VBox bottomContainer = new VBox();
+        bottomContainer.getChildren().addAll(toggleContainer, inputArea);
 
         // Set up the layout
         root.setCenter(scrollPane);
-        root.setBottom(inputArea);
+        root.setBottom(bottomContainer);
 
         // Add initial welcome message
         addBotMessage("Hello! I'm your TODO Bot. What can I do for you?");
-        addBotMessage("Type commands like: todo buy milk, list, help, bye");
+        if (textInputVisible) {
+            addBotMessage("Type commands like: todo buy milk, list, help, bye");
+        } else {
+            addBotMessage("Use the arrow button below to toggle text input, or interact with the buttons I'll show you.");
+        }
         
         // Ensure initial messages are visible
         scrollToBottom();
@@ -101,6 +129,26 @@ public class ToDoBotGUI extends Application {
 
         // Enter key press in input field
         inputField.setOnAction(e -> handleSendMessage());
+
+        // Toggle button click
+        toggleButton.setOnAction(e -> handleToggleInput());
+    }
+
+    private void handleToggleInput() {
+        textInputVisible = !textInputVisible;
+        inputArea.setVisible(textInputVisible);
+        inputArea.setManaged(textInputVisible);
+        
+        // Update button text
+        toggleButton.setText(textInputVisible ? "▼" : "▲");
+        
+        // Notify service of mode change
+        service.setTextInputMode(textInputVisible);
+        
+        // Focus on input field if shown
+        if (textInputVisible) {
+            inputField.requestFocus();
+        }
     }
 
     private void handleSendMessage() {

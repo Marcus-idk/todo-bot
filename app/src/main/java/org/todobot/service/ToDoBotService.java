@@ -15,6 +15,7 @@ import org.todobot.storage.TaskStorage;
 public class ToDoBotService {
     private final TaskList taskList;
     private final TaskStorage storage;
+    private boolean textInputMode = false; // Default is button mode
     
     public ToDoBotService() {
         this.storage = new TaskStorage();
@@ -28,7 +29,7 @@ public class ToDoBotService {
         ParseResult result = Parser.parse(input);
         
         if (!result.isValid()) {
-            return result.getErrorMessage();
+            return getResponseForMode(result.getErrorMessage());
         }
         
         // Handle bye command
@@ -38,7 +39,7 @@ public class ToDoBotService {
         
         Command command = createCommand(result.getCommandType());
         if (command == null) {
-            return " Unknown command type.";
+            return getResponseForMode(" Unknown command type.");
         }
         
         String output = command.execute(result);
@@ -48,7 +49,29 @@ public class ToDoBotService {
             storage.saveTasks(taskList.getAllTasks());
         }
         
-        return output;
+        return getResponseForMode(output);
+    }
+    
+    private String getResponseForMode(String baseResponse) {
+        if (textInputMode) {
+            return baseResponse; // Input-oriented response
+        } else {
+            return getButtonOrientedResponse(baseResponse); // Button-oriented response
+        }
+    }
+    
+    private String getButtonOrientedResponse(String baseResponse) {
+        // For now, return the same response but we'll enhance this later
+        // This is where we'll add button logic
+        return baseResponse;
+    }
+    
+    public void setTextInputMode(boolean textInputMode) {
+        this.textInputMode = textInputMode;
+    }
+    
+    public boolean isTextInputMode() {
+        return textInputMode;
     }
     
     private Command createCommand(CommandType commandType) {
