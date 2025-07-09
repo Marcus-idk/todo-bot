@@ -74,6 +74,76 @@ public class ToDoBotService {
         return textInputMode;
     }
     
+    public String processButtonClick(String buttonAction) {
+        if (buttonAction == null || buttonAction.isEmpty()) {
+            return getMainMenu();
+        }
+        
+        switch (buttonAction) {
+            case "add_task":
+                return "Choose task type:|todo,deadline,event,back";
+            case "todo":
+                return "Enter task description:";
+            case "deadline":
+                return "Enter deadline task details:|DEADLINE_FORM";
+            case "event":
+                return "Enter event details:|EVENT_FORM";
+            case "view_tasks":
+                return getTaskListWithButtons();
+            case "help":
+                return getHelpWithButtons();
+            case "back":
+            case "main_menu":
+                return getMainMenu();
+            default:
+                // Handle task-specific actions like "mark_1", "delete_1"
+                return handleTaskAction(buttonAction);
+        }
+    }
+    
+    private String getMainMenu() {
+        return "What would you like to do?|add_task,view_tasks,help,exit";
+    }
+    
+    private String getTaskListWithButtons() {
+        if (taskList.isEmpty()) {
+            return "No tasks found.|back";
+        }
+        
+        StringBuilder response = new StringBuilder("Here are your tasks:\n");
+        for (int i = 0; i < taskList.getTaskCount(); i++) {
+            response.append((i + 1)).append(". ").append(taskList.getTask(i + 1).toString()).append("\n");
+        }
+        
+        // Use special format for dropdown: DROPDOWN|taskCount|back
+        return response.toString() + "|DROPDOWN|" + taskList.getTaskCount() + "|back";
+    }
+    
+    private String getHelpWithButtons() {
+        return "Available commands:\n" +
+               "- Add Task: Create a new todo, deadline, or event\n" +
+               "- View Tasks: See all your tasks\n" +
+               "- You can also use text commands like: todo buy milk, list, help, bye\n" +
+               "|back";
+    }
+    
+    private String handleTaskAction(String buttonAction) {
+        if (buttonAction.startsWith("mark_")) {
+            int taskNumber = Integer.parseInt(buttonAction.substring(5));
+            if (taskNumber >= 1 && taskNumber <= taskList.getTaskCount()) {
+                String command = "mark " + taskNumber;
+                return processCommand(command) + "|back";
+            }
+        } else if (buttonAction.startsWith("delete_")) {
+            int taskNumber = Integer.parseInt(buttonAction.substring(7));
+            if (taskNumber >= 1 && taskNumber <= taskList.getTaskCount()) {
+                String command = "delete " + taskNumber;
+                return processCommand(command) + "|back";
+            }
+        }
+        return "Invalid action.|back";
+    }
+    
     private Command createCommand(CommandType commandType) {
         return switch (commandType) {
             case TODO, DEADLINE, EVENT -> new AddCommand(taskList, commandType);
