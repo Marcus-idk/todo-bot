@@ -1,9 +1,12 @@
 package org.todobot.app;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.util.Duration;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -37,6 +40,11 @@ public class ToDoBotGUI extends Application {
         chatArea = new VBox(10);
         chatArea.setPadding(new Insets(10));
         chatArea.setAlignment(Pos.TOP_LEFT);
+        
+        // Add listener to auto-scroll when content height changes
+        chatArea.heightProperty().addListener((observable, oldValue, newValue) -> {
+            scrollToBottom();
+        });
 
         // Create scroll pane for chat area
         scrollPane = new ScrollPane(chatArea);
@@ -65,6 +73,9 @@ public class ToDoBotGUI extends Application {
         // Add initial welcome message
         addBotMessage("Hello! I'm your TODO Bot. What can I do for you?");
         addBotMessage("Type commands like: todo buy milk, list, help, bye");
+        
+        // Ensure initial messages are visible
+        scrollToBottom();
 
         // Set up event handlers
         setupEventHandlers();
@@ -103,17 +114,14 @@ public class ToDoBotGUI extends Application {
             
             // Check if bye command
             if (service.shouldExit(message)) {
-                addBotMessage(" Bye. Hope to see you again soon!");
-                // Close after short delay to show message
-                javafx.application.Platform.runLater(() -> {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
+                addBotMessage("Saving & Closing... Bye. Hope to see you again soon!");
+                
+                // Close after delay to show message using Timeline (non-blocking)
+                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), e -> {
                     service.cleanup();
                     primaryStage.close();
-                });
+                }));
+                timeline.play();
             } else {
                 // Process command through service
                 String response = service.processCommand(message);
