@@ -90,6 +90,8 @@ public class ToDoBotService {
                 return "Enter event details:|EVENT_FORM";
             case "view_tasks":
                 return getTaskListWithButtons();
+            case "find_tasks":
+                return "Enter search term:";
             case "help":
                 return getHelpWithButtons();
             case "back":
@@ -102,7 +104,7 @@ public class ToDoBotService {
     }
     
     private String getMainMenu() {
-        return "What would you like to do?|add_task,view_tasks,help,exit";
+        return "What would you like to do?|add_task,view_tasks,find_tasks,help,exit";
     }
     
     private String getTaskListWithButtons() {
@@ -120,10 +122,12 @@ public class ToDoBotService {
     }
     
     private String getHelpWithButtons() {
-        return "Available commands:\n" +
-               "- Add Task: Create a new todo, deadline, or event\n" +
-               "- View Tasks: See all your tasks\n" +
-               "- You can also use text commands like: todo buy milk, list, help, bye\n" +
+        return "Available actions:\n" +
+               "• Add Task: Create todo, deadline, or event tasks\n" +
+               "• View Tasks: See all your tasks with mark/unmark/delete options\n" +
+               "• Find Tasks: Search for tasks by keyword\n" +
+               "• Toggle (▲/▼): Switch between button mode and text input mode\n" +
+               "\nText commands: todo <task>, deadline <task> /by <date> <time>, event <task> /from <date> <time> /to <date> <time>, list, find <keyword>, mark <num>, unmark <num>, delete <num>, bye\n" +
                "|back";
     }
     

@@ -447,9 +447,6 @@ public class ToDoBotGUI extends Application {
                 // Add user message
                 addUserMessage("Created deadline: " + description + " by " + dateStr + " " + selectedHour + ":" + selectedMinute);
                 
-                // DEBUG: Show the exact command being sent
-                addBotMessage("DEBUG: Sending command: " + fullCommand);
-                
                 // Process command
                 String response = service.processCommand(fullCommand);
                 addBotMessage(response);
@@ -582,9 +579,6 @@ public class ToDoBotGUI extends Application {
                 addUserMessage("Created event: " + description + " from " + fromDateStr + " " + fromHour + ":" + fromMinute + 
                               " to " + toDateStr + " " + toHour + ":" + toMinute);
                 
-                // DEBUG: Show the exact command being sent
-                addBotMessage("DEBUG: Sending command: " + fullCommand);
-                
                 // Process command
                 String response = service.processCommand(fullCommand);
                 addBotMessage(response);
@@ -618,6 +612,7 @@ public class ToDoBotGUI extends Application {
         return switch (action) {
             case "add_task" -> "Add Task";
             case "view_tasks" -> "View Tasks";
+            case "find_tasks" -> "Find Tasks";
             case "help" -> "Help";
             case "exit" -> "Exit";
             case "todo" -> "Todo";
@@ -653,8 +648,8 @@ public class ToDoBotGUI extends Application {
         // Process button click through service
         String response = service.processButtonClick(action);
         
-        // Check if this is a text input request (only for todo now)
-        if (action.equals("todo")) {
+        // Check if this is a text input request
+        if (action.equals("todo") || action.equals("find_tasks")) {
             addBotMessage(response);
             showTextInputForTask(action);
         } else {
@@ -685,9 +680,6 @@ public class ToDoBotGUI extends Application {
                 
                 // Process the task command
                 String command = buildTaskCommand(taskType, taskText);
-                
-                // DEBUG: Show the exact command being sent
-                addBotMessage("DEBUG: Sending command: " + command);
                 
                 String response = service.processCommand(command);
                 addBotMessage(response);
@@ -727,6 +719,7 @@ public class ToDoBotGUI extends Application {
     private String buildTaskCommand(String taskType, String taskText) {
         return switch (taskType) {
             case "todo" -> "todo " + taskText;
+            case "find_tasks" -> "find " + taskText;
             case "deadline" -> taskText; // User should type full format
             case "event" -> taskText; // User should type full format
             default -> taskText;
