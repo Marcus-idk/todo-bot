@@ -8,6 +8,7 @@ import org.todobot.commands.HelpCommand;
 import org.todobot.commands.ListCommand;
 import org.todobot.commands.MarkCommand;
 import org.todobot.common.CommandType;
+import org.todobot.gui.ButtonResponseHandler;
 import org.todobot.parsers.ParseResult;
 import org.todobot.parsers.Parser;
 import org.todobot.storage.TaskStorage;
@@ -15,11 +16,14 @@ import org.todobot.storage.TaskStorage;
 public class ToDoBotService {
     private final TaskList taskList;
     private final TaskStorage storage;
+    private final ButtonResponseHandler buttonResponseHandler;
     private boolean textInputMode = false; // Default is button mode
+    private boolean shouldExit = false; // Flag for exit state
     
     public ToDoBotService() {
         this.storage = new TaskStorage();
         this.taskList = new TaskList();
+        this.buttonResponseHandler = new ButtonResponseHandler(this::processCommand);
         
         // Load tasks on startup
         taskList.setTasks(storage.loadTasks());
@@ -34,6 +38,7 @@ public class ToDoBotService {
         
         // Handle bye command
         if (result.getCommandType() == CommandType.BYE) {
+            shouldExit = true;
             return " Bye. Hope to see you again soon!";
         }
         
@@ -53,17 +58,7 @@ public class ToDoBotService {
     }
     
     private String getResponseForMode(String baseResponse) {
-        if (textInputMode) {
-            return baseResponse; // Input-oriented response
-        } else {
-            return getButtonOrientedResponse(baseResponse); // Button-oriented response
-        }
-    }
-    
-    private String getButtonOrientedResponse(String baseResponse) {
-        // For now, return the same response but we'll enhance this later
-        // This is where we'll add button logic
-        return baseResponse;
+        return baseResponse; // Mode doesn't affect response format
     }
     
     public void setTextInputMode(boolean textInputMode) {
@@ -75,77 +70,15 @@ public class ToDoBotService {
     }
     
     public String processButtonClick(String buttonAction) {
-        if (buttonAction == null || buttonAction.isEmpty()) {
-            return getMainMenu();
-        }
-        
-        switch (buttonAction) {
-            case "add_task":
-                return "Choose task type:|todo,deadline,event,back";
-            case "todo":
-                return "Enter task description:";
-            case "deadline":
-                return "Enter deadline task details:|DEADLINE_FORM";
-            case "event":
-                return "Enter event details:|EVENT_FORM";
-            case "view_tasks":
-                return getTaskListWithButtons();
-            case "find_tasks":
-                return "Enter search term:";
-            case "help":
-                return getHelpWithButtons();
-            case "back":
-            case "main_menu":
-                return getMainMenu();
-            default:
-                // Handle task-specific actions like "mark_1", "delete_1"
-                return handleTaskAction(buttonAction);
-        }
+        return buttonResponseHandler.processButtonClick(buttonAction);
     }
     
-    private String getMainMenu() {
-        return "What would you like to do?|add_task,view_tasks,find_tasks,help,exit";
+    public String handleDropdownSelection(String selectedTask, String selectedAction) {
+        return buttonResponseHandler.handleDropdownSelection(selectedTask, selectedAction);
     }
     
-    private String getTaskListWithButtons() {
-        if (taskList.isEmpty()) {
-            return "No tasks found.|back";
-        }
-        
-        StringBuilder response = new StringBuilder("Here are your tasks:\n");
-        for (int i = 0; i < taskList.getTaskCount(); i++) {
-            response.append((i + 1)).append(". ").append(taskList.getTask(i + 1).toString()).append("\n");
-        }
-        
-        // Use special format for dropdown: DROPDOWN|taskCount|back
-        return response.toString() + "|DROPDOWN|" + taskList.getTaskCount() + "|back";
-    }
-    
-    private String getHelpWithButtons() {
-        return "Available actions:\n" +
-               "• Add Task: Create todo, deadline, or event tasks\n" +
-               "• View Tasks: See all your tasks with mark/unmark/delete options\n" +
-               "• Find Tasks: Search for tasks by keyword\n" +
-               "• Toggle (▲/▼): Switch between button mode and text input mode\n" +
-               "\nText commands: todo <task>, deadline <task> /by <date> <time>, event <task> /from <date> <time> /to <date> <time>, list, find <keyword>, mark <num>, unmark <num>, delete <num>, bye\n" +
-               "|back";
-    }
-    
-    private String handleTaskAction(String buttonAction) {
-        if (buttonAction.startsWith("mark_")) {
-            int taskNumber = Integer.parseInt(buttonAction.substring(5));
-            if (taskNumber >= 1 && taskNumber <= taskList.getTaskCount()) {
-                String command = "mark " + taskNumber;
-                return processCommand(command) + "|back";
-            }
-        } else if (buttonAction.startsWith("delete_")) {
-            int taskNumber = Integer.parseInt(buttonAction.substring(7));
-            if (taskNumber >= 1 && taskNumber <= taskList.getTaskCount()) {
-                String command = "delete " + taskNumber;
-                return processCommand(command) + "|back";
-            }
-        }
-        return "Invalid action.|back";
+    public String buildTaskCommand(String taskType, String taskText) {
+        return buttonResponseHandler.buildTaskCommand(taskType, taskText);
     }
     
     private Command createCommand(CommandType commandType) {
@@ -170,9 +103,8 @@ public class ToDoBotService {
                commandType == CommandType.DELETE;
     }
     
-    public boolean shouldExit(String input) {
-        ParseResult result = Parser.parse(input);
-        return result.isValid() && result.getCommandType() == CommandType.BYE;
+    public boolean shouldExit() {
+        return shouldExit;
     }
     
     public void cleanup() {

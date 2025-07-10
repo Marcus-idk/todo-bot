@@ -173,8 +173,11 @@ public class ToDoBotGUI extends Application {
             // Clear input field
             inputField.clear();
             
-            // Check if bye command
-            if (service.shouldExit(message)) {
+            // Process command through service
+            String response = service.processCommand(message);
+            
+            // Check if bye command after processing
+            if (service.shouldExit()) {
                 addBotMessage("Saving & Closing... Bye. Hope to see you again soon!");
                 
                 // Close after delay to show message using Timeline (non-blocking)
@@ -184,9 +187,6 @@ public class ToDoBotGUI extends Application {
                 }));
                 timeline.play();
             } else {
-                // Process command through service
-                String response = service.processCommand(message);
-                
                 // If in button mode, check if we should show buttons after response
                 if (!textInputVisible) {
                     addBotMessage(response);
@@ -336,31 +336,11 @@ public class ToDoBotGUI extends Application {
     }
     
     private void handleDropdownAction(String selectedTask, String selectedAction) {
-        // Extract task number from "Task 1" format
-        int taskNumber = Integer.parseInt(selectedTask.split(" ")[1]);
-        
-        // Convert action to command
-        String command;
-        switch (selectedAction.toLowerCase()) {
-            case "mark":
-                command = "mark " + taskNumber;
-                break;
-            case "unmark":
-                command = "unmark " + taskNumber;
-                break;
-            case "delete":
-                command = "delete " + taskNumber;
-                break;
-            default:
-                addBotMessage("Unknown action: " + selectedAction);
-                return;
-        }
-        
         // Add user message showing what they selected
         addUserMessage("Selected: " + selectedTask + " - " + selectedAction);
         
-        // Process the command
-        String response = service.processCommand(command);
+        // Process through service - business logic handled there
+        String response = service.handleDropdownSelection(selectedTask, selectedAction);
         addBotMessage(response);
         
         // Return to main menu
@@ -679,7 +659,7 @@ public class ToDoBotGUI extends Application {
                 addUserMessage(taskText);
                 
                 // Process the task command
-                String command = buildTaskCommand(taskType, taskText);
+                String command = service.buildTaskCommand(taskType, taskText);
                 
                 String response = service.processCommand(command);
                 addBotMessage(response);
@@ -716,15 +696,6 @@ public class ToDoBotGUI extends Application {
         scrollToBottom();
     }
     
-    private String buildTaskCommand(String taskType, String taskText) {
-        return switch (taskType) {
-            case "todo" -> "todo " + taskText;
-            case "find_tasks" -> "find " + taskText;
-            case "deadline" -> taskText; // User should type full format
-            case "event" -> taskText; // User should type full format
-            default -> taskText;
-        };
-    }
 
     private void scrollToBottom() {
         // Scroll to bottom after a short delay to ensure layout is complete
