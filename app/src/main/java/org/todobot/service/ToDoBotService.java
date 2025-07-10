@@ -17,7 +17,6 @@ public class ToDoBotService {
     private final TaskList taskList;
     private final TaskStorage storage;
     private final ButtonResponseHandler buttonResponseHandler;
-    private boolean textInputMode = false; // Default is button mode
     private boolean shouldExit = false; // Flag for exit state
     
     public ToDoBotService() {
@@ -33,7 +32,7 @@ public class ToDoBotService {
         ParseResult result = Parser.parse(input);
         
         if (!result.isValid()) {
-            return getResponseForMode(result.getErrorMessage());
+            return result.getErrorMessage();
         }
         
         // Handle bye command
@@ -44,7 +43,7 @@ public class ToDoBotService {
         
         Command command = createCommand(result.getCommandType());
         if (command == null) {
-            return getResponseForMode(" Unknown command type.");
+            return " Unknown command type.";
         }
         
         String output = command.execute(result);
@@ -54,19 +53,7 @@ public class ToDoBotService {
             storage.saveTasks(taskList.getAllTasks());
         }
         
-        return getResponseForMode(output);
-    }
-    
-    private String getResponseForMode(String baseResponse) {
-        return baseResponse; // Mode doesn't affect response format
-    }
-    
-    public void setTextInputMode(boolean textInputMode) {
-        this.textInputMode = textInputMode;
-    }
-    
-    public boolean isTextInputMode() {
-        return textInputMode;
+        return output;
     }
     
     public String processButtonClick(String buttonAction) {

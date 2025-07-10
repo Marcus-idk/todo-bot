@@ -38,8 +38,7 @@ public class ToDoBotGUI extends Application {
         this.primaryStage = primaryStage;
         this.service = new ToDoBotService();
         
-        // Set initial mode to match GUI state
-        service.setTextInputMode(textInputVisible);
+        // Initial mode is button mode (textInputVisible = false)
         
         primaryStage.setTitle("TODO Bot");
 
@@ -147,9 +146,6 @@ public class ToDoBotGUI extends Application {
         
         // Update button text
         toggleButton.setText(textInputVisible ? "▼" : "▲");
-        
-        // Notify service of mode change
-        service.setTextInputMode(textInputVisible);
         
         // Add appropriate message based on mode
         if (textInputVisible) {
