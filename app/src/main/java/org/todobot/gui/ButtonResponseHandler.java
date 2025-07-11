@@ -1,5 +1,7 @@
 package org.todobot.gui;
 
+import org.todobot.service.TaskList;
+
 public class ButtonResponseHandler {
     
     public interface CommandProcessor {
@@ -7,9 +9,11 @@ public class ButtonResponseHandler {
     }
     
     private final CommandProcessor commandProcessor;
+    private final TaskList taskList;
     
-    public ButtonResponseHandler(CommandProcessor commandProcessor) {
+    public ButtonResponseHandler(CommandProcessor commandProcessor, TaskList taskList) {
         this.commandProcessor = commandProcessor;
+        this.taskList = taskList;
     }
     
     public String processButtonClick(String buttonAction) {
@@ -36,23 +40,17 @@ public class ButtonResponseHandler {
     
     private String getTaskListWithButtons() {
         // Use existing ListCommand
-        String taskList = commandProcessor.processCommand("list");
+        String taskListOutput = commandProcessor.processCommand("list");
         
-        if (taskList.contains("No tasks found")) {
-            return taskList + "|back";
+        if (taskList.isEmpty()) {
+            return taskListOutput + "|back";
         }
         
-        // Count tasks from the list output (count lines that start with " [digit].")
-        int taskCount = 0;
-        String[] lines = taskList.split("\n");
-        for (String line : lines) {
-            if (line.matches("^\\s+\\d+\\..*")) {
-                taskCount++;
-            }
-        }
+        // Get task count directly from TaskList - no parsing needed
+        int taskCount = taskList.getTaskCount();
         
         // Use special format for dropdown: DROPDOWN|taskCount|back
-        return taskList + "|DROPDOWN|" + taskCount + "|back";
+        return taskListOutput + "|DROPDOWN|" + taskCount + "|back";
     }
     
     private String getHelpWithButtons() {
@@ -68,8 +66,8 @@ public class ButtonResponseHandler {
     }
     
     public String handleDropdownSelection(String selectedTask, String selectedAction) {
-        // Extract task number from "Task 1" format - business logic belongs here
-        int taskNumber = Integer.parseInt(selectedTask.split(" ")[1]);
+        // Extract task number from "Task 1" format - let parser handle validation
+        String taskNumber = selectedTask.split(" ")[1];
         
         // Convert action to command
         String command;
@@ -87,7 +85,7 @@ public class ButtonResponseHandler {
                 return "Unknown action: " + selectedAction;
         }
         
-        // Process the command
+        // Process the command - parser will handle number validation
         return commandProcessor.processCommand(command);
     }
     

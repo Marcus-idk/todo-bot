@@ -73,4 +73,13 @@ public class DateTimeParser {
             return dateTime.format(OUTPUT_DATE_FORMAT);
         }
     }
+    
+    public static String formatForCommandInput(LocalDate date) {
+        return date.format(INPUT_DATE_FORMAT);
+    }
+    
+    public static String formatForCommandInput(LocalDate date, String hour, String minute) {
+        String dateStr = date.format(INPUT_DATE_FORMAT);
+        return dateStr + " " + hour + ":" + minute;
+    }
 }

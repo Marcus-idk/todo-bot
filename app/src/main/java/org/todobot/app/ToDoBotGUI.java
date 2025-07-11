@@ -19,8 +19,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.todobot.service.ToDoBotService;
+import org.todobot.parsers.DateTimeParser;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class ToDoBotGUI extends Application {
     private VBox chatArea;
@@ -414,14 +414,13 @@ public class ToDoBotGUI extends Application {
             String selectedMinute = minuteBox.getValue();
             
             if (!description.isEmpty() && selectedDate != null && selectedHour != null && selectedMinute != null) {
-                // Build deadline command
-                String dateStr = selectedDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-                String timeStr = selectedHour + ":" + selectedMinute;
-                String command = description + " /by " + dateStr + " " + timeStr;
+                // Build deadline command using DateTimeParser
+                String dateTimeStr = DateTimeParser.formatForCommandInput(selectedDate, selectedHour, selectedMinute);
+                String command = description + " /by " + dateTimeStr;
                 String fullCommand = "deadline " + command;
                 
                 // Add user message
-                addUserMessage("Created deadline: " + description + " by " + dateStr + " " + selectedHour + ":" + selectedMinute);
+                addUserMessage("Created deadline: " + description + " by " + dateTimeStr);
                 
                 // Process command
                 String response = service.processCommand(fullCommand);
@@ -543,17 +542,14 @@ public class ToDoBotGUI extends Application {
             if (!description.isEmpty() && fromDate != null && toDate != null && 
                 fromHour != null && fromMinute != null && toHour != null && toMinute != null) {
                 
-                // Build event command
-                String fromDateStr = fromDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-                String toDateStr = toDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-                String fromTimeStr = fromHour + ":" + fromMinute;
-                String toTimeStr = toHour + ":" + toMinute;
-                String command = description + " /from " + fromDateStr + " " + fromTimeStr + " /to " + toDateStr + " " + toTimeStr;
+                // Build event command using DateTimeParser
+                String fromDateTimeStr = DateTimeParser.formatForCommandInput(fromDate, fromHour, fromMinute);
+                String toDateTimeStr = DateTimeParser.formatForCommandInput(toDate, toHour, toMinute);
+                String command = description + " /from " + fromDateTimeStr + " /to " + toDateTimeStr;
                 String fullCommand = "event " + command;
                 
                 // Add user message
-                addUserMessage("Created event: " + description + " from " + fromDateStr + " " + fromHour + ":" + fromMinute + 
-                              " to " + toDateStr + " " + toHour + ":" + toMinute);
+                addUserMessage("Created event: " + description + " from " + fromDateTimeStr + " to " + toDateTimeStr);
                 
                 // Process command
                 String response = service.processCommand(fullCommand);

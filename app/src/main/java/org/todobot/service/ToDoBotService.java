@@ -22,7 +22,7 @@ public class ToDoBotService {
     public ToDoBotService() {
         this.storage = new TaskStorage();
         this.taskList = new TaskList();
-        this.buttonResponseHandler = new ButtonResponseHandler(this::processCommand);
+        this.buttonResponseHandler = new ButtonResponseHandler(this::processCommand, taskList);
         
         // Load tasks on startup
         taskList.setTasks(storage.loadTasks());
