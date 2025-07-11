@@ -17,23 +17,17 @@ public class ChatAreaManager {
         String getButtonLabel(String action);
     }
     
-    public interface FormHandler {
-        void addDropdownToChat(int taskCount, String backButton);
-        void addDeadlineFormToChat();
-        void addEventFormToChat();
-    }
-    
     private final VBox chatArea;
     private final ButtonClickHandler buttonClickHandler;
     private final ButtonLabelProvider buttonLabelProvider;
-    private final FormHandler formHandler;
+    private final FormManager formManager;
     
     public ChatAreaManager(VBox chatArea, ButtonClickHandler buttonClickHandler, 
-                          ButtonLabelProvider buttonLabelProvider, FormHandler formHandler) {
+                          ButtonLabelProvider buttonLabelProvider, FormManager formManager) {
         this.chatArea = chatArea;
         this.buttonClickHandler = buttonClickHandler;
         this.buttonLabelProvider = buttonLabelProvider;
-        this.formHandler = formHandler;
+        this.formManager = formManager;
     }
     
     public void addUserMessage(String message) {
@@ -74,11 +68,11 @@ public class ChatAreaManager {
             if (parts.length >= 3 && parts[1].equals("DROPDOWN")) {
                 int taskCount = Integer.parseInt(parts[2]);
                 String backButton = parts.length > 3 ? parts[3] : "back";
-                formHandler.addDropdownToChat(taskCount, backButton);
+                formManager.showDropdown(taskCount, backButton);
             } else if (parts.length >= 2 && parts[1].equals("DEADLINE_FORM")) {
-                formHandler.addDeadlineFormToChat();
+                formManager.showDeadlineForm();
             } else if (parts.length >= 2 && parts[1].equals("EVENT_FORM")) {
-                formHandler.addEventFormToChat();
+                formManager.showEventForm();
             } else if (parts.length >= 2) {
                 // Regular button format
                 String buttonsStr = parts[1];

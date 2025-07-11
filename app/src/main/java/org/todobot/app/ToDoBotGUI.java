@@ -8,8 +8,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.util.Duration;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -19,8 +17,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.todobot.service.ToDoBotService;
-import org.todobot.parsers.DateTimeParser;
 import org.todobot.gui.ChatAreaManager;
+import org.todobot.gui.FormManager;
 import java.time.LocalDate;
 
 public class ToDoBotGUI extends Application {
@@ -34,6 +32,7 @@ public class ToDoBotGUI extends Application {
     private ToDoBotService service;
     private Stage primaryStage;
     private ChatAreaManager chatAreaManager;
+    private FormManager formManager;
 
     @Override
     public void start(Stage primaryStage) {
@@ -99,28 +98,73 @@ public class ToDoBotGUI extends Application {
         root.setCenter(scrollPane);
         root.setBottom(bottomContainer);
 
+        // Initialize FormManager
+        formManager = new FormManager(
+            // ServiceProvider interface
+            new FormManager.ServiceProvider() {
+                @Override
+                public String handleDeadlineTask(String description, LocalDate date, String hour, String minute) {
+                    return service.handleDeadlineTask(description, date, hour, minute);
+                }
+                
+                @Override
+                public String handleEventTask(String description, LocalDate fromDate, String fromHour, String fromMinute, LocalDate toDate, String toHour, String toMinute) {
+                    return service.handleEventTask(description, fromDate, fromHour, fromMinute, toDate, toHour, toMinute);
+                }
+                
+                @Override
+                public String handleDropdownSelection(String selectedTask, String selectedAction) {
+                    return service.handleDropdownSelection(selectedTask, selectedAction);
+                }
+                
+                @Override
+                public String processButtonClick(String action) {
+                    return service.processButtonClick(action);
+                }
+            },
+            // ChatAreaProvider interface
+            new FormManager.ChatAreaProvider() {
+                @Override
+                public void addChild(VBox formBox) {
+                    chatArea.getChildren().add(formBox);
+                }
+                
+                @Override
+                public void removeChild(VBox formBox) {
+                    chatArea.getChildren().remove(formBox);
+                }
+            },
+            // ScrollHandler interface
+            this::scrollToBottom,
+            // FocusHandler interface
+            (field) -> field.requestFocus()
+        );
+
         // Initialize ChatAreaManager
         chatAreaManager = new ChatAreaManager(
             chatArea,
             this::handleButtonClick,
             this::getButtonLabel,
-            new ChatAreaManager.FormHandler() {
-                @Override
-                public void addDropdownToChat(int taskCount, String backButton) {
-                    ToDoBotGUI.this.addDropdownToChat(taskCount, backButton);
-                }
-                
-                @Override
-                public void addDeadlineFormToChat() {
-                    ToDoBotGUI.this.addDeadlineFormToChat();
-                }
-                
-                @Override
-                public void addEventFormToChat() {
-                    ToDoBotGUI.this.addEventFormToChat();
-                }
-            }
+            formManager
         );
+        
+        // Set the MessageHandler now that chatAreaManager is created
+        formManager.setMessageHandler(new FormManager.MessageHandler() {
+            @Override
+            public void addBotMessage(String message) {
+                chatAreaManager.addBotMessage(message);
+            }
+            
+            @Override
+            public void addBotResponse(String response) {
+                chatAreaManager.addBotResponse(response);
+            }
+            
+            @Override
+            public void addUserMessage(String message) {
+                chatAreaManager.addUserMessage(message);
+            }
+        });
 
         // Add initial welcome message
         chatAreaManager.addBotMessage("Hello! I'm your TODO Bot. What can I do for you?");
@@ -224,307 +268,6 @@ public class ToDoBotGUI extends Application {
         }
     }
 
-    
-    private void addDropdownToChat(int taskCount, String backButton) {
-        VBox dropdownBox = new VBox(10);
-        dropdownBox.setPadding(new Insets(10));
-        dropdownBox.setAlignment(Pos.CENTER_LEFT);
-        
-        // Create task selection dropdown
-        ComboBox<String> taskComboBox = new ComboBox<>();
-        taskComboBox.setPromptText("Select task...");
-        for (int i = 1; i <= taskCount; i++) {
-            taskComboBox.getItems().add("Task " + i);
-        }
-        
-        // Create action selection dropdown
-        ComboBox<String> actionComboBox = new ComboBox<>();
-        actionComboBox.setPromptText("Select action...");
-        actionComboBox.getItems().addAll("Mark", "Unmark", "Delete");
-        
-        // Create buttons
-        Button goButton = new Button("Go");
-        Button backButtonUI = new Button("Back");
-        
-        // Style the dropdowns and buttons
-        taskComboBox.setPrefWidth(150);
-        actionComboBox.setPrefWidth(150);
-        goButton.setStyle("-fx-background-color: #4caf50; -fx-text-fill: white;");
-        backButtonUI.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
-        
-        // Create horizontal layout for dropdowns and buttons
-        HBox controlsBox = new HBox(10);
-        controlsBox.setAlignment(Pos.CENTER_LEFT);
-        controlsBox.getChildren().addAll(taskComboBox, actionComboBox, goButton, backButtonUI);
-        
-        // Add label
-        Label instructionLabel = new Label("Select a task and action:");
-        instructionLabel.setStyle("-fx-font-weight: bold;");
-        
-        dropdownBox.getChildren().addAll(instructionLabel, controlsBox);
-        
-        // Event handlers
-        goButton.setOnAction(e -> {
-            String selectedTask = taskComboBox.getSelectionModel().getSelectedItem();
-            String selectedAction = actionComboBox.getSelectionModel().getSelectedItem();
-            
-            if (selectedTask != null && selectedAction != null) {
-                handleDropdownAction(selectedTask, selectedAction);
-                // Remove dropdown after action
-                chatArea.getChildren().remove(dropdownBox);
-            }
-        });
-        
-        backButtonUI.setOnAction(e -> {
-            // Remove dropdown and go back
-            chatArea.getChildren().remove(dropdownBox);
-            handleButtonClick(backButton);
-        });
-        
-        chatArea.getChildren().add(dropdownBox);
-        scrollToBottom();
-    }
-    
-    private void handleDropdownAction(String selectedTask, String selectedAction) {
-        // Add user message showing what they selected
-        chatAreaManager.addUserMessage("Selected: " + selectedTask + " - " + selectedAction);
-        
-        // Process through service - business logic handled there
-        String response = service.handleDropdownSelection(selectedTask, selectedAction);
-        chatAreaManager.addBotMessage(response);
-        
-        // Return to main menu
-        String mainMenuResponse = service.processButtonClick("");
-        chatAreaManager.addBotResponse(mainMenuResponse);
-        
-        scrollToBottom();
-    }
-    
-    private void addDeadlineFormToChat() {
-        VBox formBox = new VBox(15);
-        formBox.setPadding(new Insets(15));
-        formBox.setAlignment(Pos.CENTER_LEFT);
-        formBox.setStyle("-fx-background-color: #f0f8ff; -fx-border-color: #4682b4; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10;");
-        
-        // Form title
-        Label titleLabel = new Label("Create Deadline Task");
-        titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
-        
-        // Task description
-        Label descLabel = new Label("Task Description:");
-        descLabel.setStyle("-fx-font-weight: bold;");
-        TextField descField = new TextField();
-        descField.setPromptText("Enter task description...");
-        descField.setPrefWidth(300);
-        
-        // Date selection
-        Label dateLabel = new Label("Deadline Date:");
-        dateLabel.setStyle("-fx-font-weight: bold;");
-        DatePicker datePicker = new DatePicker();
-        datePicker.setPromptText("Select date");
-        datePicker.setValue(LocalDate.now());
-        
-        // Time selection
-        Label timeLabel = new Label("Deadline Time:");
-        timeLabel.setStyle("-fx-font-weight: bold;");
-        
-        ComboBox<String> hourBox = new ComboBox<>();
-        ComboBox<String> minuteBox = new ComboBox<>();
-        
-        // Populate hour dropdown (00-23)
-        for (int i = 0; i < 24; i++) {
-            hourBox.getItems().add(String.format("%02d", i));
-        }
-        hourBox.setValue("12");
-        
-        // Populate minute dropdown (00-59)
-        for (int i = 0; i < 60; i++) {
-            minuteBox.getItems().add(String.format("%02d", i));
-        }
-        minuteBox.setValue("00");
-        
-        HBox timeBox = new HBox(10);
-        timeBox.setAlignment(Pos.CENTER_LEFT);
-        timeBox.getChildren().addAll(hourBox, new Label(":"), minuteBox);
-        
-        // Buttons
-        Button submitButton = new Button("Create Deadline Task");
-        Button cancelButton = new Button("Cancel");
-        
-        submitButton.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold;");
-        cancelButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;");
-        
-        HBox buttonBox = new HBox(10);
-        buttonBox.setAlignment(Pos.CENTER_LEFT);
-        buttonBox.getChildren().addAll(submitButton, cancelButton);
-        
-        formBox.getChildren().addAll(titleLabel, descLabel, descField, dateLabel, datePicker, timeLabel, timeBox, buttonBox);
-        
-        // Event handlers
-        submitButton.setOnAction(e -> {
-            String description = descField.getText().trim();
-            LocalDate selectedDate = datePicker.getValue();
-            String selectedHour = hourBox.getValue();
-            String selectedMinute = minuteBox.getValue();
-            
-            if (!description.isEmpty() && selectedDate != null && selectedHour != null && selectedMinute != null) {
-                // Add user message
-                String dateTimeStr = DateTimeParser.formatForCommandInput(selectedDate, selectedHour, selectedMinute);
-                chatAreaManager.addUserMessage("Created deadline: " + description + " by " + dateTimeStr);
-                
-                // Pass raw data to service - let it handle command building
-                String response = service.handleDeadlineTask(description, selectedDate, selectedHour, selectedMinute);
-                chatAreaManager.addBotMessage(response);
-                
-                // Remove form
-                chatArea.getChildren().remove(formBox);
-                
-                // Return to main menu
-                String mainMenuResponse = service.processButtonClick("");
-                chatAreaManager.addBotResponse(mainMenuResponse);
-                
-                scrollToBottom();
-            } else {
-                chatAreaManager.addBotMessage("Please fill in all fields.");
-            }
-        });
-        
-        cancelButton.setOnAction(e -> {
-            chatArea.getChildren().remove(formBox);
-            String mainMenuResponse = service.processButtonClick("");
-            chatAreaManager.addBotResponse(mainMenuResponse);
-            scrollToBottom();
-        });
-        
-        chatArea.getChildren().add(formBox);
-        descField.requestFocus();
-        scrollToBottom();
-    }
-    
-    private void addEventFormToChat() {
-        VBox formBox = new VBox(15);
-        formBox.setPadding(new Insets(15));
-        formBox.setAlignment(Pos.CENTER_LEFT);
-        formBox.setStyle("-fx-background-color: #fff8dc; -fx-border-color: #daa520; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10;");
-        
-        // Form title
-        Label titleLabel = new Label("Create Event");
-        titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
-        
-        // Event description
-        Label descLabel = new Label("Event Description:");
-        descLabel.setStyle("-fx-font-weight: bold;");
-        TextField descField = new TextField();
-        descField.setPromptText("Enter event description...");
-        descField.setPrefWidth(300);
-        
-        // From date/time
-        Label fromLabel = new Label("From Date & Time:");
-        fromLabel.setStyle("-fx-font-weight: bold;");
-        DatePicker fromDatePicker = new DatePicker();
-        fromDatePicker.setValue(LocalDate.now());
-        
-        ComboBox<String> fromHourBox = new ComboBox<>();
-        ComboBox<String> fromMinuteBox = new ComboBox<>();
-        
-        // Populate from time dropdowns
-        for (int i = 0; i < 24; i++) {
-            fromHourBox.getItems().add(String.format("%02d", i));
-        }
-        fromHourBox.setValue("09");
-        
-        for (int i = 0; i < 60; i++) {
-            fromMinuteBox.getItems().add(String.format("%02d", i));
-        }
-        fromMinuteBox.setValue("00");
-        
-        HBox fromTimeBox = new HBox(10);
-        fromTimeBox.setAlignment(Pos.CENTER_LEFT);
-        fromTimeBox.getChildren().addAll(fromDatePicker, fromHourBox, new Label(":"), fromMinuteBox);
-        
-        // To date/time
-        Label toLabel = new Label("To Date & Time:");
-        toLabel.setStyle("-fx-font-weight: bold;");
-        DatePicker toDatePicker = new DatePicker();
-        toDatePicker.setValue(LocalDate.now());
-        
-        ComboBox<String> toHourBox = new ComboBox<>();
-        ComboBox<String> toMinuteBox = new ComboBox<>();
-        
-        // Populate to time dropdowns
-        for (int i = 0; i < 24; i++) {
-            toHourBox.getItems().add(String.format("%02d", i));
-        }
-        toHourBox.setValue("17");
-        
-        for (int i = 0; i < 60; i++) {
-            toMinuteBox.getItems().add(String.format("%02d", i));
-        }
-        toMinuteBox.setValue("00");
-        
-        HBox toTimeBox = new HBox(10);
-        toTimeBox.setAlignment(Pos.CENTER_LEFT);
-        toTimeBox.getChildren().addAll(toDatePicker, toHourBox, new Label(":"), toMinuteBox);
-        
-        // Buttons
-        Button submitButton = new Button("Create Event");
-        Button cancelButton = new Button("Cancel");
-        
-        submitButton.setStyle("-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold;");
-        cancelButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;");
-        
-        HBox buttonBox = new HBox(10);
-        buttonBox.setAlignment(Pos.CENTER_LEFT);
-        buttonBox.getChildren().addAll(submitButton, cancelButton);
-        
-        formBox.getChildren().addAll(titleLabel, descLabel, descField, fromLabel, fromTimeBox, toLabel, toTimeBox, buttonBox);
-        
-        // Event handlers
-        submitButton.setOnAction(e -> {
-            String description = descField.getText().trim();
-            LocalDate fromDate = fromDatePicker.getValue();
-            LocalDate toDate = toDatePicker.getValue();
-            String fromHour = fromHourBox.getValue();
-            String fromMinute = fromMinuteBox.getValue();
-            String toHour = toHourBox.getValue();
-            String toMinute = toMinuteBox.getValue();
-            
-            if (!description.isEmpty() && fromDate != null && toDate != null && 
-                fromHour != null && fromMinute != null && toHour != null && toMinute != null) {
-                
-                // Add user message
-                String fromDateTimeStr = DateTimeParser.formatForCommandInput(fromDate, fromHour, fromMinute);
-                String toDateTimeStr = DateTimeParser.formatForCommandInput(toDate, toHour, toMinute);
-                chatAreaManager.addUserMessage("Created event: " + description + " from " + fromDateTimeStr + " to " + toDateTimeStr);
-                
-                // Pass raw data to service - let it handle command building
-                String response = service.handleEventTask(description, fromDate, fromHour, fromMinute, toDate, toHour, toMinute);
-                chatAreaManager.addBotMessage(response);
-                
-                // Remove form
-                chatArea.getChildren().remove(formBox);
-                
-                // Return to main menu
-                String mainMenuResponse = service.processButtonClick("");
-                chatAreaManager.addBotResponse(mainMenuResponse);
-                
-                scrollToBottom();
-            } else {
-                chatAreaManager.addBotMessage("Please fill in all fields.");
-            }
-        });
-        
-        cancelButton.setOnAction(e -> {
-            chatArea.getChildren().remove(formBox);
-            String mainMenuResponse = service.processButtonClick("");
-            chatAreaManager.addBotResponse(mainMenuResponse);
-            scrollToBottom();
-        });
-        
-        chatArea.getChildren().add(formBox);
-        descField.requestFocus();
-        scrollToBottom();
-    }
     
     private String getButtonLabel(String action) {
         return switch (action) {
