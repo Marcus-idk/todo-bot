@@ -26,11 +26,11 @@ public class ButtonResponseHandler {
         
         return switch (buttonAction) {
             case "add_task" -> "Choose task type:|todo,deadline,event,back";
-            case "todo" -> "Enter task description:";
+            case "todo" -> "Enter task description:|TODO_FORM";
             case "deadline" -> "Enter deadline task details:|DEADLINE_FORM";
             case "event" -> "Enter event details:|EVENT_FORM";
             case "view_tasks" -> getTaskListWithButtons();
-            case "find_tasks" -> "Enter search term:";
+            case "find_tasks" -> "Enter search term:|FIND_FORM";
             case "help" -> getHelpWithButtons();
             case "back", "main_menu" -> getMainMenu();
             default -> handleTaskAction(buttonAction);

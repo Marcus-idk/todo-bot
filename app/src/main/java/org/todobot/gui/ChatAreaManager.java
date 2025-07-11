@@ -73,6 +73,10 @@ public class ChatAreaManager {
                 formManager.showDeadlineForm();
             } else if (parts.length >= 2 && parts[1].equals("EVENT_FORM")) {
                 formManager.showEventForm();
+            } else if (parts.length >= 2 && parts[1].equals("TODO_FORM")) {
+                formManager.showTodoForm();
+            } else if (parts.length >= 2 && parts[1].equals("FIND_FORM")) {
+                formManager.showFindForm();
             } else if (parts.length >= 2) {
                 // Regular button format
                 String buttonsStr = parts[1];

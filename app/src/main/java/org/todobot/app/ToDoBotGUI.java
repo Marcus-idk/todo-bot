@@ -29,7 +29,7 @@ public class ToDoBotGUI extends Application {
     private Button sendButton;
     private Button toggleButton;
     private HBox inputArea;
-    private boolean textInputVisible = false; // Default is hidden
+    private boolean textInputVisible = false;
     private ToDoBotService service;
     private Stage primaryStage;
     private ChatAreaManager chatAreaManager;
@@ -116,6 +116,16 @@ public class ToDoBotGUI extends Application {
                 @Override
                 public String handleDropdownSelection(String selectedTask, String selectedAction) {
                     return service.handleDropdownSelection(selectedTask, selectedAction);
+                }
+                
+                @Override
+                public String handleTodoTask(String description) {
+                    return service.handleTodoTask(description);
+                }
+                
+                @Override
+                public String handleFindTask(String searchTerm) {
+                    return service.handleFindTask(searchTerm);
                 }
                 
                 @Override
@@ -267,8 +277,6 @@ public class ToDoBotGUI extends Application {
                     chatAreaManager.addBotMessage(response);
                 }
             }
-            
-            // Scroll to bottom
             scrollToBottom();
         }
     }
@@ -314,80 +322,13 @@ public class ToDoBotGUI extends Application {
         // Process button click through service
         String response = service.processButtonClick(action);
         
-        // Check if this is a text input request
-        if (action.equals("todo") || action.equals("find_tasks")) {
-            chatAreaManager.addBotMessage(response);
-            showTextInputForTask(action);
-        } else {
-            chatAreaManager.addBotResponse(response);
-        }
+        // Process all responses through ChatAreaManager (handles forms automatically)
+        chatAreaManager.addBotResponse(response);
         
         // Scroll to bottom
         scrollToBottom();
     }
     
-    private void showTextInputForTask(String taskType) {
-        HBox inputBox = new HBox(10);
-        inputBox.setPadding(new Insets(10));
-        inputBox.setAlignment(Pos.CENTER_LEFT);
-        
-        TextField taskInput = new TextField();
-        taskInput.setPromptText("Enter your " + taskType + " task...");
-        taskInput.setPrefWidth(300);
-        
-        Button submitButton = new Button("Submit");
-        Button cancelButton = new Button("Cancel");
-        
-        submitButton.setOnAction(e -> {
-            String taskText = taskInput.getText().trim();
-            if (!taskText.isEmpty()) {
-                // Add user message
-                chatAreaManager.addUserMessage(taskText);
-                
-                // Pass raw data to service - let it handle command building
-                String response;
-                if (taskType.equals("todo")) {
-                    response = service.handleTodoTask(taskText);
-                } else if (taskType.equals("find_tasks")) {
-                    response = service.handleFindTask(taskText);
-                } else {
-                    response = "Unknown task type";
-                }
-                chatAreaManager.addBotMessage(response);
-                
-                // Remove the input box
-                chatArea.getChildren().remove(inputBox);
-                
-                // Return to main menu
-                String mainMenuResponse = service.processButtonClick("");
-                chatAreaManager.addBotResponse(mainMenuResponse);
-                
-                scrollToBottom();
-            }
-        });
-        
-        cancelButton.setOnAction(e -> {
-            // Remove the input box
-            chatArea.getChildren().remove(inputBox);
-            
-            // Return to main menu
-            String mainMenuResponse = service.processButtonClick("");
-            chatAreaManager.addBotResponse(mainMenuResponse);
-            
-            scrollToBottom();
-        });
-        
-        taskInput.setOnAction(e -> submitButton.fire()); // Enter key submits
-        
-        inputBox.getChildren().addAll(taskInput, submitButton, cancelButton);
-        chatArea.getChildren().add(inputBox);
-        
-        // Focus on the input field
-        taskInput.requestFocus();
-        scrollToBottom();
-    }
-    
-
     private void scrollToBottom() {
         // Scroll to bottom after a short delay to ensure layout is complete
         javafx.application.Platform.runLater(() -> {
