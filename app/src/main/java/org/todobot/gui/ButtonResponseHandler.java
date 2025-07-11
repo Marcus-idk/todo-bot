@@ -1,5 +1,8 @@
 package org.todobot.gui;
 
+import java.time.LocalDate;
+
+import org.todobot.parsers.DateTimeParser;
 import org.todobot.service.TaskList;
 
 public class ButtonResponseHandler {
@@ -66,50 +69,68 @@ public class ButtonResponseHandler {
     }
     
     public String handleDropdownSelection(String selectedTask, String selectedAction) {
-        // Extract task number from "Task 1" format - let parser handle validation
         String taskNumber = selectedTask.split(" ")[1];
         
-        // Convert action to command
         String command;
         switch (selectedAction.toLowerCase()) {
             case "mark":
-                command = "mark " + taskNumber;
+                command = buildTaskCommand("mark", taskNumber);
                 break;
             case "unmark":
-                command = "unmark " + taskNumber;
+                command = buildTaskCommand("unmark", taskNumber);
                 break;
             case "delete":
-                command = "delete " + taskNumber;
+                command = buildTaskCommand("delete", taskNumber);
                 break;
             default:
                 return "Unknown action: " + selectedAction;
         }
         
-        // Process the command - parser will handle number validation
         return commandProcessor.processCommand(command);
     }
     
-    public String buildTaskCommand(String taskType, String taskText) {
-        // Command format logic belongs in business layer
+    public String buildTaskCommand(String taskType, Object... args) {
         return switch (taskType) {
-            case "todo" -> "todo " + taskText;
-            case "find_tasks" -> "find " + taskText;
-            case "deadline" -> taskText; // User should type full format
-            case "event" -> taskText; // User should type full format
-            default -> taskText;
+            case "todo" -> "todo " + (String) args[0];
+            case "find_tasks" -> "find " + (String) args[0];
+            case "mark" -> "mark " + (String) args[0];
+            case "unmark" -> "unmark " + (String) args[0];
+            case "delete" -> "delete " + (String) args[0];
+            case "deadline" -> {
+                String description = (String) args[0];
+                LocalDate date = (LocalDate) args[1];
+                String hour = (String) args[2];
+                String minute = (String) args[3];
+                String dateTimeStr = DateTimeParser.formatForCommandInput(date, hour, minute);
+                String command = description + " /by " + dateTimeStr;
+                yield "deadline " + command;
+            }
+            case "event" -> {
+                String description = (String) args[0];
+                LocalDate fromDate = (LocalDate) args[1];
+                String fromHour = (String) args[2];
+                String fromMinute = (String) args[3];
+                LocalDate toDate = (LocalDate) args[4];
+                String toHour = (String) args[5];
+                String toMinute = (String) args[6];
+                String fromDateTimeStr = DateTimeParser.formatForCommandInput(fromDate, fromHour, fromMinute);
+                String toDateTimeStr = DateTimeParser.formatForCommandInput(toDate, toHour, toMinute);
+                String command = description + " /from " + fromDateTimeStr + " /to " + toDateTimeStr;
+                yield "event " + command;
+            }
+            default -> (String) args[0];
         };
     }
     
     private String handleTaskAction(String buttonAction) {
-        // Let parser and existing commands handle all validation and error checking
         if (buttonAction.startsWith("mark_")) {
-            String command = "mark " + buttonAction.substring(5);
+            String command = buildTaskCommand("mark", buttonAction.substring(5));
             return commandProcessor.processCommand(command) + "|back";
         } else if (buttonAction.startsWith("unmark_")) {
-            String command = "unmark " + buttonAction.substring(7);
+            String command = buildTaskCommand("unmark", buttonAction.substring(7));
             return commandProcessor.processCommand(command) + "|back";
         } else if (buttonAction.startsWith("delete_")) {
-            String command = "delete " + buttonAction.substring(7);
+            String command = buildTaskCommand("delete", buttonAction.substring(7));
             return commandProcessor.processCommand(command) + "|back";
         }
         return "Invalid action.|back";

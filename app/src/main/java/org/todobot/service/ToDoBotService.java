@@ -1,5 +1,7 @@
 package org.todobot.service;
 
+import java.time.LocalDate;
+
 import org.todobot.commands.AddCommand;
 import org.todobot.commands.Command;
 import org.todobot.commands.DeleteCommand;
@@ -64,9 +66,26 @@ public class ToDoBotService {
         return buttonResponseHandler.handleDropdownSelection(selectedTask, selectedAction);
     }
     
-    public String buildTaskCommand(String taskType, String taskText) {
-        return buttonResponseHandler.buildTaskCommand(taskType, taskText);
+    public String handleDeadlineTask(String description, LocalDate date, String hour, String minute) {
+        String command = buttonResponseHandler.buildTaskCommand("deadline", description, date, hour, minute);
+        return processCommand(command);
     }
+    
+    public String handleEventTask(String description, LocalDate fromDate, String fromHour, String fromMinute, LocalDate toDate, String toHour, String toMinute) {
+        String command = buttonResponseHandler.buildTaskCommand("event", description, fromDate, fromHour, fromMinute, toDate, toHour, toMinute);
+        return processCommand(command);
+    }
+    
+    public String handleTodoTask(String taskText) {
+        String command = buttonResponseHandler.buildTaskCommand("todo", taskText);
+        return processCommand(command);
+    }
+    
+    public String handleFindTask(String taskText) {
+        String command = buttonResponseHandler.buildTaskCommand("find_tasks", taskText);
+        return processCommand(command);
+    }
+    
     
     private Command createCommand(CommandType commandType) {
         return switch (commandType) {

@@ -414,16 +414,12 @@ public class ToDoBotGUI extends Application {
             String selectedMinute = minuteBox.getValue();
             
             if (!description.isEmpty() && selectedDate != null && selectedHour != null && selectedMinute != null) {
-                // Build deadline command using DateTimeParser
-                String dateTimeStr = DateTimeParser.formatForCommandInput(selectedDate, selectedHour, selectedMinute);
-                String command = description + " /by " + dateTimeStr;
-                String fullCommand = "deadline " + command;
-                
                 // Add user message
+                String dateTimeStr = DateTimeParser.formatForCommandInput(selectedDate, selectedHour, selectedMinute);
                 addUserMessage("Created deadline: " + description + " by " + dateTimeStr);
                 
-                // Process command
-                String response = service.processCommand(fullCommand);
+                // Pass raw data to service - let it handle command building
+                String response = service.handleDeadlineTask(description, selectedDate, selectedHour, selectedMinute);
                 addBotMessage(response);
                 
                 // Remove form
@@ -542,17 +538,13 @@ public class ToDoBotGUI extends Application {
             if (!description.isEmpty() && fromDate != null && toDate != null && 
                 fromHour != null && fromMinute != null && toHour != null && toMinute != null) {
                 
-                // Build event command using DateTimeParser
+                // Add user message
                 String fromDateTimeStr = DateTimeParser.formatForCommandInput(fromDate, fromHour, fromMinute);
                 String toDateTimeStr = DateTimeParser.formatForCommandInput(toDate, toHour, toMinute);
-                String command = description + " /from " + fromDateTimeStr + " /to " + toDateTimeStr;
-                String fullCommand = "event " + command;
-                
-                // Add user message
                 addUserMessage("Created event: " + description + " from " + fromDateTimeStr + " to " + toDateTimeStr);
                 
-                // Process command
-                String response = service.processCommand(fullCommand);
+                // Pass raw data to service - let it handle command building
+                String response = service.handleEventTask(description, fromDate, fromHour, fromMinute, toDate, toHour, toMinute);
                 addBotMessage(response);
                 
                 // Remove form
@@ -650,10 +642,15 @@ public class ToDoBotGUI extends Application {
                 // Add user message
                 addUserMessage(taskText);
                 
-                // Process the task command
-                String command = service.buildTaskCommand(taskType, taskText);
-                
-                String response = service.processCommand(command);
+                // Pass raw data to service - let it handle command building
+                String response;
+                if (taskType.equals("todo")) {
+                    response = service.handleTodoTask(taskText);
+                } else if (taskType.equals("find_tasks")) {
+                    response = service.handleFindTask(taskText);
+                } else {
+                    response = "Unknown task type";
+                }
                 addBotMessage(response);
                 
                 // Remove the input box
