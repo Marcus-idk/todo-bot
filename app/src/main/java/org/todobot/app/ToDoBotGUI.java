@@ -2,8 +2,9 @@ package org.todobot.app;
 
 import java.time.LocalDate;
 
-import org.todobot.gui.ChatAreaManager;
-import org.todobot.gui.FormManager;
+import org.todobot.gui.SimpleChatAreaManager;
+import org.todobot.gui.SimpleFormManager;
+import org.todobot.gui.BotResponse;
 import org.todobot.service.ToDoBotService;
 
 import javafx.animation.KeyFrame;
@@ -32,15 +33,13 @@ public class ToDoBotGUI extends Application {
     private boolean textInputVisible = false;
     private ToDoBotService service;
     private Stage primaryStage;
-    private ChatAreaManager chatAreaManager;
-    private FormManager formManager;
+    private SimpleChatAreaManager chatAreaManager;
+    private SimpleFormManager formManager;
 
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.service = new ToDoBotService();
-        
-        // Initial mode is button mode (textInputVisible = false)
         
         primaryStage.setTitle("TODO Bot");
 
@@ -99,83 +98,9 @@ public class ToDoBotGUI extends Application {
         root.setCenter(scrollPane);
         root.setBottom(bottomContainer);
 
-        // Initialize FormManager
-        formManager = new FormManager(
-            // ServiceProvider interface
-            new FormManager.ServiceProvider() {
-                @Override
-                public String handleDeadlineTask(String description, LocalDate date, String hour, String minute) {
-                    return service.handleDeadlineTask(description, date, hour, minute);
-                }
-                
-                @Override
-                public String handleEventTask(String description, LocalDate fromDate, String fromHour, String fromMinute, LocalDate toDate, String toHour, String toMinute) {
-                    return service.handleEventTask(description, fromDate, fromHour, fromMinute, toDate, toHour, toMinute);
-                }
-                
-                @Override
-                public String handleDropdownSelection(String selectedTask, String selectedAction) {
-                    return service.handleDropdownSelection(selectedTask, selectedAction);
-                }
-                
-                @Override
-                public String handleTodoTask(String description) {
-                    return service.handleTodoTask(description);
-                }
-                
-                @Override
-                public String handleFindTask(String searchTerm) {
-                    return service.handleFindTask(searchTerm);
-                }
-                
-                @Override
-                public String processButtonClick(String action) {
-                    return service.processButtonClick(action);
-                }
-            },
-            // ChatAreaProvider interface
-            new FormManager.ChatAreaProvider() {
-                @Override
-                public void addChild(VBox formBox) {
-                    chatArea.getChildren().add(formBox);
-                }
-                
-                @Override
-                public void removeChild(VBox formBox) {
-                    chatArea.getChildren().remove(formBox);
-                }
-            },
-            // ScrollHandler interface
-            this::scrollToBottom,
-            // FocusHandler interface
-            (field) -> field.requestFocus()
-        );
-
-        // Initialize ChatAreaManager
-        chatAreaManager = new ChatAreaManager(
-            chatArea,
-            this::handleButtonClick,
-            this::getButtonLabel,
-            formManager
-        );
-        
-        // Set the MessageHandler now that chatAreaManager is created
-        formManager.setMessageHandler(new FormManager.MessageHandler() {
-            @Override
-            public void addBotMessage(String message) {
-                chatAreaManager.addBotMessage(message);
-            }
-            
-            @Override
-            public void addBotResponse(String response) {
-                chatAreaManager.addBotResponse(response);
-            }
-            
-            @Override
-            public void addUserMessage(String message) {
-                chatAreaManager.addUserMessage(message);
-            }
-        });
+        // Initialize simplified managers
+        formManager = new SimpleFormManager(service, chatArea, this::scrollToBottom, this::addBotMessage);
+        chatAreaManager = new SimpleChatAreaManager(chatArea, service, formManager, this::scrollToBottom, this::handleExit);
 
         // Add initial welcome message
         chatAreaManager.addBotMessage("Hello! I'm your TODO Bot. What can I do for you?");
@@ -183,7 +108,7 @@ public class ToDoBotGUI extends Application {
             chatAreaManager.addBotMessage("Type commands like: todo buy milk, list, help, bye");
         } else {
             // Show main menu buttons
-            String mainMenuResponse = service.processButtonClick("");
+            BotResponse mainMenuResponse = service.processButtonClick("");
             chatAreaManager.addBotResponse(mainMenuResponse);
         }
         
@@ -237,7 +162,7 @@ public class ToDoBotGUI extends Application {
             inputField.requestFocus();
         } else {
             chatAreaManager.addBotMessage("Button mode enabled. Use the buttons below to interact.");
-            String mainMenuResponse = service.processButtonClick("");
+            BotResponse mainMenuResponse = service.processButtonClick("");
             chatAreaManager.addBotResponse(mainMenuResponse);
         }
         
@@ -271,64 +196,32 @@ public class ToDoBotGUI extends Application {
                 if (!textInputVisible) {
                     chatAreaManager.addBotMessage(response);
                     // Return to main menu after processing command
-                    String mainMenuResponse = service.processButtonClick("");
+                    BotResponse mainMenuResponse = service.processButtonClick("");
                     chatAreaManager.addBotResponse(mainMenuResponse);
                 } else {
                     chatAreaManager.addBotMessage(response);
                 }
             }
+            
+            // Scroll to bottom
             scrollToBottom();
         }
     }
 
-    
-    private String getButtonLabel(String action) {
-        return switch (action) {
-            case "add_task" -> "Add Task";
-            case "view_tasks" -> "View Tasks";
-            case "find_tasks" -> "Find Tasks";
-            case "help" -> "Help";
-            case "exit" -> "Exit";
-            case "todo" -> "Todo";
-            case "deadline" -> "Deadline";
-            case "event" -> "Event";
-            case "back" -> "Back";
-            default -> {
-                if (action.startsWith("mark_")) {
-                    yield "Mark " + action.substring(5);
-                } else if (action.startsWith("delete_")) {
-                    yield "Delete " + action.substring(7);
-                }
-                yield action; // fallback
-            }
-        };
-    }
-    
-    private void handleButtonClick(String action) {
-        // Add user message showing what they clicked
-        chatAreaManager.addUserMessage("Clicked: " + getButtonLabel(action));
-        
-        // Handle special cases
+    private void handleExit(String action) {
         if (action.equals("exit")) {
-            chatAreaManager.addBotMessage("Saving & Closing... Bye. Hope to see you again soon!");
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), e -> {
                 service.cleanup();
                 primaryStage.close();
             }));
             timeline.play();
-            return;
         }
-        
-        // Process button click through service
-        String response = service.processButtonClick(action);
-        
-        // Process all responses through ChatAreaManager (handles forms automatically)
-        chatAreaManager.addBotResponse(response);
-        
-        // Scroll to bottom
-        scrollToBottom();
     }
-    
+
+    private void addBotMessage(String message) {
+        chatAreaManager.addBotMessage(message);
+    }
+
     private void scrollToBottom() {
         // Scroll to bottom after a short delay to ensure layout is complete
         javafx.application.Platform.runLater(() -> {
