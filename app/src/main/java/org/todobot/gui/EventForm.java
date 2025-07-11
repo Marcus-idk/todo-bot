@@ -35,22 +35,22 @@ public class EventForm {
         VBox formBox = new VBox(15);
         formBox.setPadding(new Insets(15));
         formBox.setAlignment(Pos.CENTER_LEFT);
-        formBox.setStyle("-fx-background-color: #fff8dc; -fx-border-color: #daa520; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10;");
+        formBox.getStyleClass().addAll("form-container", "event-form");
         
         // Form title
         Label titleLabel = new Label("Create Event");
-        titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        titleLabel.getStyleClass().add("form-title");
         
         // Event description
         Label descLabel = new Label("Event Description:");
-        descLabel.setStyle("-fx-font-weight: bold;");
+        descLabel.getStyleClass().add("field-label");
         TextField descField = new TextField();
         descField.setPromptText("Enter event description...");
         descField.setPrefWidth(300);
         
         // From date/time
         Label fromLabel = new Label("From Date & Time:");
-        fromLabel.setStyle("-fx-font-weight: bold;");
+        fromLabel.getStyleClass().add("field-label");
         DatePicker fromDatePicker = new DatePicker();
         fromDatePicker.setValue(LocalDate.now());
         
@@ -62,7 +62,7 @@ public class EventForm {
         
         // To date/time
         Label toLabel = new Label("To Date & Time:");
-        toLabel.setStyle("-fx-font-weight: bold;");
+        toLabel.getStyleClass().add("field-label");
         DatePicker toDatePicker = new DatePicker();
         toDatePicker.setValue(LocalDate.now());
         
@@ -76,8 +76,8 @@ public class EventForm {
         Button submitButton = new Button("Create Event");
         Button cancelButton = new Button("Cancel");
         
-        submitButton.setStyle("-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold;");
-        cancelButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;");
+        submitButton.getStyleClass().add("warning-button");
+        cancelButton.getStyleClass().add("cancel-button");
         
         HBox buttonBox = new HBox(10);
         buttonBox.setAlignment(Pos.CENTER_LEFT);

@@ -1,14 +1,18 @@
 package org.todobot.app;
 
+import java.time.LocalDate;
+
+import org.todobot.gui.ChatAreaManager;
+import org.todobot.gui.FormManager;
+import org.todobot.service.ToDoBotService;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.util.Duration;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -16,10 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.todobot.service.ToDoBotService;
-import org.todobot.gui.ChatAreaManager;
-import org.todobot.gui.FormManager;
-import java.time.LocalDate;
+import javafx.util.Duration;
 
 public class ToDoBotGUI extends Application {
     private VBox chatArea;
@@ -76,7 +77,7 @@ public class ToDoBotGUI extends Application {
 
         toggleButton = new Button("▲");
         toggleButton.setMinWidth(40);
-        toggleButton.setStyle("-fx-font-size: 14px;");
+        toggleButton.getStyleClass().add("toggle-button");
 
         inputArea.getChildren().addAll(inputField, sendButton);
         
@@ -184,6 +185,10 @@ public class ToDoBotGUI extends Application {
 
         // Create scene and show stage
         Scene scene = new Scene(root, 600, 500);
+        
+        // Load CSS stylesheet
+        scene.getStylesheets().add(getClass().getResource("/styles/app.css").toExternalForm());
+        
         primaryStage.setScene(scene);
         
         // Handle window close event

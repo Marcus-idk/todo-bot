@@ -1,0 +1,116 @@
+/* TODO Bot Application Styles */
+
+/* Message Bubbles */
+.user-message {
+    -fx-background-color: #e3f2fd;
+    -fx-padding: 10;
+    -fx-background-radius: 10;
+    -fx-text-fill: #1976d2;
+}
+
+.bot-message {
+    -fx-background-color: #f3e5f5;
+    -fx-padding: 10;
+    -fx-background-radius: 10;
+    -fx-text-fill: #7b1fa2;
+}
+
+/* Action Buttons */
+.action-button {
+    -fx-background-color: #e1f5fe;
+    -fx-text-fill: #0277bd;
+    -fx-border-color: #0277bd;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+/* Form Containers */
+.form-container {
+    -fx-border-width: 2;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+.event-form {
+    -fx-background-color: #fff8dc;
+    -fx-border-color: #daa520;
+}
+
+.deadline-form {
+    -fx-background-color: #f0f8ff;
+    -fx-border-color: #4682b4;
+}
+
+/* Labels */
+.form-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.field-label {
+    -fx-font-weight: bold;
+}
+
+.instruction-label {
+    -fx-font-weight: bold;
+}
+
+/* Buttons */
+.primary-button {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.secondary-button {
+    -fx-background-color: #4caf50;
+    -fx-text-fill: white;
+}
+
+.cancel-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.delete-button {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+}
+
+.warning-button {
+    -fx-background-color: #f39c12;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Toggle Button */
+.toggle-button {
+    -fx-font-size: 14px;
+}
+
+/* Hover Effects */
+.action-button:hover {
+    -fx-background-color: #b3e5fc;
+}
+
+.primary-button:hover {
+    -fx-background-color: #27ae60;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #45a049;
+}
+
+.cancel-button:hover {
+    -fx-background-color: #c0392b;
+}
+
+.delete-button:hover {
+    -fx-background-color: #d32f2f;
+}
+
+.warning-button:hover {
+    -fx-background-color: #e67e22;
+}

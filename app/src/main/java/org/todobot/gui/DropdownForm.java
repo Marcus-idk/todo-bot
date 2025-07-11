@@ -49,8 +49,8 @@ public class DropdownForm {
         // Style the dropdowns and buttons
         taskComboBox.setPrefWidth(150);
         actionComboBox.setPrefWidth(150);
-        goButton.setStyle("-fx-background-color: #4caf50; -fx-text-fill: white;");
-        backButtonUI.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
+        goButton.getStyleClass().add("secondary-button");
+        backButtonUI.getStyleClass().add("delete-button");
         
         // Create horizontal layout for dropdowns and buttons
         HBox controlsBox = new HBox(10);
@@ -59,7 +59,7 @@ public class DropdownForm {
         
         // Add label
         Label instructionLabel = new Label("Select a task and action:");
-        instructionLabel.setStyle("-fx-font-weight: bold;");
+        instructionLabel.getStyleClass().add("instruction-label");
         
         dropdownBox.getChildren().addAll(instructionLabel, controlsBox);
         

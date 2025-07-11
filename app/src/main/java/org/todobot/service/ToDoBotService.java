@@ -19,7 +19,7 @@ public class ToDoBotService {
     private final TaskList taskList;
     private final TaskStorage storage;
     private final ButtonResponseHandler buttonResponseHandler;
-    private boolean shouldExit = false; // Flag for exit state
+    private boolean shouldExit = false;
     
     public ToDoBotService() {
         this.storage = new TaskStorage();

@@ -32,7 +32,7 @@ public class ChatAreaManager {
     
     public void addUserMessage(String message) {
         Label userLabel = new Label("You: " + message);
-        userLabel.setStyle("-fx-background-color: #e3f2fd; -fx-padding: 10; -fx-background-radius: 10; -fx-text-fill: #1976d2;");
+        userLabel.getStyleClass().add("user-message");
         userLabel.setMaxWidth(Double.MAX_VALUE);
         userLabel.setAlignment(Pos.CENTER_RIGHT);
         
@@ -45,7 +45,7 @@ public class ChatAreaManager {
     
     public void addBotMessage(String message) {
         Label botLabel = new Label("Bot: " + message);
-        botLabel.setStyle("-fx-background-color: #f3e5f5; -fx-padding: 10; -fx-background-radius: 10; -fx-text-fill: #7b1fa2;");
+        botLabel.getStyleClass().add("bot-message");
         botLabel.setMaxWidth(Double.MAX_VALUE);
         botLabel.setAlignment(Pos.CENTER_LEFT);
         
@@ -94,7 +94,7 @@ public class ChatAreaManager {
         
         for (String action : buttonActions) {
             Button button = new Button(buttonLabelProvider.getButtonLabel(action));
-            button.setStyle("-fx-background-color: #e1f5fe; -fx-text-fill: #0277bd; -fx-border-color: #0277bd; -fx-border-radius: 5; -fx-background-radius: 5;");
+            button.getStyleClass().add("action-button");
             button.setOnAction(e -> buttonClickHandler.handleButtonClick(action));
             buttonBox.getChildren().add(button);
         }

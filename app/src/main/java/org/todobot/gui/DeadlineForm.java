@@ -35,29 +35,29 @@ public class DeadlineForm {
         VBox formBox = new VBox(15);
         formBox.setPadding(new Insets(15));
         formBox.setAlignment(Pos.CENTER_LEFT);
-        formBox.setStyle("-fx-background-color: #f0f8ff; -fx-border-color: #4682b4; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10;");
+        formBox.getStyleClass().addAll("form-container", "deadline-form");
         
         // Form title
         Label titleLabel = new Label("Create Deadline Task");
-        titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        titleLabel.getStyleClass().add("form-title");
         
         // Task description
         Label descLabel = new Label("Task Description:");
-        descLabel.setStyle("-fx-font-weight: bold;");
+        descLabel.getStyleClass().add("field-label");
         TextField descField = new TextField();
         descField.setPromptText("Enter task description...");
         descField.setPrefWidth(300);
         
         // Date selection
         Label dateLabel = new Label("Deadline Date:");
-        dateLabel.setStyle("-fx-font-weight: bold;");
+        dateLabel.getStyleClass().add("field-label");
         DatePicker datePicker = new DatePicker();
         datePicker.setPromptText("Select date");
         datePicker.setValue(LocalDate.now());
         
         // Time selection
         Label timeLabel = new Label("Deadline Time:");
-        timeLabel.setStyle("-fx-font-weight: bold;");
+        timeLabel.getStyleClass().add("field-label");
         
         TimePickerComponent timePicker = new TimePickerComponent("12", "00");
         HBox timeBox = timePicker.createTimeBox();
@@ -66,8 +66,8 @@ public class DeadlineForm {
         Button submitButton = new Button("Create Deadline Task");
         Button cancelButton = new Button("Cancel");
         
-        submitButton.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold;");
-        cancelButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;");
+        submitButton.getStyleClass().add("primary-button");
+        cancelButton.getStyleClass().add("cancel-button");
         
         HBox buttonBox = new HBox(10);
         buttonBox.setAlignment(Pos.CENTER_LEFT);
