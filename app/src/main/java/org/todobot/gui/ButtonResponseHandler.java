@@ -49,10 +49,8 @@ public class ButtonResponseHandler {
             return taskListOutput + "|back";
         }
         
-        // Get task count directly from TaskList - no parsing needed
         int taskCount = taskList.getTaskCount();
         
-        // Use special format for dropdown: DROPDOWN|taskCount|back
         return taskListOutput + "|DROPDOWN|" + taskCount + "|back";
     }
     
@@ -61,9 +59,10 @@ public class ButtonResponseHandler {
         String help = commandProcessor.processCommand("help");
         
         // Add GUI-specific help
-        String guiHelp = "\n GUI-specific features:\n" +
-                        "   • Toggle (▲/▼): Switch between button mode and text input mode\n" +
-                        "   • Use buttons or forms for easier task creation";
+        String guiHelp = """
+                          GUI-specific features:
+                            \u2022 Toggle (\u25b2/\u25bc): Switch between button mode and text input mode
+                            \u2022 Use buttons or forms for easier task creation""";
         
         return help + guiHelp + "|back";
     }
@@ -73,22 +72,31 @@ public class ButtonResponseHandler {
         
         String command;
         switch (selectedAction.toLowerCase()) {
-            case "mark":
-                command = buildTaskCommand("mark", taskNumber);
-                break;
-            case "unmark":
-                command = buildTaskCommand("unmark", taskNumber);
-                break;
-            case "delete":
-                command = buildTaskCommand("delete", taskNumber);
-                break;
-            default:
+            case "mark" -> command = buildTaskCommand("mark", taskNumber);
+            case "unmark" -> command = buildTaskCommand("unmark", taskNumber);
+            case "delete" -> command = buildTaskCommand("delete", taskNumber);
+            default -> {
                 return "Unknown action: " + selectedAction;
+            }
         }
         
         return commandProcessor.processCommand(command);
     }
     
+    private String handleTaskAction(String buttonAction) {
+        if (buttonAction.startsWith("mark_")) {
+            String command = buildTaskCommand("mark", buttonAction.substring(5));
+            return commandProcessor.processCommand(command) + "|back";
+        } else if (buttonAction.startsWith("unmark_")) {
+            String command = buildTaskCommand("unmark", buttonAction.substring(7));
+            return commandProcessor.processCommand(command) + "|back";
+        } else if (buttonAction.startsWith("delete_")) {
+            String command = buildTaskCommand("delete", buttonAction.substring(7));
+            return commandProcessor.processCommand(command) + "|back";
+        }
+        return "Invalid action.|back";
+    }
+
     public String buildTaskCommand(String taskType, Object... args) {
         return switch (taskType) {
             case "todo" -> "todo " + (String) args[0];
@@ -120,19 +128,5 @@ public class ButtonResponseHandler {
             }
             default -> (String) args[0];
         };
-    }
-    
-    private String handleTaskAction(String buttonAction) {
-        if (buttonAction.startsWith("mark_")) {
-            String command = buildTaskCommand("mark", buttonAction.substring(5));
-            return commandProcessor.processCommand(command) + "|back";
-        } else if (buttonAction.startsWith("unmark_")) {
-            String command = buildTaskCommand("unmark", buttonAction.substring(7));
-            return commandProcessor.processCommand(command) + "|back";
-        } else if (buttonAction.startsWith("delete_")) {
-            String command = buildTaskCommand("delete", buttonAction.substring(7));
-            return commandProcessor.processCommand(command) + "|back";
-        }
-        return "Invalid action.|back";
     }
 }

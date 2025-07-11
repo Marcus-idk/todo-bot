@@ -20,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.todobot.service.ToDoBotService;
 import org.todobot.parsers.DateTimeParser;
+import org.todobot.gui.ChatAreaManager;
 import java.time.LocalDate;
 
 public class ToDoBotGUI extends Application {
@@ -32,6 +33,7 @@ public class ToDoBotGUI extends Application {
     private boolean textInputVisible = false; // Default is hidden
     private ToDoBotService service;
     private Stage primaryStage;
+    private ChatAreaManager chatAreaManager;
 
     @Override
     public void start(Stage primaryStage) {
@@ -97,14 +99,37 @@ public class ToDoBotGUI extends Application {
         root.setCenter(scrollPane);
         root.setBottom(bottomContainer);
 
+        // Initialize ChatAreaManager
+        chatAreaManager = new ChatAreaManager(
+            chatArea,
+            this::handleButtonClick,
+            this::getButtonLabel,
+            new ChatAreaManager.FormHandler() {
+                @Override
+                public void addDropdownToChat(int taskCount, String backButton) {
+                    ToDoBotGUI.this.addDropdownToChat(taskCount, backButton);
+                }
+                
+                @Override
+                public void addDeadlineFormToChat() {
+                    ToDoBotGUI.this.addDeadlineFormToChat();
+                }
+                
+                @Override
+                public void addEventFormToChat() {
+                    ToDoBotGUI.this.addEventFormToChat();
+                }
+            }
+        );
+
         // Add initial welcome message
-        addBotMessage("Hello! I'm your TODO Bot. What can I do for you?");
+        chatAreaManager.addBotMessage("Hello! I'm your TODO Bot. What can I do for you?");
         if (textInputVisible) {
-            addBotMessage("Type commands like: todo buy milk, list, help, bye");
+            chatAreaManager.addBotMessage("Type commands like: todo buy milk, list, help, bye");
         } else {
             // Show main menu buttons
             String mainMenuResponse = service.processButtonClick("");
-            addBotResponse(mainMenuResponse);
+            chatAreaManager.addBotResponse(mainMenuResponse);
         }
         
         // Ensure initial messages are visible
@@ -149,12 +174,12 @@ public class ToDoBotGUI extends Application {
         
         // Add appropriate message based on mode
         if (textInputVisible) {
-            addBotMessage("Text input mode enabled. Type commands like: todo buy milk, list, help, bye");
+            chatAreaManager.addBotMessage("Text input mode enabled. Type commands like: todo buy milk, list, help, bye");
             inputField.requestFocus();
         } else {
-            addBotMessage("Button mode enabled. Use the buttons below to interact.");
+            chatAreaManager.addBotMessage("Button mode enabled. Use the buttons below to interact.");
             String mainMenuResponse = service.processButtonClick("");
-            addBotResponse(mainMenuResponse);
+            chatAreaManager.addBotResponse(mainMenuResponse);
         }
         
         scrollToBottom();
@@ -164,7 +189,7 @@ public class ToDoBotGUI extends Application {
         String message = inputField.getText().trim();
         if (!message.isEmpty()) {
             // Add user message
-            addUserMessage(message);
+            chatAreaManager.addUserMessage(message);
             
             // Clear input field
             inputField.clear();
@@ -174,7 +199,7 @@ public class ToDoBotGUI extends Application {
             
             // Check if bye command after processing
             if (service.shouldExit()) {
-                addBotMessage("Saving & Closing... Bye. Hope to see you again soon!");
+                chatAreaManager.addBotMessage("Saving & Closing... Bye. Hope to see you again soon!");
                 
                 // Close after delay to show message using Timeline (non-blocking)
                 Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), e -> {
@@ -185,12 +210,12 @@ public class ToDoBotGUI extends Application {
             } else {
                 // If in button mode, check if we should show buttons after response
                 if (!textInputVisible) {
-                    addBotMessage(response);
+                    chatAreaManager.addBotMessage(response);
                     // Return to main menu after processing command
                     String mainMenuResponse = service.processButtonClick("");
-                    addBotResponse(mainMenuResponse);
+                    chatAreaManager.addBotResponse(mainMenuResponse);
                 } else {
-                    addBotMessage(response);
+                    chatAreaManager.addBotMessage(response);
                 }
             }
             
@@ -199,77 +224,6 @@ public class ToDoBotGUI extends Application {
         }
     }
 
-    private void addUserMessage(String message) {
-        Label userLabel = new Label("You: " + message);
-        userLabel.setStyle("-fx-background-color: #e3f2fd; -fx-padding: 10; -fx-background-radius: 10; -fx-text-fill: #1976d2;");
-        userLabel.setMaxWidth(Double.MAX_VALUE);
-        userLabel.setAlignment(Pos.CENTER_RIGHT);
-        
-        HBox userBox = new HBox();
-        userBox.setAlignment(Pos.CENTER_RIGHT);
-        userBox.getChildren().add(userLabel);
-        
-        chatArea.getChildren().add(userBox);
-    }
-
-    private void addBotMessage(String message) {
-        Label botLabel = new Label("Bot: " + message);
-        botLabel.setStyle("-fx-background-color: #f3e5f5; -fx-padding: 10; -fx-background-radius: 10; -fx-text-fill: #7b1fa2;");
-        botLabel.setMaxWidth(Double.MAX_VALUE);
-        botLabel.setAlignment(Pos.CENTER_LEFT);
-        
-        HBox botBox = new HBox();
-        botBox.setAlignment(Pos.CENTER_LEFT);
-        botBox.getChildren().add(botLabel);
-        
-        chatArea.getChildren().add(botBox);
-    }
-    
-    private void addBotResponse(String response) {
-        if (response.contains("|")) {
-            String[] parts = response.split("\\|");
-            String message = parts[0];
-            
-            // Add the message
-            addBotMessage(message);
-            
-            // Check if this is a dropdown format
-            if (parts.length >= 3 && parts[1].equals("DROPDOWN")) {
-                int taskCount = Integer.parseInt(parts[2]);
-                String backButton = parts.length > 3 ? parts[3] : "back";
-                addDropdownToChat(taskCount, backButton);
-            } else if (parts.length >= 2 && parts[1].equals("DEADLINE_FORM")) {
-                addDeadlineFormToChat();
-            } else if (parts.length >= 2 && parts[1].equals("EVENT_FORM")) {
-                addEventFormToChat();
-            } else if (parts.length >= 2) {
-                // Regular button format
-                String buttonsStr = parts[1];
-                if (!buttonsStr.isEmpty()) {
-                    String[] buttonActions = buttonsStr.split(",");
-                    addButtonsToChat(buttonActions);
-                }
-            }
-        } else {
-            // No buttons, just regular message
-            addBotMessage(response);
-        }
-    }
-    
-    private void addButtonsToChat(String[] buttonActions) {
-        HBox buttonBox = new HBox(10);
-        buttonBox.setPadding(new Insets(10));
-        buttonBox.setAlignment(Pos.CENTER_LEFT);
-        
-        for (String action : buttonActions) {
-            Button button = new Button(getButtonLabel(action));
-            button.setStyle("-fx-background-color: #e1f5fe; -fx-text-fill: #0277bd; -fx-border-color: #0277bd; -fx-border-radius: 5; -fx-background-radius: 5;");
-            button.setOnAction(e -> handleButtonClick(action));
-            buttonBox.getChildren().add(button);
-        }
-        
-        chatArea.getChildren().add(buttonBox);
-    }
     
     private void addDropdownToChat(int taskCount, String backButton) {
         VBox dropdownBox = new VBox(10);
@@ -333,15 +287,15 @@ public class ToDoBotGUI extends Application {
     
     private void handleDropdownAction(String selectedTask, String selectedAction) {
         // Add user message showing what they selected
-        addUserMessage("Selected: " + selectedTask + " - " + selectedAction);
+        chatAreaManager.addUserMessage("Selected: " + selectedTask + " - " + selectedAction);
         
         // Process through service - business logic handled there
         String response = service.handleDropdownSelection(selectedTask, selectedAction);
-        addBotMessage(response);
+        chatAreaManager.addBotMessage(response);
         
         // Return to main menu
         String mainMenuResponse = service.processButtonClick("");
-        addBotResponse(mainMenuResponse);
+        chatAreaManager.addBotResponse(mainMenuResponse);
         
         scrollToBottom();
     }
@@ -416,29 +370,29 @@ public class ToDoBotGUI extends Application {
             if (!description.isEmpty() && selectedDate != null && selectedHour != null && selectedMinute != null) {
                 // Add user message
                 String dateTimeStr = DateTimeParser.formatForCommandInput(selectedDate, selectedHour, selectedMinute);
-                addUserMessage("Created deadline: " + description + " by " + dateTimeStr);
+                chatAreaManager.addUserMessage("Created deadline: " + description + " by " + dateTimeStr);
                 
                 // Pass raw data to service - let it handle command building
                 String response = service.handleDeadlineTask(description, selectedDate, selectedHour, selectedMinute);
-                addBotMessage(response);
+                chatAreaManager.addBotMessage(response);
                 
                 // Remove form
                 chatArea.getChildren().remove(formBox);
                 
                 // Return to main menu
                 String mainMenuResponse = service.processButtonClick("");
-                addBotResponse(mainMenuResponse);
+                chatAreaManager.addBotResponse(mainMenuResponse);
                 
                 scrollToBottom();
             } else {
-                addBotMessage("Please fill in all fields.");
+                chatAreaManager.addBotMessage("Please fill in all fields.");
             }
         });
         
         cancelButton.setOnAction(e -> {
             chatArea.getChildren().remove(formBox);
             String mainMenuResponse = service.processButtonClick("");
-            addBotResponse(mainMenuResponse);
+            chatAreaManager.addBotResponse(mainMenuResponse);
             scrollToBottom();
         });
         
@@ -541,29 +495,29 @@ public class ToDoBotGUI extends Application {
                 // Add user message
                 String fromDateTimeStr = DateTimeParser.formatForCommandInput(fromDate, fromHour, fromMinute);
                 String toDateTimeStr = DateTimeParser.formatForCommandInput(toDate, toHour, toMinute);
-                addUserMessage("Created event: " + description + " from " + fromDateTimeStr + " to " + toDateTimeStr);
+                chatAreaManager.addUserMessage("Created event: " + description + " from " + fromDateTimeStr + " to " + toDateTimeStr);
                 
                 // Pass raw data to service - let it handle command building
                 String response = service.handleEventTask(description, fromDate, fromHour, fromMinute, toDate, toHour, toMinute);
-                addBotMessage(response);
+                chatAreaManager.addBotMessage(response);
                 
                 // Remove form
                 chatArea.getChildren().remove(formBox);
                 
                 // Return to main menu
                 String mainMenuResponse = service.processButtonClick("");
-                addBotResponse(mainMenuResponse);
+                chatAreaManager.addBotResponse(mainMenuResponse);
                 
                 scrollToBottom();
             } else {
-                addBotMessage("Please fill in all fields.");
+                chatAreaManager.addBotMessage("Please fill in all fields.");
             }
         });
         
         cancelButton.setOnAction(e -> {
             chatArea.getChildren().remove(formBox);
             String mainMenuResponse = service.processButtonClick("");
-            addBotResponse(mainMenuResponse);
+            chatAreaManager.addBotResponse(mainMenuResponse);
             scrollToBottom();
         });
         
@@ -596,11 +550,11 @@ public class ToDoBotGUI extends Application {
     
     private void handleButtonClick(String action) {
         // Add user message showing what they clicked
-        addUserMessage("Clicked: " + getButtonLabel(action));
+        chatAreaManager.addUserMessage("Clicked: " + getButtonLabel(action));
         
         // Handle special cases
         if (action.equals("exit")) {
-            addBotMessage("Saving & Closing... Bye. Hope to see you again soon!");
+            chatAreaManager.addBotMessage("Saving & Closing... Bye. Hope to see you again soon!");
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), e -> {
                 service.cleanup();
                 primaryStage.close();
@@ -614,10 +568,10 @@ public class ToDoBotGUI extends Application {
         
         // Check if this is a text input request
         if (action.equals("todo") || action.equals("find_tasks")) {
-            addBotMessage(response);
+            chatAreaManager.addBotMessage(response);
             showTextInputForTask(action);
         } else {
-            addBotResponse(response);
+            chatAreaManager.addBotResponse(response);
         }
         
         // Scroll to bottom
@@ -640,7 +594,7 @@ public class ToDoBotGUI extends Application {
             String taskText = taskInput.getText().trim();
             if (!taskText.isEmpty()) {
                 // Add user message
-                addUserMessage(taskText);
+                chatAreaManager.addUserMessage(taskText);
                 
                 // Pass raw data to service - let it handle command building
                 String response;
@@ -651,14 +605,14 @@ public class ToDoBotGUI extends Application {
                 } else {
                     response = "Unknown task type";
                 }
-                addBotMessage(response);
+                chatAreaManager.addBotMessage(response);
                 
                 // Remove the input box
                 chatArea.getChildren().remove(inputBox);
                 
                 // Return to main menu
                 String mainMenuResponse = service.processButtonClick("");
-                addBotResponse(mainMenuResponse);
+                chatAreaManager.addBotResponse(mainMenuResponse);
                 
                 scrollToBottom();
             }
@@ -670,7 +624,7 @@ public class ToDoBotGUI extends Application {
             
             // Return to main menu
             String mainMenuResponse = service.processButtonClick("");
-            addBotResponse(mainMenuResponse);
+            chatAreaManager.addBotResponse(mainMenuResponse);
             
             scrollToBottom();
         });
