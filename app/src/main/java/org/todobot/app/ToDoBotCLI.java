@@ -16,12 +16,13 @@ public class ToDoBotCLI {
         while (true) {
             String input = ui.readCommand();
             
-            if (service.shouldExit(input)) {
+            String response = service.processCommand(input);
+            ui.showResponse(response);
+            
+            if (service.shouldExit()) {
                 break;
             }
             
-            String response = service.processCommand(input);
-            ui.showResponse(response);
             ui.showLine();
         }
     }
