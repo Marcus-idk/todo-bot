@@ -2,6 +2,8 @@ package org.todobot.app;
 
 import org.todobot.service.ToDoBotService;
 import org.todobot.ui.ThemeManager;
+import org.todobot.ui.AnimatedMessage;
+import org.todobot.ui.AnimatedMessage.MessageType;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -159,31 +161,11 @@ public class ToDoBotGUI extends Application {
     }
 
     private void addUserMessage(String message) {
-        Label userLabel = new Label("> " + message);
-        userLabel.setStyle(ThemeManager.USER_MESSAGE);
-        userLabel.setMaxWidth(Double.MAX_VALUE);
-        userLabel.setAlignment(Pos.CENTER_RIGHT);
-        
-        HBox userBox = new HBox();
-        userBox.setAlignment(Pos.CENTER_RIGHT);
-        userBox.setPadding(new Insets(4, 0, 4, 60));
-        userBox.getChildren().add(userLabel);
-        
-        chatArea.getChildren().add(userBox);
+        chatArea.getChildren().add(new AnimatedMessage(message, MessageType.USER));
     }
 
     private void addBotMessage(String message) {
-        Label botLabel = new Label("● " + message);
-        botLabel.setStyle(ThemeManager.BOT_MESSAGE);
-        botLabel.setMaxWidth(Double.MAX_VALUE);
-        botLabel.setAlignment(Pos.CENTER_LEFT);
-        
-        HBox botBox = new HBox();
-        botBox.setAlignment(Pos.CENTER_LEFT);
-        botBox.setPadding(new Insets(4, 60, 4, 0));
-        botBox.getChildren().add(botLabel);
-        
-        chatArea.getChildren().add(botBox);
+        chatArea.getChildren().add(new AnimatedMessage(message, MessageType.BOT));
     }
 
     private void scrollToBottom() {
