@@ -17,6 +17,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.todobot.service.ToDoBotService;
+import org.todobot.ui.ChatStyles;
 
 public class ToDoBotGUI extends Application {
     private VBox chatArea;
@@ -135,7 +136,7 @@ public class ToDoBotGUI extends Application {
 
     private void addUserMessage(String message) {
         Label userLabel = new Label("You: " + message);
-        userLabel.setStyle("-fx-background-color: #e3f2fd; -fx-padding: 10; -fx-background-radius: 10; -fx-text-fill: #1976d2;");
+        userLabel.setStyle(ChatStyles.USER_MESSAGE_STYLE);
         userLabel.setMaxWidth(Double.MAX_VALUE);
         userLabel.setAlignment(Pos.CENTER_RIGHT);
         
@@ -148,7 +149,7 @@ public class ToDoBotGUI extends Application {
 
     private void addBotMessage(String message) {
         Label botLabel = new Label("Bot: " + message);
-        botLabel.setStyle("-fx-background-color: #f3e5f5; -fx-padding: 10; -fx-background-radius: 10; -fx-text-fill: #7b1fa2;");
+        botLabel.setStyle(ChatStyles.BOT_MESSAGE_STYLE);
         botLabel.setMaxWidth(Double.MAX_VALUE);
         botLabel.setAlignment(Pos.CENTER_LEFT);
         
