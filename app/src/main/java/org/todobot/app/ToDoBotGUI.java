@@ -4,6 +4,7 @@ import org.todobot.service.ToDoBotService;
 import org.todobot.ui.ThemeManager;
 import org.todobot.ui.AnimatedMessage;
 import org.todobot.ui.AnimatedMessage.MessageType;
+import org.todobot.ui.AnimationUtils;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -29,6 +30,10 @@ public class ToDoBotGUI extends Application {
     private Button sendButton;
     private ToDoBotService service;
     private Stage primaryStage;
+    
+    // Processing state management
+    private AnimatedMessage processingMessage;
+    private Timeline typingAnimation;
 
     @Override
     public void start(Stage primaryStage) {
@@ -143,18 +148,34 @@ public class ToDoBotGUI extends Application {
             
             // Check if bye command
             if (service.shouldExit(message)) {
-                addBotMessage("Saving data... Goodbye.");
+                // Show processing indicator for bye command
+                showProcessingIndicator();
                 
-                // Close after delay to show message using Timeline (non-blocking)
-                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), e -> {
-                    service.cleanup();
-                    primaryStage.close();
-                }));
-                timeline.play();
+                Timeline delay = AnimationUtils.createProcessingDelay();
+                delay.setOnFinished(e -> {
+                    hideProcessingIndicator();
+                    addBotMessage("Saving data... Goodbye.");
+                    
+                    // Close after additional delay
+                    Timeline closeDelay = new Timeline(new KeyFrame(Duration.millis(2000), closeEvent -> {
+                        service.cleanup();
+                        primaryStage.close();
+                    }));
+                    closeDelay.play();
+                });
+                delay.play();
             } else {
-                // Process command through service
-                String response = service.processCommand(message);
-                addBotMessage(response);
+                // Show processing indicator for regular commands
+                showProcessingIndicator();
+                
+                // Process command and show result after delay
+                Timeline delay = AnimationUtils.createProcessingDelay();
+                delay.setOnFinished(e -> {
+                    hideProcessingIndicator();
+                    String response = service.processCommand(message);
+                    addBotMessage(response);
+                });
+                delay.play();
             }
             scrollToBottom();
         }
@@ -166,6 +187,31 @@ public class ToDoBotGUI extends Application {
 
     private void addBotMessage(String message) {
         chatArea.getChildren().add(new AnimatedMessage(message, MessageType.BOT));
+    }
+    
+    private void showProcessingIndicator() {
+        // Create processing message
+        processingMessage = new AnimatedMessage("Processing", MessageType.BOT);
+        chatArea.getChildren().add(processingMessage);
+        
+        // Start typing dots animation on the label inside the processing message
+        Label processingLabel = (Label) processingMessage.getChildren().get(0);
+        typingAnimation = AnimationUtils.createTypingDots(processingLabel);
+        typingAnimation.play();
+    }
+    
+    private void hideProcessingIndicator() {
+        if (processingMessage != null) {
+            // Stop typing animation
+            if (typingAnimation != null) {
+                typingAnimation.stop();
+                typingAnimation = null;
+            }
+            
+            // Remove processing message from chat area
+            chatArea.getChildren().remove(processingMessage);
+            processingMessage = null;
+        }
     }
 
     private void scrollToBottom() {

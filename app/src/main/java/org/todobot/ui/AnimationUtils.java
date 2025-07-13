@@ -98,6 +98,8 @@ public class AnimationUtils {
     }
     
     public static Timeline createProcessingDelay() {
-        return createDelay(Duration.seconds(1));
+        // Random delay between 100ms and 1000ms
+        double randomSeconds = 0.1 + (Math.random() * 0.9);
+        return createDelay(Duration.seconds(randomSeconds));
     }
 }
