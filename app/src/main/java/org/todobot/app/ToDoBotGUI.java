@@ -1,7 +1,7 @@
 package org.todobot.app;
 
 import org.todobot.service.ToDoBotService;
-import org.todobot.ui.ChatStyles;
+import org.todobot.ui.ThemeManager;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -33,14 +33,15 @@ public class ToDoBotGUI extends Application {
         this.primaryStage = primaryStage;
         this.service = new ToDoBotService();
         
-        primaryStage.setTitle("TODO Bot");
+        primaryStage.setTitle("Task Manager - KUN_BOT");
 
-        // Create main layout
+        // Create main layout with futuristic background
         BorderPane root = new BorderPane();
+        root.setStyle(ThemeManager.MAIN_BACKGROUND);
 
-        // Create chat area
-        chatArea = new VBox(10);
-        chatArea.setPadding(new Insets(10));
+        // Create chat area with glassmorphism container
+        chatArea = new VBox(15);
+        chatArea.setPadding(new Insets(20));
         chatArea.setAlignment(Pos.TOP_LEFT);
         
         // Add listener to auto-scroll when content height changes
@@ -48,23 +49,44 @@ public class ToDoBotGUI extends Application {
             scrollToBottom();
         });
 
-        // Create scroll pane for chat area
+        // Create scroll pane for chat area with futuristic styling
         scrollPane = new ScrollPane(chatArea);
         scrollPane.setFitToWidth(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setStyle(ThemeManager.SCROLL_PANE);
+        
+        // Apply glassmorphism effect to chat container
+        chatArea.setStyle(ThemeManager.CHAT_CONTAINER);
 
-        // Create input area
-        HBox inputArea = new HBox(10);
-        inputArea.setPadding(new Insets(10));
+        // Create futuristic input area
+        HBox inputArea = new HBox(15);
+        inputArea.setStyle(ThemeManager.INPUT_CONTAINER);
         inputArea.setAlignment(Pos.CENTER);
 
+        // Professional input field with subtle effects
         inputField = new TextField();
-        inputField.setPromptText("Type a command (e.g., todo buy milk, list, help)...");
+        inputField.setPromptText("Enter command (todo, list, help, deadline, event)");
+        inputField.setStyle(ThemeManager.INPUT_FIELD + ThemeManager.INPUT_PROMPT_TEXT);
         HBox.setHgrow(inputField, Priority.ALWAYS);
+        
+        // Add focus effects to input field
+        inputField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (isNowFocused) {
+                inputField.setStyle(ThemeManager.INPUT_FIELD_FOCUSED + ThemeManager.INPUT_PROMPT_TEXT);
+            } else {
+                inputField.setStyle(ThemeManager.INPUT_FIELD + ThemeManager.INPUT_PROMPT_TEXT);
+            }
+        });
 
-        sendButton = new Button("Send");
-        sendButton.setMinWidth(80);
+        // Futuristic send button with hover effects
+        sendButton = new Button("SEND");
+        sendButton.setStyle(ThemeManager.SEND_BUTTON);
+        sendButton.setMinWidth(100);
+        
+        // Add hover effects to send button
+        sendButton.setOnMouseEntered(e -> sendButton.setStyle(ThemeManager.SEND_BUTTON_HOVER));
+        sendButton.setOnMouseExited(e -> sendButton.setStyle(ThemeManager.SEND_BUTTON));
 
         inputArea.getChildren().addAll(inputField, sendButton);
 
@@ -72,9 +94,9 @@ public class ToDoBotGUI extends Application {
         root.setCenter(scrollPane);
         root.setBottom(inputArea);
 
-        // Add initial welcome message
-        addBotMessage("Hello! I'm your TODO Bot. What can I do for you?");
-        addBotMessage("Type commands like: todo buy milk, list, help, bye");
+        // Add initial system message
+        addBotMessage("Task Management System Ready");
+        addBotMessage("Available commands: todo, list, help, deadline, event, bye");
         
         // Ensure initial messages are visible
         scrollToBottom();
@@ -82,9 +104,15 @@ public class ToDoBotGUI extends Application {
         // Set up event handlers
         setupEventHandlers();
 
-        // Create scene and show stage
-        Scene scene = new Scene(root, 600, 500);
+        // Create scene with optimal size for futuristic interface
+        Scene scene = new Scene(root, 800, 600);
+        
+        // Apply custom scroll bar styling
+        scene.getStylesheets().add("data:text/css," + ThemeManager.CUSTOM_SCROLL_BAR);
+        
         primaryStage.setScene(scene);
+        primaryStage.setMinWidth(600);
+        primaryStage.setMinHeight(400);
         
         // Handle window close event
         primaryStage.setOnCloseRequest(e -> {
@@ -113,7 +141,7 @@ public class ToDoBotGUI extends Application {
             
             // Check if bye command
             if (service.shouldExit(message)) {
-                addBotMessage("Saving & Closing... Bye. Hope to see you again soon!");
+                addBotMessage("Saving data... Goodbye.");
                 
                 // Close after delay to show message using Timeline (non-blocking)
                 Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), e -> {
@@ -131,26 +159,28 @@ public class ToDoBotGUI extends Application {
     }
 
     private void addUserMessage(String message) {
-        Label userLabel = new Label("You: " + message);
-        userLabel.setStyle(ChatStyles.USER_MESSAGE_STYLE);
+        Label userLabel = new Label("> " + message);
+        userLabel.setStyle(ThemeManager.USER_MESSAGE);
         userLabel.setMaxWidth(Double.MAX_VALUE);
         userLabel.setAlignment(Pos.CENTER_RIGHT);
         
         HBox userBox = new HBox();
         userBox.setAlignment(Pos.CENTER_RIGHT);
+        userBox.setPadding(new Insets(4, 0, 4, 60));
         userBox.getChildren().add(userLabel);
         
         chatArea.getChildren().add(userBox);
     }
 
     private void addBotMessage(String message) {
-        Label botLabel = new Label("Bot: " + message);
-        botLabel.setStyle(ChatStyles.BOT_MESSAGE_STYLE);
+        Label botLabel = new Label("● " + message);
+        botLabel.setStyle(ThemeManager.BOT_MESSAGE);
         botLabel.setMaxWidth(Double.MAX_VALUE);
         botLabel.setAlignment(Pos.CENTER_LEFT);
         
         HBox botBox = new HBox();
         botBox.setAlignment(Pos.CENTER_LEFT);
+        botBox.setPadding(new Insets(4, 60, 4, 0));
         botBox.getChildren().add(botLabel);
         
         chatArea.getChildren().add(botBox);
