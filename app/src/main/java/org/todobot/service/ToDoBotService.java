@@ -79,7 +79,6 @@ public class ToDoBotService {
     }
     
     public void cleanup() {
-        // Final save before exit
         storage.saveTasks(taskList.getAllTasks());
     }
 }
