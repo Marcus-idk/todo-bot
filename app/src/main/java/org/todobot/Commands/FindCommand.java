@@ -1,5 +1,6 @@
 package org.todobot.commands;
 
+import org.todobot.common.BotMessages;
 import org.todobot.service.TaskList;
 
 public class FindCommand extends Command {
@@ -10,7 +11,7 @@ public class FindCommand extends Command {
     @Override
     public String execute(String[] arguments) {
         if (arguments.length == 0) {
-            return " Please provide a keyword to search for.";
+            return BotMessages.SEARCH_KEYWORD_REQUIRED;
         }
         return taskList.findTasks(arguments[0]);
     }

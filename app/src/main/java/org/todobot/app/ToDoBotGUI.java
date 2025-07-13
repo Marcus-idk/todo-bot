@@ -5,6 +5,7 @@ import org.todobot.ui.ThemeManager;
 import org.todobot.ui.AnimatedMessage;
 import org.todobot.ui.AnimatedMessage.MessageType;
 import org.todobot.ui.AnimationUtils;
+import org.todobot.common.BotMessages;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -117,8 +118,8 @@ public class ToDoBotGUI extends Application {
     }
     
     private void addInitialMessages() {
-        addBotMessage("Task Management System Ready");
-        addBotMessage("Available commands: todo, list, help, deadline, event, bye");
+        addBotMessage(BotMessages.GUI_SYSTEM_READY);
+        addBotMessage(BotMessages.GUI_AVAILABLE_COMMANDS);
         scrollToBottom();
     }
     
@@ -173,7 +174,7 @@ public class ToDoBotGUI extends Application {
         Timeline delay = AnimationUtils.createProcessingDelay();
         delay.setOnFinished(e -> {
             hideProcessingIndicator();
-            addBotMessage("Saving data... Goodbye.");
+            addBotMessage(BotMessages.GUI_SAVING_GOODBYE);
             
             // Close after additional delay
             Timeline closeDelay = new Timeline(new KeyFrame(Duration.millis(2000), closeEvent -> {

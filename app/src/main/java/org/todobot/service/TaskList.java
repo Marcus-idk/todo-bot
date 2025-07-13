@@ -2,6 +2,7 @@ package org.todobot.service;
 
 import java.util.ArrayList;
 
+import org.todobot.common.BotMessages;
 import org.todobot.model.Task;
 
 public class TaskList {
@@ -77,7 +78,7 @@ public class TaskList {
     
     public String findTasks(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
-            return " Please provide a keyword to search for.";
+            return BotMessages.SEARCH_KEYWORD_REQUIRED;
         }
         
         ArrayList<Task> matchingTasks = new ArrayList<>();

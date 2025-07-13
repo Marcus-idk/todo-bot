@@ -7,6 +7,7 @@ import org.todobot.commands.FindCommand;
 import org.todobot.commands.HelpCommand;
 import org.todobot.commands.ListCommand;
 import org.todobot.commands.MarkCommand;
+import org.todobot.common.BotMessages;
 import org.todobot.common.CommandType;
 import org.todobot.parsers.ParseResult;
 import org.todobot.parsers.Parser;
@@ -33,12 +34,12 @@ public class ToDoBotService {
         
         // Handle bye command
         if (result.getCommandType() == CommandType.BYE) {
-            return " Bye. Hope to see you again soon!";
+            return BotMessages.FAREWELL;
         }
         
         Command command = createCommand(result.getCommandType());
         if (command == null) {
-            return " Unknown command type.";
+            return BotMessages.UNKNOWN_COMMAND;
         }
         
         String output = command.execute(result);

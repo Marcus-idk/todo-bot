@@ -62,4 +62,55 @@ public class BotMessages {
     // System messages
     public static final String FAREWELL = " Bye. Hope to see you again soon!";
     public static final String GREETING = " What can I do for you?";
+    public static final String UNKNOWN_COMMAND = " Unknown command type.";
+    
+    // === GUI INTERFACE MESSAGES ===
+    public static final String GUI_SYSTEM_READY = " Task Management System Ready";
+    public static final String GUI_AVAILABLE_COMMANDS = " Available commands: todo, list, help, deadline, event, bye";
+    public static final String GUI_SAVING_GOODBYE = " Saving data... Goodbye.";
+    
+    // === TASK DISPLAY MESSAGES ===
+    public static final String TASK_LIST_HEADER = " Here are the tasks in your list:";
+    public static final String TASK_LIST_EMPTY = " No tasks found! Your to-do list is as empty as my brain! 🤖";
+    public static final String SEARCH_RESULTS_HEADER = " Here are the matching tasks in your list:";
+    public static final String SEARCH_KEYWORD_REQUIRED = " Please provide a keyword to search for.";
+    
+    // Dynamic search message
+    public static String formatNoMatchingTasks(String keyword) {
+        return " No matching tasks found for keyword: " + keyword;
+    }
+    
+    // Complete help text
+    public static String getHelpText() {
+        StringBuilder help = new StringBuilder();
+        help.append(" Available commands:\n\n");
+        
+        help.append(" Adding tasks:\n");
+        help.append("   todo [description]                     - Add a simple todo task\n");
+        help.append("   deadline [description] /by [date]      - Add task with deadline\n");
+        help.append("   event [description] /from [start] /to [end] - Add event with time range\n\n");
+        
+        help.append(" Managing tasks:\n");
+        help.append("   list, ls, show, display                - Show all tasks\n");
+        help.append("   find, search [keyword]                 - Find tasks by keyword\n");
+        help.append("   mark [number]                          - Mark task as done\n");
+        help.append("   unmark [number]                        - Mark task as not done\n");
+        help.append("   delete, del, d, remove, rm [number]    - Delete a task\n\n");
+        
+        help.append(" Other:\n");
+        help.append("   help, h, ?, commands                   - Show this help message\n");
+        help.append("   bye, exit, quit, goodbye               - Exit the program\n\n");
+        
+        help.append(" Examples:\n");
+        help.append("   todo read a book\n");
+        help.append("   deadline submit report /by 25-12-2024\n");
+        help.append("   deadline submit report /by 25-12-2024 17:00\n");
+        help.append("   event team meeting /from 25-12-2024 14:00 /to 25-12-2024 16:00\n");
+        help.append("   find book\n");
+        help.append("   mark 1\n");
+        help.append("   delete 3\n");
+        help.append("   list");
+        
+        return help.toString();
+    }
 }
