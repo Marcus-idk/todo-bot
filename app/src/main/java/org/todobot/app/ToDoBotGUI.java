@@ -1,12 +1,14 @@
 package org.todobot.app;
 
+import org.todobot.service.ToDoBotService;
+import org.todobot.ui.ChatStyles;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.util.Duration;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -16,8 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.todobot.service.ToDoBotService;
-import org.todobot.ui.ChatStyles;
+import javafx.util.Duration;
 
 public class ToDoBotGUI extends Application {
     private VBox chatArea;
@@ -97,10 +98,7 @@ public class ToDoBotGUI extends Application {
     }
 
     private void setupEventHandlers() {
-        // Send button click
         sendButton.setOnAction(e -> handleSendMessage());
-
-        // Enter key press in input field
         inputField.setOnAction(e -> handleSendMessage());
     }
 
@@ -128,8 +126,6 @@ public class ToDoBotGUI extends Application {
                 String response = service.processCommand(message);
                 addBotMessage(response);
             }
-            
-            // Scroll to bottom
             scrollToBottom();
         }
     }
@@ -161,7 +157,6 @@ public class ToDoBotGUI extends Application {
     }
 
     private void scrollToBottom() {
-        // Scroll to bottom after a short delay to ensure layout is complete
         javafx.application.Platform.runLater(() -> {
             scrollPane.setVvalue(1.0);
         });

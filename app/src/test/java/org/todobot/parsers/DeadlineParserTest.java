@@ -1,11 +1,10 @@
 package org.todobot.parsers;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.time.LocalDateTime;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.todobot.common.BotMessages;
@@ -48,7 +47,7 @@ public class DeadlineParserTest {
         Object[] timeData = result.getTimeData();
         LocalDateTime expectedDateTime = LocalDateTime.of(2023, 12, 25, 0, 0);
         assertEquals(expectedDateTime, timeData[0]);
-        assertFalse((Boolean) timeData[1]); // hasTime = false
+        assertFalse((Boolean) timeData[1]);
     }
     
     @Test

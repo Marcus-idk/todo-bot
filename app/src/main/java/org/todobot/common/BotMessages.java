@@ -7,11 +7,13 @@ public class BotMessages {
     private static final String RESET = "\u001B[0m";
     
     // Display constants
-    public static final String LOGO = " _  ___   _ _   _    ____   ___ _____ \n"
-            + "| |/ / | | | \\ | |  | __ ) / _ \\_   _|\n"
-            + "| ' /| | | |  \\| |  |  _ \\| | | || |  \n"
-            + "| . \\| |_| | |\\  |  | |_) | |_| || |  \n"
-            + "|_|\\_\\\\___/|_| \\_|  |____/ \\___/ |_|  \n";
+    public static final String LOGO = """
+                                       _  ___   _ _   _    ____   ___ _____ 
+                                      | |/ / | | | \\ | |  | __ ) / _ \\_   _|
+                                      | ' /| | | |  \\| |  |  _ \\| | | || |  
+                                      | . \\| |_| | |\\  |  | |_) | |_| || |  
+                                      |_|\\_\\\\___/|_| \\_|  |____/ \\___/ |_|  
+                                      """;
     
     public static final String HORIZONTAL_LINE = "____________________________________________________________";
     
