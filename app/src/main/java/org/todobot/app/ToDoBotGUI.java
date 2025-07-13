@@ -42,10 +42,25 @@ public class ToDoBotGUI extends Application {
         
         primaryStage.setTitle("Task Manager - KUN_BOT");
 
-        // Create main layout with futuristic background
+        // Create main layout
         BorderPane root = new BorderPane();
         root.setStyle(ThemeManager.MAIN_BACKGROUND);
+        
+        // Create UI components
+        createChatArea();
+        HBox inputArea = createInputArea();
+        
+        // Assemble layout
+        root.setCenter(scrollPane);
+        root.setBottom(inputArea);
 
+        // Add initial messages and setup
+        addInitialMessages();
+        setupEventHandlers();
+        setupScene(root);
+    }
+    
+    private void createChatArea() {
         // Create chat area with glassmorphism container
         chatArea = new VBox(15);
         chatArea.setPadding(new Insets(20));
@@ -65,7 +80,9 @@ public class ToDoBotGUI extends Application {
         
         // Apply glassmorphism effect to chat container
         chatArea.setStyle(ThemeManager.CHAT_CONTAINER);
-
+    }
+    
+    private HBox createInputArea() {
         // Create futuristic input area
         HBox inputArea = new HBox(15);
         inputArea.setStyle(ThemeManager.INPUT_CONTAINER);
@@ -96,21 +113,16 @@ public class ToDoBotGUI extends Application {
         sendButton.setOnMouseExited(e -> sendButton.setStyle(ThemeManager.SEND_BUTTON));
 
         inputArea.getChildren().addAll(inputField, sendButton);
-
-        // Set up the layout
-        root.setCenter(scrollPane);
-        root.setBottom(inputArea);
-
-        // Add initial system message
+        return inputArea;
+    }
+    
+    private void addInitialMessages() {
         addBotMessage("Task Management System Ready");
         addBotMessage("Available commands: todo, list, help, deadline, event, bye");
-        
-        // Ensure initial messages are visible
         scrollToBottom();
-
-        // Set up event handlers
-        setupEventHandlers();
-
+    }
+    
+    private void setupScene(BorderPane root) {
         // Create scene with optimal size for futuristic interface
         Scene scene = new Scene(root, 800, 600);
         
@@ -140,45 +152,49 @@ public class ToDoBotGUI extends Application {
     private void handleSendMessage() {
         String message = inputField.getText().trim();
         if (!message.isEmpty()) {
-            // Add user message
+            // Add user message and clear input
             addUserMessage(message);
-            
-            // Clear input field
             inputField.clear();
             
-            // Check if bye command
+            // Route to appropriate handler
             if (service.shouldExit(message)) {
-                // Show processing indicator for bye command
-                showProcessingIndicator();
-                
-                Timeline delay = AnimationUtils.createProcessingDelay();
-                delay.setOnFinished(e -> {
-                    hideProcessingIndicator();
-                    addBotMessage("Saving data... Goodbye.");
-                    
-                    // Close after additional delay
-                    Timeline closeDelay = new Timeline(new KeyFrame(Duration.millis(2000), closeEvent -> {
-                        service.cleanup();
-                        primaryStage.close();
-                    }));
-                    closeDelay.play();
-                });
-                delay.play();
+                handleByeCommand();
             } else {
-                // Show processing indicator for regular commands
-                showProcessingIndicator();
-                
-                // Process command and show result after delay
-                Timeline delay = AnimationUtils.createProcessingDelay();
-                delay.setOnFinished(e -> {
-                    hideProcessingIndicator();
-                    String response = service.processCommand(message);
-                    addBotMessage(response);
-                });
-                delay.play();
+                handleRegularCommand(message);
             }
+            
             scrollToBottom();
         }
+    }
+    
+    private void handleByeCommand() {
+        showProcessingIndicator();
+        
+        Timeline delay = AnimationUtils.createProcessingDelay();
+        delay.setOnFinished(e -> {
+            hideProcessingIndicator();
+            addBotMessage("Saving data... Goodbye.");
+            
+            // Close after additional delay
+            Timeline closeDelay = new Timeline(new KeyFrame(Duration.millis(2000), closeEvent -> {
+                service.cleanup();
+                primaryStage.close();
+            }));
+            closeDelay.play();
+        });
+        delay.play();
+    }
+    
+    private void handleRegularCommand(String message) {
+        showProcessingIndicator();
+        
+        Timeline delay = AnimationUtils.createProcessingDelay();
+        delay.setOnFinished(e -> {
+            hideProcessingIndicator();
+            String response = service.processCommand(message);
+            addBotMessage(response);
+        });
+        delay.play();
     }
 
     private void addUserMessage(String message) {
