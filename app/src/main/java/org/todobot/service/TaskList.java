@@ -67,6 +67,12 @@ public class TaskList {
         return tasks.remove(taskNumber - 1);
     }
     
+    public int deleteAllTasks() {
+        int deletedCount = tasks.size();
+        tasks.clear();
+        return deletedCount;
+    }
+    
     public ArrayList<Task> getAllTasks() {
         return new ArrayList<>(tasks);
     }

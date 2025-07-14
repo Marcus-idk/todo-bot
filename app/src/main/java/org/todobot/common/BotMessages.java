@@ -59,6 +59,16 @@ public class BotMessages {
                "\n Now you have " + remainingTasks + " tasks in the list.";
     }
     
+    public static String formatDeletedAllTasks(int deletedCount) {
+        if (deletedCount == 0) {
+            return " No tasks to delete! Your list is already empty! 🤖";
+        } else if (deletedCount == 1) {
+            return " Noted. I've removed 1 task. Your list is now empty.";
+        } else {
+            return " Noted. I've removed all " + deletedCount + " tasks. Your list is now empty.";
+        }
+    }
+    
     // System messages
     public static final String FAREWELL = " Bye. Hope to see you again soon!";
     public static final String GREETING = " What can I do for you?";
@@ -95,7 +105,8 @@ public class BotMessages {
         help.append("   find, search [keyword]                 - Find tasks by keyword\n");
         help.append("   mark [number]                          - Mark task as done\n");
         help.append("   unmark [number]                        - Mark task as not done\n");
-        help.append("   delete, del, d, remove, rm [number]    - Delete a task\n\n");
+        help.append("   delete, del, d, remove, rm [number]    - Delete a task\n");
+        help.append("   delete, del, d, remove, rm all         - Delete all tasks\n\n");
         
         help.append(" Other:\n");
         help.append("   help, h, ?, commands                   - Show this help message\n");
@@ -109,6 +120,7 @@ public class BotMessages {
         help.append("   find book\n");
         help.append("   mark 1\n");
         help.append("   delete 3\n");
+        help.append("   delete all\n");
         help.append("   list");
         
         return help.toString();

@@ -8,6 +8,7 @@ public enum CommandType {
     MARK("mark"),
     UNMARK("unmark"),
     DELETE("delete"),
+    DELETE_ALL("delete_all"),
     FIND("find"),
     HELP("help"),
     BYE("bye");
