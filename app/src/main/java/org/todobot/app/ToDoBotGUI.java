@@ -29,6 +29,7 @@ public class ToDoBotGUI extends Application {
     private ScrollPane scrollPane;
     private TextField inputField;
     private Button sendButton;
+    private Button resetButton;
     private ToDoBotService service;
     private Stage primaryStage;
     
@@ -104,6 +105,15 @@ public class ToDoBotGUI extends Application {
             }
         });
 
+        // Futuristic reset button with hover effects
+        resetButton = new Button("RESET");
+        resetButton.setStyle(ThemeManager.SEND_BUTTON);
+        resetButton.setMinWidth(100);
+        
+        // Add hover effects to reset button
+        resetButton.setOnMouseEntered(e -> resetButton.setStyle(ThemeManager.SEND_BUTTON_HOVER));
+        resetButton.setOnMouseExited(e -> resetButton.setStyle(ThemeManager.SEND_BUTTON));
+        
         // Futuristic send button with hover effects
         sendButton = new Button("SEND");
         sendButton.setStyle(ThemeManager.SEND_BUTTON);
@@ -113,7 +123,7 @@ public class ToDoBotGUI extends Application {
         sendButton.setOnMouseEntered(e -> sendButton.setStyle(ThemeManager.SEND_BUTTON_HOVER));
         sendButton.setOnMouseExited(e -> sendButton.setStyle(ThemeManager.SEND_BUTTON));
 
-        inputArea.getChildren().addAll(inputField, sendButton);
+        inputArea.getChildren().addAll(inputField, resetButton, sendButton);
         return inputArea;
     }
     
@@ -147,6 +157,7 @@ public class ToDoBotGUI extends Application {
 
     private void setupEventHandlers() {
         sendButton.setOnAction(e -> handleSendMessage());
+        resetButton.setOnAction(e -> handleResetChat());
         inputField.setOnAction(e -> handleSendMessage());
     }
 
@@ -231,6 +242,20 @@ public class ToDoBotGUI extends Application {
         }
     }
 
+    private void handleResetChat() {
+        // Clear all chat messages
+        chatArea.getChildren().clear();
+        
+        // Clear input field
+        inputField.clear();
+        
+        // Restore initial messages
+        addInitialMessages();
+        
+        // Focus back to input field
+        inputField.requestFocus();
+    }
+    
     private void scrollToBottom() {
         javafx.application.Platform.runLater(() -> {
             scrollPane.setVvalue(1.0);
