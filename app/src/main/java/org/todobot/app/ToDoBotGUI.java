@@ -105,23 +105,9 @@ public class ToDoBotGUI extends Application {
             }
         });
 
-        // Futuristic reset button with hover effects
-        resetButton = new Button("RESET");
-        resetButton.setStyle(ThemeManager.SEND_BUTTON);
-        resetButton.setMinWidth(100);
-        
-        // Add hover effects to reset button
-        resetButton.setOnMouseEntered(e -> resetButton.setStyle(ThemeManager.SEND_BUTTON_HOVER));
-        resetButton.setOnMouseExited(e -> resetButton.setStyle(ThemeManager.SEND_BUTTON));
-        
-        // Futuristic send button with hover effects
-        sendButton = new Button("SEND");
-        sendButton.setStyle(ThemeManager.SEND_BUTTON);
-        sendButton.setMinWidth(100);
-        
-        // Add hover effects to send button
-        sendButton.setOnMouseEntered(e -> sendButton.setStyle(ThemeManager.SEND_BUTTON_HOVER));
-        sendButton.setOnMouseExited(e -> sendButton.setStyle(ThemeManager.SEND_BUTTON));
+        // Create styled buttons
+        resetButton = createStyledButton("RESET");
+        sendButton = createStyledButton("SEND");
 
         inputArea.getChildren().addAll(inputField, resetButton, sendButton);
         return inputArea;
@@ -242,6 +228,18 @@ public class ToDoBotGUI extends Application {
         }
     }
 
+    private Button createStyledButton(String text) {
+        Button button = new Button(text);
+        button.setStyle(ThemeManager.SEND_BUTTON);
+        button.setMinWidth(100);
+        
+        // Add hover effects
+        button.setOnMouseEntered(e -> button.setStyle(ThemeManager.SEND_BUTTON_HOVER));
+        button.setOnMouseExited(e -> button.setStyle(ThemeManager.SEND_BUTTON));
+        
+        return button;
+    }
+    
     private void handleResetChat() {
         // Clear all chat messages
         chatArea.getChildren().clear();
