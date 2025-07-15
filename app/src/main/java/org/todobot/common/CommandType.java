@@ -9,6 +9,7 @@ public enum CommandType {
     UNMARK("unmark"),
     DELETE("delete"),
     DELETE_ALL("delete_all"),
+    DELETE_ALL_CONFIRM("delete_all_confirm"),
     FIND("find"),
     HELP("help"),
     BYE("bye");

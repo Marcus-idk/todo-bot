@@ -11,7 +11,7 @@ public class DeleteAllCommand extends Command {
     
     @Override
     public String execute(String[] arguments) {
-        int deletedCount = taskList.deleteAllTasks();
-        return BotMessages.formatDeletedAllTasks(deletedCount);
+        int taskCount = taskList.getTaskCount();
+        return BotMessages.formatDeleteAllWarning(taskCount);
     }
 }

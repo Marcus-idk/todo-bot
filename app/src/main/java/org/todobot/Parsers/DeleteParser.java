@@ -11,6 +11,11 @@ public class DeleteParser extends CommandParser {
     
     @Override
     public ParseResult parse(String arguments) {
+        // Check if it's the "all confirm" keyword
+        if (arguments.trim().equalsIgnoreCase("all confirm")) {
+            return new ParseResult(CommandType.DELETE_ALL_CONFIRM, new String[]{});
+        }
+        
         // Check if it's the "all" keyword
         if (arguments.trim().equalsIgnoreCase("all")) {
             return new ParseResult(CommandType.DELETE_ALL, new String[]{});
