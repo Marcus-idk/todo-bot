@@ -1,6 +1,7 @@
 package org.todobot.service;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import org.todobot.common.BotMessages;
 import org.todobot.model.Task;
@@ -87,14 +88,11 @@ public class TaskList {
             return BotMessages.SEARCH_KEYWORD_REQUIRED;
         }
         
-        ArrayList<Task> matchingTasks = new ArrayList<>();
         String lowerKeyword = keyword.toLowerCase().trim();
         
-        for (Task task : tasks) {
-            if (task.getDescription().toLowerCase().contains(lowerKeyword)) {
-                matchingTasks.add(task);
-            }
-        }
+        ArrayList<Task> matchingTasks = tasks.stream()
+            .filter(task -> task.getDescription().toLowerCase().contains(lowerKeyword))
+            .collect(Collectors.toCollection(ArrayList::new));
         
         return TaskFormatter.formatSearchResults(tasks, matchingTasks, keyword);
     }
