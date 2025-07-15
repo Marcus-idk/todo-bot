@@ -95,9 +95,9 @@ public class TaskStorage {
     
     private JsonArray tasksToJsonArray(ArrayList<Task> tasks) {
         JsonArray jsonArray = new JsonArray();
-        for (Task task : tasks) {
-            jsonArray.add(taskToJsonObject(task));
-        }
+        tasks.stream()
+            .map(this::taskToJsonObject)
+            .forEach(jsonArray::add);
         return jsonArray;
     }
     
@@ -108,7 +108,7 @@ public class TaskStorage {
             JsonObject taskObj = element.getAsJsonObject();
             Task task = parseTask(taskObj);
             if (task != null) {
-                tasks.add(task);
+                tasks.add(task);    
             }
         }
         
