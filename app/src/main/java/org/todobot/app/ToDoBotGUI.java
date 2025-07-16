@@ -1,10 +1,12 @@
 package org.todobot.app;
 
 import org.todobot.service.ToDoBotService;
+import org.todobot.service.AutoCompleteService;
 import org.todobot.ui.ThemeManager;
 import org.todobot.ui.AnimatedMessage;
 import org.todobot.ui.AnimatedMessage.MessageType;
 import org.todobot.ui.AnimationUtils;
+import org.todobot.ui.AutoCompleteTextField;
 import org.todobot.common.BotMessages;
 
 import javafx.animation.KeyFrame;
@@ -27,7 +29,7 @@ import javafx.util.Duration;
 public class ToDoBotGUI extends Application {
     private VBox chatArea;
     private ScrollPane scrollPane;
-    private TextField inputField;
+    private AutoCompleteTextField inputField;
     private Button sendButton;
     private Button resetButton;
     private ToDoBotService service;
@@ -90,18 +92,18 @@ public class ToDoBotGUI extends Application {
         inputArea.setStyle(ThemeManager.INPUT_CONTAINER);
         inputArea.setAlignment(Pos.CENTER);
 
-        // Professional input field with subtle effects
-        inputField = new TextField();
-        inputField.setPromptText("Enter command (todo, list, help, deadline, event)");
-        inputField.setStyle(ThemeManager.INPUT_FIELD + ThemeManager.INPUT_PROMPT_TEXT);
+        // Professional input field with auto-complete
+        inputField = new AutoCompleteTextField(new AutoCompleteService());
+        inputField.setPromptText("Enter command (type to auto-complete)");
+        inputField.setTextFieldStyle(ThemeManager.INPUT_FIELD + ThemeManager.INPUT_PROMPT_TEXT);
         HBox.setHgrow(inputField, Priority.ALWAYS);
         
         // Add focus effects to input field
-        inputField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+        inputField.textFieldFocusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
             if (isNowFocused) {
-                inputField.setStyle(ThemeManager.INPUT_FIELD_FOCUSED + ThemeManager.INPUT_PROMPT_TEXT);
+                inputField.setTextFieldStyle(ThemeManager.INPUT_FIELD_FOCUSED + ThemeManager.INPUT_PROMPT_TEXT);
             } else {
-                inputField.setStyle(ThemeManager.INPUT_FIELD + ThemeManager.INPUT_PROMPT_TEXT);
+                inputField.setTextFieldStyle(ThemeManager.INPUT_FIELD + ThemeManager.INPUT_PROMPT_TEXT);
             }
         });
 

@@ -174,4 +174,15 @@ public class ThemeManager {
     
     public static final String INPUT_PROMPT_TEXT = 
         "-fx-prompt-text-fill: " + TEXT_DIMMED + ";";
+    
+    // === AUTO-COMPLETE STYLES ===
+    
+    public static final String COMPLETION_OVERLAY = 
+        "-fx-text-fill: " + TEXT_DIMMED + "; " +
+        "-fx-opacity: 0.6; " +
+        "-fx-font-family: 'JetBrains Mono', 'SF Mono', 'Monaco', 'Consolas', monospace; " +
+        "-fx-font-size: 12px; " +
+        "-fx-background-color: transparent; " +
+        "-fx-padding: 0; " +
+        "-fx-border-color: transparent;";
 }
