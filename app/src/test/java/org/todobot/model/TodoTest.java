@@ -64,14 +64,14 @@ public class ToDoTest {
     
     @Test
     void shouldFormatToStringCorrectlyWhenNotDone() {
-        String expected = "[T][ ] " + TEST_DESCRIPTION;
+        String expected = "[T][ ][M] " + TEST_DESCRIPTION;
         assertEquals(expected, todo.toString());
     }
     
     @Test
     void shouldFormatToStringCorrectlyWhenDone() {
         todo.markAsDone();
-        String expected = "[T][X] " + TEST_DESCRIPTION;
+        String expected = "[T][X][M] " + TEST_DESCRIPTION;
         assertEquals(expected, todo.toString());
     }
     
@@ -127,7 +127,7 @@ public class ToDoTest {
         String spaceyDescription = "Go to the   grocery    store";
         ToDo spaceyToDo = new ToDo(spaceyDescription);
         assertEquals(spaceyDescription, spaceyToDo.getDescription());
-        assertEquals("[T][ ] " + spaceyDescription, spaceyToDo.toString());
+        assertEquals("[T][ ][M] " + spaceyDescription, spaceyToDo.toString());
     }
     
     @Test
@@ -135,7 +135,7 @@ public class ToDoTest {
         String specialDescription = "Buy $100 worth of groceries @#$%^&*()";
         ToDo specialToDo = new ToDo(specialDescription);
         assertEquals(specialDescription, specialToDo.getDescription());
-        assertEquals("[T][ ] " + specialDescription, specialToDo.toString());
+        assertEquals("[T][ ][M] " + specialDescription, specialToDo.toString());
     }
     
     @Test
@@ -143,7 +143,7 @@ public class ToDoTest {
         String longDescription = "This is a very long task description that goes on and on and on because sometimes people write really long task descriptions that test the limits of our patience and string handling capabilities";
         ToDo longToDo = new ToDo(longDescription);
         assertEquals(longDescription, longToDo.getDescription());
-        assertEquals("[T][ ] " + longDescription, longToDo.toString());
+        assertEquals("[T][ ][M] " + longDescription, longToDo.toString());
     }
     
     @Test
@@ -151,7 +151,7 @@ public class ToDoTest {
         String unicodeDescription = "Learn 中文 and العربية and русский";
         ToDo unicodeToDo = new ToDo(unicodeDescription);
         assertEquals(unicodeDescription, unicodeToDo.getDescription());
-        assertEquals("[T][ ] " + unicodeDescription, unicodeToDo.toString());
+        assertEquals("[T][ ][M] " + unicodeDescription, unicodeToDo.toString());
     }
     
     @Test
@@ -159,6 +159,6 @@ public class ToDoTest {
         String newlineDescription = "Multi\nline\ndescription";
         ToDo newlineToDo = new ToDo(newlineDescription);
         assertEquals(newlineDescription, newlineToDo.getDescription());
-        assertEquals("[T][ ] " + newlineDescription, newlineToDo.toString());
+        assertEquals("[T][ ][M] " + newlineDescription, newlineToDo.toString());
     }
 }

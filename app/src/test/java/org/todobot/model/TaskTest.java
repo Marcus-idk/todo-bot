@@ -137,7 +137,7 @@ public class TaskTest {
         Task task = new ToDo("Polymorphic todo");
         assertEquals("T", task.getTypeIcon());
         assertEquals("", task.getDetailsString());
-        assertEquals("[T][ ] Polymorphic todo", task.toString());
+        assertEquals("[T][ ][M] Polymorphic todo", task.toString());
     }
     
     @Test
@@ -149,5 +149,50 @@ public class TaskTest {
         assertEquals("T", todoTask.getTypeIcon());
         assertEquals("D", deadlineTask.getTypeIcon());
         assertEquals("E", eventTask.getTypeIcon());
+    }
+    
+    @Test
+    void shouldHaveDefaultMediumPriority() {
+        assertEquals(Priority.MEDIUM, todo.getPriority());
+        assertEquals(Priority.MEDIUM, deadline.getPriority());
+        assertEquals(Priority.MEDIUM, event.getPriority());
+    }
+    
+    @Test
+    void shouldSetAndGetPriority() {
+        todo.setPriority(Priority.HIGH);
+        assertEquals(Priority.HIGH, todo.getPriority());
+        
+        todo.setPriority(Priority.LOW);
+        assertEquals(Priority.LOW, todo.getPriority());
+    }
+    
+    @Test
+    void shouldReturnCorrectPriorityIcon() {
+        todo.setPriority(Priority.HIGH);
+        assertEquals("H", todo.getPriorityIcon());
+        
+        todo.setPriority(Priority.MEDIUM);
+        assertEquals("M", todo.getPriorityIcon());
+        
+        todo.setPriority(Priority.LOW);
+        assertEquals("L", todo.getPriorityIcon());
+    }
+    
+    @Test
+    void shouldThrowExceptionForNullPriority() {
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class, 
+            () -> todo.setPriority(null)
+        );
+        assertEquals("Priority cannot be null", exception.getMessage());
+    }
+    
+    @Test
+    void shouldIncludePriorityInToString() {
+        todo.setPriority(Priority.HIGH);
+        String result = todo.toString();
+        assertTrue(result.contains("[H]"));
+        assertEquals("[T][ ][H] " + TEST_DESCRIPTION, result);
     }
 }

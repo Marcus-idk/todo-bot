@@ -90,20 +90,20 @@ public class DeadlineTest {
     
     @Test
     void shouldFormatToStringCorrectlyWhenNotDone() {
-        String expected = "[D][ ] " + TEST_DESCRIPTION + " (by: " + EXPECTED_DATE_ONLY + ")";
+        String expected = "[D][ ][M] " + TEST_DESCRIPTION + " (by: " + EXPECTED_DATE_ONLY + ")"
         assertEquals(expected, deadline.toString());
     }
     
     @Test
     void shouldFormatToStringCorrectlyWhenDone() {
         deadline.markAsDone();
-        String expected = "[D][X] " + TEST_DESCRIPTION + " (by: " + EXPECTED_DATE_ONLY + ")";
+        String expected = "[D][X][M] " + TEST_DESCRIPTION + " (by: " + EXPECTED_DATE_ONLY + ")"
         assertEquals(expected, deadline.toString());
     }
     
     @Test
     void shouldFormatToStringCorrectlyWithTime() {
-        String expected = "[D][ ] " + TEST_DESCRIPTION + " (by: " + EXPECTED_DATE_TIME + ")";
+        String expected = "[D][ ][M] " + TEST_DESCRIPTION + " (by: " + EXPECTED_DATE_TIME + ")"
         assertEquals(expected, deadlineWithTime.toString());
     }
     
@@ -165,7 +165,7 @@ public class DeadlineTest {
         String spaceyDescription = "Submit   final   report";
         Deadline spaceyDeadline = new Deadline(spaceyDescription, TEST_DATE_ONLY, false);
         assertEquals(spaceyDescription, spaceyDeadline.getDescription());
-        assertEquals("[D][ ] " + spaceyDescription + " (by: " + EXPECTED_DATE_ONLY + ")", spaceyDeadline.toString());
+        assertEquals("[D][ ][M] " + spaceyDescription + " (by: " + EXPECTED_DATE_ONLY + ")", spaceyDeadline.toString());
     }
     
     @Test
@@ -173,7 +173,7 @@ public class DeadlineTest {
         String specialDescription = "Submit report #2 @ 100% completion!";
         Deadline specialDeadline = new Deadline(specialDescription, TEST_DATE_ONLY, false);
         assertEquals(specialDescription, specialDeadline.getDescription());
-        assertEquals("[D][ ] " + specialDescription + " (by: " + EXPECTED_DATE_ONLY + ")", specialDeadline.toString());
+        assertEquals("[D][ ][M] " + specialDescription + " (by: " + EXPECTED_DATE_ONLY + ")", specialDeadline.toString());
     }
     
     @Test
@@ -181,7 +181,7 @@ public class DeadlineTest {
         LocalDateTime newYear = LocalDateTime.of(2024, 1, 1, 23, 59);
         Deadline newYearDeadline = new Deadline(TEST_DESCRIPTION, newYear, true);
         assertEquals("01 Jan 2024, 2359", newYearDeadline.getBy());
-        assertEquals("[D][ ] " + TEST_DESCRIPTION + " (by: 01 Jan 2024, 2359)", newYearDeadline.toString());
+        assertEquals("[D][ ][M] " + TEST_DESCRIPTION + " (by: 01 Jan 2024, 2359)", newYearDeadline.toString());
     }
     
     @Test
@@ -189,7 +189,7 @@ public class DeadlineTest {
         String longDescription = "Submit a very comprehensive and detailed report covering all aspects of the project including methodology, results, conclusions and recommendations for future work";
         Deadline longDeadline = new Deadline(longDescription, TEST_DATE_ONLY, false);
         assertEquals(longDescription, longDeadline.getDescription());
-        assertEquals("[D][ ] " + longDescription + " (by: " + EXPECTED_DATE_ONLY + ")", longDeadline.toString());
+        assertEquals("[D][ ][M] " + longDescription + " (by: " + EXPECTED_DATE_ONLY + ")", longDeadline.toString());
     }
     
     @Test
@@ -197,7 +197,7 @@ public class DeadlineTest {
         LocalDateTime midnight = LocalDateTime.of(2019, 12, 31, 0, 0);
         Deadline midnightDeadline = new Deadline(TEST_DESCRIPTION, midnight, true);
         assertEquals("31 Dec 2019, 0000", midnightDeadline.getBy());
-        assertEquals("[D][ ] " + TEST_DESCRIPTION + " (by: 31 Dec 2019, 0000)", midnightDeadline.toString());
+        assertEquals("[D][ ][M] " + TEST_DESCRIPTION + " (by: 31 Dec 2019, 0000)", midnightDeadline.toString());
     }
 
     @Test

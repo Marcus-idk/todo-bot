@@ -100,20 +100,20 @@ public class EventTest {
     
     @Test
     void shouldFormatToStringCorrectlyWhenNotDone() {
-        String expected = "[E][ ] " + TEST_DESCRIPTION + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")";
+        String expected = "[E][ ][M] " + TEST_DESCRIPTION + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")"
         assertEquals(expected, event.toString());
     }
     
     @Test
     void shouldFormatToStringCorrectlyWhenDone() {
         event.markAsDone();
-        String expected = "[E][X] " + TEST_DESCRIPTION + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")";
+        String expected = "[E][X][M] " + TEST_DESCRIPTION + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")"
         assertEquals(expected, event.toString());
     }
     
     @Test
     void shouldFormatToStringCorrectlyWithTime() {
-        String expected = "[E][ ] " + TEST_DESCRIPTION + " (from: " + EXPECTED_FROM_TIME + " to: " + EXPECTED_TO_TIME + ")";
+        String expected = "[E][ ][M] " + TEST_DESCRIPTION + " (from: " + EXPECTED_FROM_TIME + " to: " + EXPECTED_TO_TIME + ")"
         assertEquals(expected, eventWithTime.toString());
     }
     
@@ -177,7 +177,7 @@ public class EventTest {
         String spaceyDescription = "Important   team   meeting";
         Event spaceyEvent = new Event(spaceyDescription, TEST_FROM_DATE_ONLY, false, TEST_TO_DATE_ONLY, false);
         assertEquals(spaceyDescription, spaceyEvent.getDescription());
-        assertEquals("[E][ ] " + spaceyDescription + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")", spaceyEvent.toString());
+        assertEquals("[E][ ][M] " + spaceyDescription + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")", spaceyEvent.toString());
     }
     
     @Test
@@ -185,7 +185,7 @@ public class EventTest {
         String specialDescription = "Q&A session #1 @ 100% attendance!";
         Event specialEvent = new Event(specialDescription, TEST_FROM_DATE_ONLY, false, TEST_TO_DATE_ONLY, false);
         assertEquals(specialDescription, specialEvent.getDescription());
-        assertEquals("[E][ ] " + specialDescription + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")", specialEvent.toString());
+        assertEquals("[E][ ][M] " + specialDescription + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")", specialEvent.toString());
     }
     
     @Test
@@ -195,7 +195,7 @@ public class EventTest {
         Event newYearEvent = new Event(TEST_DESCRIPTION, newYearFrom, true, newYearTo, true);
         assertEquals("01 Jan 2024, 1030", newYearEvent.getFrom());
         assertEquals("01 Jan 2024, 1245", newYearEvent.getTo());
-        assertEquals("[E][ ] " + TEST_DESCRIPTION + " (from: 01 Jan 2024, 1030 to: 01 Jan 2024, 1245)", newYearEvent.toString());
+        assertEquals("[E][ ][M] " + TEST_DESCRIPTION + " (from: 01 Jan 2024, 1030 to: 01 Jan 2024, 1245)", newYearEvent.toString());
     }
     
     @Test
@@ -203,7 +203,7 @@ public class EventTest {
         String longDescription = "Comprehensive project planning meeting to discuss timeline, deliverables, resource allocation and risk management strategies";
         Event longEvent = new Event(longDescription, TEST_FROM_DATE_ONLY, false, TEST_TO_DATE_ONLY, false);
         assertEquals(longDescription, longEvent.getDescription());
-        assertEquals("[E][ ] " + longDescription + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")", longEvent.toString());
+        assertEquals("[E][ ][M] " + longDescription + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")", longEvent.toString());
     }
     
     @Test
@@ -214,7 +214,7 @@ public class EventTest {
         Event mixedEvent = new Event(TEST_DESCRIPTION, fromWithTime, true, toDateOnly, false);
         assertEquals("15 Jun 2024, 0900", mixedEvent.getFrom());
         assertEquals("16 Jun 2024", mixedEvent.getTo());
-        assertEquals("[E][ ] " + TEST_DESCRIPTION + " (from: 15 Jun 2024, 0900 to: 16 Jun 2024)", mixedEvent.toString());
+        assertEquals("[E][ ][M] " + TEST_DESCRIPTION + " (from: 15 Jun 2024, 0900 to: 16 Jun 2024)", mixedEvent.toString());
     }
     
     @Test
@@ -224,7 +224,7 @@ public class EventTest {
         Task task = new Event("Polymorphic event", polymorphicFrom, true, polymorphicTo, true);
         assertEquals("E", task.getTypeIcon());
         assertEquals(" (from: 15 Mar 2024, 1000 to: 15 Mar 2024, 1100)", task.getDetailsString());
-        assertEquals("[E][ ] Polymorphic event (from: 15 Mar 2024, 1000 to: 15 Mar 2024, 1100)", task.toString());
+        assertEquals("[E][ ][M] Polymorphic event (from: 15 Mar 2024, 1000 to: 15 Mar 2024, 1100)", task.toString());
     }
 
     @Test
@@ -277,7 +277,7 @@ public class EventTest {
         Event multiDayEvent = new Event("Tech Conference", conferenceStart, true, conferenceEnd, true);
         assertEquals("16 Sep 2024, 0900", multiDayEvent.getFrom());
         assertEquals("20 Sep 2024, 1700", multiDayEvent.getTo());
-        assertEquals("[E][ ] Tech Conference (from: 16 Sep 2024, 0900 to: 20 Sep 2024, 1700)", multiDayEvent.toString());
+        assertEquals("[E][ ][M] Tech Conference (from: 16 Sep 2024, 0900 to: 20 Sep 2024, 1700)", multiDayEvent.toString());
     }
     
     @Test

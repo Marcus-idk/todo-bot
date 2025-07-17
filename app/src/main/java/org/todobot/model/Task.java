@@ -3,6 +3,7 @@ package org.todobot.model;
 public abstract class Task {
     protected String description;
     protected boolean isDone;
+    protected Priority priority;
 
     public Task(String description) {
         if (description == null) {
@@ -13,6 +14,7 @@ public abstract class Task {
         }
         this.description = description;
         this.isDone = false;
+        this.priority = Priority.MEDIUM;
     }
 
     public String getStatusIcon() {
@@ -35,12 +37,27 @@ public abstract class Task {
         return description;
     }
 
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        if (priority == null) {
+            throw new IllegalArgumentException("Priority cannot be null");
+        }
+        this.priority = priority;
+    }
+
+    public String getPriorityIcon() {
+        return priority.getIcon();
+    }
+
     // Abstract methods
     public abstract String getTypeIcon();
     public abstract String getDetailsString();
 
     @Override
     public String toString() {
-        return "[" + getTypeIcon() + "][" + getStatusIcon() + "] " + description + getDetailsString();
+        return "[" + getTypeIcon() + "][" + getStatusIcon() + "][" + getPriorityIcon() + "] " + description + getDetailsString();
     }
 }
