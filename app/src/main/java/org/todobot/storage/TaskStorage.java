@@ -134,7 +134,11 @@ public class TaskStorage {
             String type = taskObj.get("type").getAsString();
             String description = taskObj.get("description").getAsString();
             boolean isDone = taskObj.get("isDone").getAsBoolean();
-            Priority priority = Priority.valueOf(taskObj.get("priority").getAsString());
+            Priority priority = Priority.MEDIUM; // Default priority
+            JsonElement priorityElement = taskObj.get("priority");
+            if (priorityElement != null && !priorityElement.isJsonNull()) {
+                priority = Priority.valueOf(priorityElement.getAsString());
+            }
             
             Task task;
             switch (type) {
