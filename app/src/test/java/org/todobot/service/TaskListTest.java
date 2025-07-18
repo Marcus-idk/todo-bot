@@ -69,7 +69,7 @@ public class TaskListTest {
     @Test
     void shouldListSingleTask() {
         taskList.addTask(new ToDo(TEST_TASK_1));
-        String expected = " Here are the tasks in your list:\n 1.[T][ ] " + TEST_TASK_1;
+        String expected = " Here are the tasks in your list:\n 1.[T][ ][M] " + TEST_TASK_1;
         assertEquals(expected, taskList.listTasks());
     }
     
@@ -80,9 +80,9 @@ public class TaskListTest {
         taskList.addTask(new ToDo(TEST_TASK_3));
         
         String expected = " Here are the tasks in your list:\n" +
-                         " 1.[T][ ] " + TEST_TASK_1 + "\n" +
-                         " 2.[T][ ] " + TEST_TASK_2 + "\n" +
-                         " 3.[T][ ] " + TEST_TASK_3;
+                         " 1.[T][ ][M] " + TEST_TASK_1 + "\n" +
+                         " 2.[T][ ][M] " + TEST_TASK_2 + "\n" +
+                         " 3.[T][ ][M] " + TEST_TASK_3;
         assertEquals(expected, taskList.listTasks());
     }
     
@@ -95,9 +95,9 @@ public class TaskListTest {
         taskList.markTask(2);
         
         String expected = " Here are the tasks in your list:\n" +
-                         " 1.[T][ ] " + TEST_TASK_1 + "\n" +
-                         " 2.[T][X] " + TEST_TASK_2 + "\n" +
-                         " 3.[T][ ] " + TEST_TASK_3;
+                         " 1.[T][ ][M] " + TEST_TASK_1 + "\n" +
+                         " 2.[T][X][M] " + TEST_TASK_2 + "\n" +
+                         " 3.[T][ ][M] " + TEST_TASK_3;
         assertEquals(expected, taskList.listTasks());
     }
     
@@ -385,10 +385,10 @@ public class TaskListTest {
         taskList.deleteTask(3);
         
         String expected = " Here are the tasks in your list:\n" +
-                         " 1.[T][ ] First\n" +
-                         " 2.[T][ ] Second\n" +
-                         " 3.[T][ ] Fourth\n" +
-                         " 4.[T][ ] Fifth";
+                         " 1.[T][ ][M] First\n" +
+                         " 2.[T][ ][M] Second\n" +
+                         " 3.[T][ ][M] Fourth\n" +
+                         " 4.[T][ ][M] Fifth";
         assertEquals(expected, taskList.listTasks());
     }
     
@@ -400,8 +400,8 @@ public class TaskListTest {
         
         String result = taskList.findTasks("book");
         String expected = " Here are the matching tasks in your list:\n" +
-                         " 1.[T][ ] Read a book\n" +
-                         " 3.[T][ ] Buy book";
+                         " 1.[T][ ][M] Read a book\n" +
+                         " 3.[T][ ][M] Buy book";
         assertEquals(expected, result);
     }
     
@@ -429,7 +429,7 @@ public class TaskListTest {
         
         String result = taskList.findTasks("BOOK");
         String expected = " Here are the matching tasks in your list:\n" +
-                         " 1.[T][ ] Read a book";
+                         " 1.[T][ ][M] Read a book";
         assertEquals(expected, result);
     }
     
@@ -455,8 +455,8 @@ public class TaskListTest {
         
         String result = taskList.findTasks("Find");
         String expected = " Here are the matching tasks in your list:\n" +
-                         " 3.[T][ ] Find this task\n" +
-                         " 5.[T][ ] Find this too";
+                         " 3.[T][ ][M] Find this task\n" +
+                         " 5.[T][ ][M] Find this too";
         assertEquals(expected, result);
     }
 }
