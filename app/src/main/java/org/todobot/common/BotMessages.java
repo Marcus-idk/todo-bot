@@ -18,90 +18,85 @@ public class BotMessages {
     public static final String HORIZONTAL_LINE = "____________________________________________________________";
     
     // Error messages
-    public static final String EMPTY_INPUT = RED + " Oops! We need an input! I can't read your mind... yet! 🤔" + RESET;
-    public static final String INVALID_COMMAND = RED + " Hey there! I don't recognize that command! " +
-            "Type 'help' if you need to see available commands! 😅🤖" + RESET;
-    public static final String TASK_LIMIT_REACHED = RED + " Whoa there! You've hit the 100-task limit! " +
-            "I'm not a miracle worker! Please delete some tasks first! 😅" + RESET;
-    public static final String INVALID_TASK_NUMBER = RED + " Hmm, that task number doesn't exist! " +
-            "Did you count with your fingers? Try again! 🤔👆" + RESET;
-    public static final String INVALID_NUMBER_FORMAT = RED + " That's not a valid number! " +
-            "I may be a bot, but I still know what numbers look like! 🤖🔢" + RESET;
+    public static final String EMPTY_INPUT = RED + " Please enter a command! I'm ready to help." + RESET;
+    public static final String INVALID_COMMAND = RED + " I don't recognize that command. " +
+            "Type 'help' to see what I can do for you!" + RESET;
+    public static final String TASK_LIMIT_REACHED = RED + " You've reached the 100-task limit! " +
+            "Please delete some tasks before adding new ones." + RESET;
+    public static final String INVALID_TASK_NUMBER = RED + " That task number doesn't exist. " +
+            "Please check your task list and try again." + RESET;
+    public static final String INVALID_NUMBER_FORMAT = RED + " Please enter a valid number." + RESET;
     public static final String INVALID_PRIORITY_FORMAT = RED + " Priority format should be: priority [task number] [priority level] " +
-            "Example: priority 3 high 🎯" + RESET;
-    public static final String INVALID_PRIORITY_LEVEL = RED + " Priority level should be high/h, medium/m, or low/l " +
-            "Let's keep it simple! 🎯🤖" + RESET;
+            "Example: priority 3 high" + RESET;
+    public static final String INVALID_PRIORITY_LEVEL = RED + " Priority level should be high/h, medium/m, or low/l" + RESET;
     
     // Format error messages
-    public static final String INVALID_TODO_FORMAT = RED + " Oops! ToDo format should be: todo [description] " +
-            "Come on, give me something to do! 😄" + RESET;
-    public static final String INVALID_DEADLINE_FORMAT = RED + " Hey! Deadline format should be: deadline [description] /by [date] " +
-            "Don't forget the /by part! I need to know when! ⏰🤖" + RESET;
-    public static final String INVALID_EVENT_FORMAT = RED + " Whoops! Event format should be: event [description] /from [start] /to [end] " +
-            "I need both /from and /to! Time is important! 📅😅" + RESET;
-    public static final String INVALID_DATE_FORMAT = RED + " Oops! Date format should be DD-MM-YYYY or DD-MM-YYYY HH:MM " +
-            "Let's keep time organized! ⏰🤖" + RESET;
-    public static final String INVALID_EVENT_TIME_ORDER = RED + " Hey! Event start time must be before end time! " +
-            "Time doesn't go backwards! ⏰😅" + RESET;
+    public static final String INVALID_TODO_FORMAT = RED + " Todo format should be: todo [description]" + RESET;
+    public static final String INVALID_DEADLINE_FORMAT = RED + " Deadline format should be: deadline [description] /by [date] " +
+            "Don't forget the /by part!" + RESET;
+    public static final String INVALID_EVENT_FORMAT = RED + " Event format should be: event [description] /from [start] /to [end] " +
+            "Both /from and /to are required." + RESET;
+    public static final String INVALID_DATE_FORMAT = RED + " Date format should be DD-MM-YYYY or DD-MM-YYYY HH:MM" + RESET;
+    public static final String INVALID_EVENT_TIME_ORDER = RED + " Event start time must be before end time." + RESET;
     
     // Success messages
     public static String formatAddedTask(Task task, int totalTasks) {
-        return " Got it. I've added this task:\n   " + task + 
+        return " Got it! I've added this task:\n   " + task + 
                "\n Now you have " + totalTasks + " tasks in the list.";
     }
     
     public static String formatMarkedTask(Task task) {
-        return " Nice! I've marked this task as done:\n   " + task;
+        return " Great! I've marked this task as done:\n   " + task;
     }
     
     public static String formatUnmarkedTask(Task task) {
-        return " OK, I've marked this task as not done yet:\n   " + task;
+        return " Alright, I've marked this task as not done yet:\n   " + task;
     }
     
     public static String formatDeletedTask(Task task, int remainingTasks) {
-        return " Noted. I've removed this task:\n   " + task + 
+        return " Done! I've removed this task:\n   " + task + 
                "\n Now you have " + remainingTasks + " tasks in the list.";
     }
     
     public static String formatDeletedAllTasks(int deletedCount) {
         if (deletedCount == 0) {
-            return " No tasks to delete! Your list is already empty! 🤖";
+            return " No tasks to delete! Your list is already empty.";
         } else if (deletedCount == 1) {
-            return " Noted. I've removed 1 task. Your list is now empty.";
+            return " Done! I've removed 1 task. Your list is now empty.";
         } else {
-            return " Noted. I've removed all " + deletedCount + " tasks. Your list is now empty.";
+            return " Done! I've removed all " + deletedCount + " tasks. Your list is now empty.";
         }
     }
     
     public static String formatPriorityChanged(Task task) {
-        return " Got it! I've updated the priority for this task:\n   " + task;
+        return " Perfect! I've updated the priority for this task:\n   " + task;
     }
     
     public static String formatDeleteAllWarning(int taskCount) {
         if (taskCount == 0) {
-            return " No tasks to delete! Your list is already empty! 🤖";
+            return " No tasks to delete! Your list is already empty.";
         } else if (taskCount == 1) {
-            return RED + " ⚠️ WARNING: This will permanently delete 1 task!" + RESET + 
+            return RED + " WARNING: This will permanently delete 1 task!" + RESET + 
                    "\n Type 'delete all confirm' to proceed, or any other command to cancel.";
         } else {
-            return RED + " ⚠️ WARNING: This will permanently delete all " + taskCount + " tasks!" + RESET + 
+            return RED + " WARNING: This will permanently delete all " + taskCount + " tasks!" + RESET + 
                    "\n Type 'delete all confirm' to proceed, or any other command to cancel.";
         }
     }
     
     // System messages
-    public static final String FAREWELL = " Bye. Hope to see you again soon!";
-    public static final String GREETING = " What can I do for you?";
+    public static final String FAREWELL = " Goodbye! Hope to see you again soon!";
+    public static final String GREETING = " Hi there! What can I do for you?";
     public static final String UNKNOWN_COMMAND = " Unknown command type.";
     
     // === GUI INTERFACE MESSAGES ===
     public static final String GUI_SYSTEM_READY = " Task Management System Ready";
     public static final String GUI_AVAILABLE_COMMANDS = " Available commands: todo, list, help, deadline, event, bye";
-    public static final String GUI_SAVING_GOODBYE = " Saving data... Goodbye.";
+    public static final String GUI_SAVING_GOODBYE = " Saving data... Goodbye!";
     
     // === TASK DISPLAY MESSAGES ===
     public static final String TASK_LIST_HEADER = " Here are the tasks in your list:";
-    public static final String TASK_LIST_EMPTY = " No tasks found! Your to-do list is as empty as my brain! 🤖";
+    public static final String TASK_LIST_EMPTY = " No tasks found! Your to-do list is completely empty.";
     public static final String SEARCH_RESULTS_HEADER = " Here are the matching tasks in your list:";
     public static final String SEARCH_KEYWORD_REQUIRED = " Please provide a keyword to search for.";
     
