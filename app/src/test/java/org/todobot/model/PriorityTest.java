@@ -49,4 +49,36 @@ public class PriorityTest {
         assertEquals(Priority.MEDIUM, priorities[1]);
         assertEquals(Priority.HIGH, priorities[2]);
     }
+    
+    @Test
+    void shouldParseHighPriority() {
+        assertEquals(Priority.HIGH, Priority.fromString("high"));
+        assertEquals(Priority.HIGH, Priority.fromString("HIGH"));
+        assertEquals(Priority.HIGH, Priority.fromString("h"));
+        assertEquals(Priority.HIGH, Priority.fromString("H"));
+    }
+    
+    @Test
+    void shouldParseLowPriority() {
+        assertEquals(Priority.LOW, Priority.fromString("low"));
+        assertEquals(Priority.LOW, Priority.fromString("LOW"));
+        assertEquals(Priority.LOW, Priority.fromString("l"));
+        assertEquals(Priority.LOW, Priority.fromString("L"));
+    }
+    
+    @Test
+    void shouldParseMediumPriority() {
+        assertEquals(Priority.MEDIUM, Priority.fromString("medium"));
+        assertEquals(Priority.MEDIUM, Priority.fromString("MEDIUM"));
+        assertEquals(Priority.MEDIUM, Priority.fromString("m"));
+        assertEquals(Priority.MEDIUM, Priority.fromString("M"));
+    }
+    
+    @Test
+    void shouldDefaultToMediumForInvalidInput() {
+        assertEquals(Priority.MEDIUM, Priority.fromString("invalid"));
+        assertEquals(Priority.MEDIUM, Priority.fromString(""));
+        assertEquals(Priority.MEDIUM, Priority.fromString(null));
+        assertEquals(Priority.MEDIUM, Priority.fromString("xyz"));
+    }
 }

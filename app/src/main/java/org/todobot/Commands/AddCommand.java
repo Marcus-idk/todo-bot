@@ -91,11 +91,7 @@ public class AddCommand extends Command {
         Priority priority = Priority.MEDIUM;
 
         if (matcher.find()) {
-            priority = switch (matcher.group(1).toLowerCase()) {
-                case "high", "h" -> Priority.HIGH;
-                case "low", "l" -> Priority.LOW;
-                default -> Priority.MEDIUM;
-            };
+            priority = Priority.fromString(matcher.group(1));
         }
 
         String description = fullDescription.replaceFirst("![a-zA-Z]+", " ")

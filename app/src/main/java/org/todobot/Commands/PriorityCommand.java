@@ -24,15 +24,7 @@ public class PriorityCommand extends Command {
         Task task = taskList.getTask(taskNumber);
         if (task == null) return BotMessages.INVALID_TASK_NUMBER;
 
-        task.setPriority(parsePriority(arguments[1]));
+        task.setPriority(Priority.fromString(arguments[1]));
         return BotMessages.formatPriorityChanged(task);
-    }
-
-    private Priority parsePriority(String token) {
-        return switch (token.toLowerCase()) {
-            case "high", "h" -> Priority.HIGH;
-            case "low", "l" -> Priority.LOW;
-            default -> Priority.MEDIUM;
-        };
     }
 }

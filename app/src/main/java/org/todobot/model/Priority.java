@@ -14,4 +14,16 @@ public enum Priority {
     public String getIcon() {
         return icon;
     }
+    
+    public static Priority fromString(String token) {
+        if (token == null) {
+            return MEDIUM;
+        }
+        
+        return switch (token.toLowerCase()) {
+            case "high", "h" -> HIGH;
+            case "low", "l" -> LOW;
+            default -> MEDIUM;
+        };
+    }
 }
