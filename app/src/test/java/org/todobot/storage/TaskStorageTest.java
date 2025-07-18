@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.todobot.model.Deadline;
 import org.todobot.model.Event;
+import org.todobot.model.Priority;
 import org.todobot.model.Task;
 import org.todobot.model.ToDo;
 
@@ -63,6 +64,7 @@ public class TaskStorageTest {
         Task loadedTask = loadedTasks.get(0);
         assertEquals(TEST_TODO_DESC, loadedTask.getDescription());
         assertFalse(loadedTask.isDone());
+        assertEquals(Priority.MEDIUM, loadedTask.getPriority());
         assertTrue(loadedTask instanceof ToDo);
     }
     
@@ -203,7 +205,7 @@ public class TaskStorageTest {
     
     @Test
     void shouldHandleUnknownTaskType() throws IOException {
-        String invalidJson = "[{\"type\":\"UnknownTask\",\"description\":\"test\",\"isDone\":false}]";
+        String invalidJson = "[{\"type\":\"UnknownTask\",\"description\":\"test\",\"isDone\":false,\"priority\":\"MEDIUM\"}]";
         Files.writeString(testFilePath, invalidJson);
         
         ArrayList<Task> loadedTasks = taskStorage.loadTasks();
@@ -213,7 +215,7 @@ public class TaskStorageTest {
     
     @Test
     void shouldHandleMalformedTaskData() throws IOException {
-        String malformedJson = "[{\"type\":\"ToDo\",\"isDone\":false}]"; // missing description
+        String malformedJson = "[{\"type\":\"ToDo\",\"isDone\":false,\"priority\":\"MEDIUM\"}]"; // missing description
         Files.writeString(testFilePath, malformedJson);
         
         ArrayList<Task> loadedTasks = taskStorage.loadTasks();
@@ -223,7 +225,7 @@ public class TaskStorageTest {
     
     @Test
     void shouldHandleInvalidDateFormat() throws IOException {
-        String invalidDateJson = "[{\"type\":\"Deadline\",\"description\":\"test\",\"isDone\":false,\"by\":\"invalid-date\",\"hasTime\":true}]";
+        String invalidDateJson = "[{\"type\":\"Deadline\",\"description\":\"test\",\"isDone\":false,\"priority\":\"MEDIUM\",\"by\":\"invalid-date\",\"hasTime\":true}]";
         Files.writeString(testFilePath, invalidDateJson);
         
         ArrayList<Task> loadedTasks = taskStorage.loadTasks();
@@ -234,9 +236,9 @@ public class TaskStorageTest {
     @Test
     void shouldSkipCorruptedTasksButLoadValidOnes() throws IOException {
         String mixedJson = "[" +
-            "{\"type\":\"ToDo\",\"description\":\"Valid task\",\"isDone\":false}," +
-            "{\"type\":\"UnknownTask\",\"description\":\"Invalid task\",\"isDone\":false}," +
-            "{\"type\":\"ToDo\",\"description\":\"Another valid task\",\"isDone\":true}" +
+            "{\"type\":\"ToDo\",\"description\":\"Valid task\",\"isDone\":false,\"priority\":\"MEDIUM\"}," +
+            "{\"type\":\"UnknownTask\",\"description\":\"Invalid task\",\"isDone\":false,\"priority\":\"MEDIUM\"}," +
+            "{\"type\":\"ToDo\",\"description\":\"Another valid task\",\"isDone\":true,\"priority\":\"HIGH\"}" +
             "]";
         Files.writeString(testFilePath, mixedJson);
         
@@ -245,8 +247,10 @@ public class TaskStorageTest {
         assertEquals(2, loadedTasks.size());
         assertEquals("Valid task", loadedTasks.get(0).getDescription());
         assertFalse(loadedTasks.get(0).isDone());
+        assertEquals(Priority.MEDIUM, loadedTasks.get(0).getPriority());
         assertEquals("Another valid task", loadedTasks.get(1).getDescription());
         assertTrue(loadedTasks.get(1).isDone());
+        assertEquals(Priority.HIGH, loadedTasks.get(1).getPriority());
     }
     
     // 5. Data Integrity Tests
@@ -273,9 +277,11 @@ public class TaskStorageTest {
         
         Deadline deadline = new Deadline("Important deadline", TEST_DATE, false);
         deadline.markAsDone();
+        deadline.setPriority(Priority.HIGH);
         tasks.add(deadline);
         
         Event event = new Event("Conference", TEST_DATE, true, TEST_DATE_2, false);
+        event.setPriority(Priority.LOW);
         tasks.add(event);
         
         taskStorage.saveTasks(tasks);
@@ -288,6 +294,7 @@ public class TaskStorageTest {
         assertEquals("Important deadline", loadedDeadline.getDescription());
         assertEquals(TEST_DATE, loadedDeadline.getByDateTime());
         assertFalse(loadedDeadline.hasTimeInfo());
+        assertEquals(Priority.HIGH, loadedDeadline.getPriority());
         
         Event loadedEvent = (Event) loadedTasks.get(1);
         assertFalse(loadedEvent.isDone());
@@ -296,6 +303,7 @@ public class TaskStorageTest {
         assertEquals(TEST_DATE_2, loadedEvent.getToDateTime());
         assertTrue(loadedEvent.hasFromTime());
         assertFalse(loadedEvent.hasToTime());
+        assertEquals(Priority.LOW, loadedEvent.getPriority());
     }
     
     @Test
@@ -331,5 +339,42 @@ public class TaskStorageTest {
         assertEquals(2, loadedTasks.size());
         assertEquals("New task", loadedTasks.get(0).getDescription());
         assertEquals("Another new task", loadedTasks.get(1).getDescription());
+    }
+    
+    // 7. Priority Tests
+    
+    @Test
+    void shouldSaveAndLoadAllPriorityLevels() {
+        ArrayList<Task> tasks = new ArrayList<>();
+        
+        ToDo lowPriorityTask = new ToDo("Low priority task");
+        lowPriorityTask.setPriority(Priority.LOW);
+        tasks.add(lowPriorityTask);
+        
+        ToDo mediumPriorityTask = new ToDo("Medium priority task");
+        mediumPriorityTask.setPriority(Priority.MEDIUM);
+        tasks.add(mediumPriorityTask);
+        
+        ToDo highPriorityTask = new ToDo("High priority task");
+        highPriorityTask.setPriority(Priority.HIGH);
+        tasks.add(highPriorityTask);
+        
+        taskStorage.saveTasks(tasks);
+        ArrayList<Task> loadedTasks = taskStorage.loadTasks();
+        
+        assertEquals(3, loadedTasks.size());
+        assertEquals(Priority.LOW, loadedTasks.get(0).getPriority());
+        assertEquals(Priority.MEDIUM, loadedTasks.get(1).getPriority());
+        assertEquals(Priority.HIGH, loadedTasks.get(2).getPriority());
+    }
+    
+    @Test
+    void shouldHandleInvalidPriorityInJson() throws IOException {
+        String invalidPriorityJson = "[{\"type\":\"ToDo\",\"description\":\"test\",\"isDone\":false,\"priority\":\"INVALID\"}]";
+        Files.writeString(testFilePath, invalidPriorityJson);
+        
+        ArrayList<Task> loadedTasks = taskStorage.loadTasks();
+        
+        assertTrue(loadedTasks.isEmpty());
     }
 }

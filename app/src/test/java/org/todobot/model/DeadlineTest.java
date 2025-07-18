@@ -90,20 +90,20 @@ public class DeadlineTest {
     
     @Test
     void shouldFormatToStringCorrectlyWhenNotDone() {
-        String expected = "[D][ ][M] " + TEST_DESCRIPTION + " (by: " + EXPECTED_DATE_ONLY + ")"
+        String expected = "[D][ ][M] " + TEST_DESCRIPTION + " (by: " + EXPECTED_DATE_ONLY + ")";
         assertEquals(expected, deadline.toString());
     }
     
     @Test
     void shouldFormatToStringCorrectlyWhenDone() {
         deadline.markAsDone();
-        String expected = "[D][X][M] " + TEST_DESCRIPTION + " (by: " + EXPECTED_DATE_ONLY + ")"
+        String expected = "[D][X][M] " + TEST_DESCRIPTION + " (by: " + EXPECTED_DATE_ONLY + ")";
         assertEquals(expected, deadline.toString());
     }
     
     @Test
     void shouldFormatToStringCorrectlyWithTime() {
-        String expected = "[D][ ][M] " + TEST_DESCRIPTION + " (by: " + EXPECTED_DATE_TIME + ")"
+        String expected = "[D][ ][M] " + TEST_DESCRIPTION + " (by: " + EXPECTED_DATE_TIME + ")";
         assertEquals(expected, deadlineWithTime.toString());
     }
     

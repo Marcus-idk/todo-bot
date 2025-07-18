@@ -100,20 +100,20 @@ public class EventTest {
     
     @Test
     void shouldFormatToStringCorrectlyWhenNotDone() {
-        String expected = "[E][ ][M] " + TEST_DESCRIPTION + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")"
+        String expected = "[E][ ][M] " + TEST_DESCRIPTION + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")";
         assertEquals(expected, event.toString());
     }
     
     @Test
     void shouldFormatToStringCorrectlyWhenDone() {
         event.markAsDone();
-        String expected = "[E][X][M] " + TEST_DESCRIPTION + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")"
+        String expected = "[E][X][M] " + TEST_DESCRIPTION + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")";
         assertEquals(expected, event.toString());
     }
     
     @Test
     void shouldFormatToStringCorrectlyWithTime() {
-        String expected = "[E][ ][M] " + TEST_DESCRIPTION + " (from: " + EXPECTED_FROM_TIME + " to: " + EXPECTED_TO_TIME + ")"
+        String expected = "[E][ ][M] " + TEST_DESCRIPTION + " (from: " + EXPECTED_FROM_TIME + " to: " + EXPECTED_TO_TIME + ")";
         assertEquals(expected, eventWithTime.toString());
     }
     

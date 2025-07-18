@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import org.todobot.model.Deadline;
 import org.todobot.model.Event;
+import org.todobot.model.Priority;
 import org.todobot.model.Task;
 import org.todobot.model.ToDo;
 
@@ -77,6 +78,7 @@ public class TaskStorage {
         taskObj.addProperty("type", task.getClass().getSimpleName());
         taskObj.addProperty("description", task.getDescription());
         taskObj.addProperty("isDone", task.isDone());
+        taskObj.addProperty("priority", task.getPriority().name());
         
         if (task instanceof Deadline) {
             Deadline deadline = (Deadline) task;
@@ -132,6 +134,7 @@ public class TaskStorage {
             String type = taskObj.get("type").getAsString();
             String description = taskObj.get("description").getAsString();
             boolean isDone = taskObj.get("isDone").getAsBoolean();
+            Priority priority = Priority.valueOf(taskObj.get("priority").getAsString());
             
             Task task;
             switch (type) {
@@ -161,6 +164,8 @@ public class TaskStorage {
             if (isDone) {
                 task.markAsDone();
             }
+            
+            task.setPriority(priority);
             
             return task;
             
