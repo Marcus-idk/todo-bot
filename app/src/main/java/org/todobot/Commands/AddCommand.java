@@ -1,4 +1,5 @@
 package org.todobot.commands;
+
 import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,104 +15,93 @@ import org.todobot.parsers.ParseResult;
 import org.todobot.service.TaskList;
 
 public class AddCommand extends Command {
+
     private final CommandType taskType;
-    
+    private static final Pattern PRIORITY_PATTERN = Pattern.compile("!([a-zA-Z]+)");
+
+    private record DescriptionInfo(String description, Priority priority) {}
+
     public AddCommand(TaskList taskList, CommandType taskType) {
         super(taskList);
         this.taskType = taskType;
     }
-    
+
     @Override
     public String execute(String[] arguments) {
-        throw new UnsupportedOperationException("AddCommand requires ParseResult with typed data");
+        throw new UnsupportedOperationException("AddCommand requires a ParseResult object.");
     }
-    
+
     @Override
     public String execute(ParseResult parseResult) {
         if (taskList.isFull()) {
             return BotMessages.TASK_LIMIT_REACHED;
         }
-        
-        String[] arguments = parseResult.getArguments();
-        Object[] timeData = parseResult.getTimeData();
-        String fullDescription = arguments[0];
-        
-        Priority priority = extractPriority(fullDescription);
-        String description = removePriority(fullDescription);
-        
-        Task task;
-        switch (taskType) {
-            case TODO -> task = new ToDo(description);
-            case DEADLINE -> {
-                if (timeData == null || timeData.length < 2) {
-                    return BotMessages.INVALID_DATE_FORMAT;
-                }
-                // timeData[0] = LocalDateTime, timeData[1] = boolean hasTime
-                LocalDateTime dateTime = (LocalDateTime) timeData[0];
-                boolean hasTime = (Boolean) timeData[1];
-                task = new Deadline(description, dateTime, hasTime);
-            }
-            case EVENT -> {
-                if (timeData == null || timeData.length < 4) {
-                    return BotMessages.INVALID_DATE_FORMAT;
-                }
-                // timeData[0] = from LocalDateTime, timeData[1] = from hasTime
-                // timeData[2] = to LocalDateTime, timeData[3] = to hasTime  
-                LocalDateTime fromDateTime = (LocalDateTime) timeData[0];
-                boolean hasFromTime = (Boolean) timeData[1];
-                LocalDateTime toDateTime = (LocalDateTime) timeData[2];
-                boolean hasToTime = (Boolean) timeData[3];
-                try {
-                    task = new Event(description, fromDateTime, hasFromTime, toDateTime, hasToTime);
-                } catch (IllegalArgumentException e) {
-                    return BotMessages.INVALID_EVENT_TIME_ORDER;
-                }
-            }
-            default -> {
-                return BotMessages.INVALID_COMMAND;
-            }
+
+        DescriptionInfo info = processDescription(parseResult.getArguments()[0]);
+
+        try {
+            Task task = createTask(info.description(), parseResult.getTimeData());
+            task.setPriority(info.priority());
+            taskList.addTask(task);
+            return BotMessages.formatAddedTask(task, taskList.getTaskCount());
+        } catch (IllegalArgumentException e) {
+            return e.getMessage();
         }
-        
-        task.setPriority(priority);
-        taskList.addTask(task);
-        return BotMessages.formatAddedTask(task, taskList.getTaskCount());
     }
-    
-    private Priority extractPriority(String input) {
-        if (input == null || input.trim().isEmpty()) {
-            return Priority.MEDIUM;
+
+    private Task createTask(String description, Object[] timeData) {
+        return switch (taskType) {
+            case TODO -> new ToDo(description);
+            case DEADLINE -> createDeadline(description, timeData);
+            case EVENT -> createEvent(description, timeData);
+            default -> throw new IllegalArgumentException("Unexpected value: " + taskType);
+        };
+    }
+
+    private Deadline createDeadline(String description, Object[] timeData) {
+        if (timeData == null || timeData.length < 2
+                || !(timeData[0] instanceof LocalDateTime)
+                || !(timeData[1] instanceof Boolean)) {
+            throw new IllegalArgumentException(BotMessages.INVALID_DATE_FORMAT);
         }
-        
-        Pattern pattern = Pattern.compile("!([a-zA-Z]+)");
-        Matcher matcher = pattern.matcher(input);
-        
+        return new Deadline(description, (LocalDateTime) timeData[0], (Boolean) timeData[1]);
+    }
+
+    private Event createEvent(String description, Object[] timeData) {
+        if (timeData == null || timeData.length < 4
+                || !(timeData[0] instanceof LocalDateTime) || !(timeData[1] instanceof Boolean)
+                || !(timeData[2] instanceof LocalDateTime) || !(timeData[3] instanceof Boolean)) {
+            throw new IllegalArgumentException(BotMessages.INVALID_DATE_FORMAT);
+        }
+        try {
+            return new Event(description,
+                    (LocalDateTime) timeData[0], (Boolean) timeData[1],
+                    (LocalDateTime) timeData[2], (Boolean) timeData[3]);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(BotMessages.INVALID_EVENT_TIME_ORDER, e);
+        }
+    }
+
+    private static DescriptionInfo processDescription(String fullDescription) {
+        if (fullDescription == null || fullDescription.isBlank()) {
+            return new DescriptionInfo("", Priority.MEDIUM);
+        }
+
+        Matcher matcher = PRIORITY_PATTERN.matcher(fullDescription);
+        Priority priority = Priority.MEDIUM;
+
         if (matcher.find()) {
-            String token = matcher.group(1).toLowerCase();
-            switch (token) {
-                case "high":
-                case "h":
-                    return Priority.HIGH;
-                case "medium":
-                case "m":
-                    return Priority.MEDIUM;
-                case "low":
-                case "l":
-                    return Priority.LOW;
-                default:
-                    return Priority.MEDIUM; // invalid priority defaults to medium
-            }
+            priority = switch (matcher.group(1).toLowerCase()) {
+                case "high", "h" -> Priority.HIGH;
+                case "low", "l" -> Priority.LOW;
+                default -> Priority.MEDIUM;
+            };
         }
-        
-        return Priority.MEDIUM; // no priority found
-    }
-    
-    private String removePriority(String input) {
-        if (input == null || input.trim().isEmpty()) {
-            return input;
-        }
-        
-        return input.replaceFirst("![a-zA-Z]+", "")
-                   .replaceAll("\\s+", " ")
-                   .trim();
+
+        String description = fullDescription.replaceFirst("![a-zA-Z]+", " ")
+                                             .replaceAll("\\s+", " ")
+                                             .trim();
+
+        return new DescriptionInfo(description, priority);
     }
 }
