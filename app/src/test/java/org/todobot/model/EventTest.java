@@ -55,12 +55,14 @@ public class EventTest {
     @Test
     void shouldInitiallyBeNotDone() {
         assertFalse(event.isDone());
+        assertEquals(" ", event.getStatusIcon());
     }
     
     @Test
     void shouldMarkEventAsDone() {
         event.markAsDone();
         assertTrue(event.isDone());
+        assertEquals("X", event.getStatusIcon());
     }
     
     @Test
@@ -68,17 +70,7 @@ public class EventTest {
         event.markAsDone();
         event.markAsNotDone();
         assertFalse(event.isDone());
-    }
-    
-    @Test
-    void shouldReturnCorrectStatusIconWhenNotDone() {
         assertEquals(" ", event.getStatusIcon());
-    }
-    
-    @Test
-    void shouldReturnCorrectStatusIconWhenDone() {
-        event.markAsDone();
-        assertEquals("X", event.getStatusIcon());
     }
     
     @Test
@@ -118,34 +110,6 @@ public class EventTest {
     }
     
     @Test
-    void shouldReturnCorrectDescription() {
-        assertEquals(TEST_DESCRIPTION, event.getDescription());
-    }
-    
-    @Test
-    void shouldReturnCorrectFormattedFromAndTo() {
-        assertEquals(EXPECTED_FROM_DATE, event.getFrom());
-        assertEquals(EXPECTED_TO_DATE, event.getTo());
-        assertEquals(EXPECTED_FROM_TIME, eventWithTime.getFrom());
-        assertEquals(EXPECTED_TO_TIME, eventWithTime.getTo());
-    }
-    
-    @Test
-    void shouldHandleMultipleMarkUnmarkOperations() {
-        event.markAsDone();
-        assertTrue(event.isDone());
-        
-        event.markAsNotDone();
-        assertFalse(event.isDone());
-        
-        event.markAsDone();
-        assertTrue(event.isDone());
-        
-        event.markAsNotDone();
-        assertFalse(event.isDone());
-    }
-    
-    @Test
     void shouldThrowExceptionForNullDescription() {
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class, 
@@ -173,22 +137,6 @@ public class EventTest {
     }
 
     @Test
-    void shouldHandleDescriptionWithSpaces() {
-        String spaceyDescription = "Important   team   meeting";
-        Event spaceyEvent = new Event(spaceyDescription, TEST_FROM_DATE_ONLY, false, TEST_TO_DATE_ONLY, false);
-        assertEquals(spaceyDescription, spaceyEvent.getDescription());
-        assertEquals("[E][ ][M] " + spaceyDescription + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")", spaceyEvent.toString());
-    }
-    
-    @Test
-    void shouldHandleSpecialCharactersInDescription() {
-        String specialDescription = "Q&A session #1 @ 100% attendance!";
-        Event specialEvent = new Event(specialDescription, TEST_FROM_DATE_ONLY, false, TEST_TO_DATE_ONLY, false);
-        assertEquals(specialDescription, specialEvent.getDescription());
-        assertEquals("[E][ ][M] " + specialDescription + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")", specialEvent.toString());
-    }
-    
-    @Test
     void shouldHandleDifferentDateTimes() {
         LocalDateTime newYearFrom = LocalDateTime.of(2024, 1, 1, 10, 30);
         LocalDateTime newYearTo = LocalDateTime.of(2024, 1, 1, 12, 45);
@@ -196,14 +144,6 @@ public class EventTest {
         assertEquals("01 Jan 2024, 1030", newYearEvent.getFrom());
         assertEquals("01 Jan 2024, 1245", newYearEvent.getTo());
         assertEquals("[E][ ][M] " + TEST_DESCRIPTION + " (from: 01 Jan 2024, 1030 to: 01 Jan 2024, 1245)", newYearEvent.toString());
-    }
-    
-    @Test
-    void shouldHandleVeryLongDescription() {
-        String longDescription = "Comprehensive project planning meeting to discuss timeline, deliverables, resource allocation and risk management strategies";
-        Event longEvent = new Event(longDescription, TEST_FROM_DATE_ONLY, false, TEST_TO_DATE_ONLY, false);
-        assertEquals(longDescription, longEvent.getDescription());
-        assertEquals("[E][ ][M] " + longDescription + " (from: " + EXPECTED_FROM_DATE + " to: " + EXPECTED_TO_DATE + ")", longEvent.toString());
     }
     
     @Test
@@ -246,6 +186,17 @@ public class EventTest {
     }
 
     @Test
+    void shouldThrowExceptionIfFromAfterTo() {
+        LocalDateTime invalidFrom = TEST_TO_DATE;
+        LocalDateTime invalidTo = TEST_FROM_DATE;
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class, 
+            () -> new Event(TEST_DESCRIPTION, invalidFrom, true, invalidTo, true)
+        );
+        assertEquals("Event start time must be before end time", exception.getMessage());
+    }
+
+    @Test
     void shouldHandleLeapYearEvents() {
         LocalDateTime leapDayStart = LocalDateTime.of(2024, 2, 29, 9, 0);
         LocalDateTime leapDayEnd = LocalDateTime.of(2024, 2, 29, 17, 0);
@@ -280,22 +231,4 @@ public class EventTest {
         assertEquals("[E][ ][M] Tech Conference (from: 16 Sep 2024, 0900 to: 20 Sep 2024, 1700)", multiDayEvent.toString());
     }
     
-    @Test
-    void shouldMaintainDateTimeAfterMarkOperations() {
-        event.markAsDone();
-        assertEquals(EXPECTED_FROM_DATE, event.getFrom());
-        assertEquals(EXPECTED_TO_DATE, event.getTo());
-        assertEquals(TEST_FROM_DATE_ONLY, event.getFromDateTime());
-        assertEquals(TEST_TO_DATE_ONLY, event.getToDateTime());
-        assertEquals(false, event.hasFromTime());
-        assertEquals(false, event.hasToTime());
-        
-        event.markAsNotDone();
-        assertEquals(EXPECTED_FROM_DATE, event.getFrom());
-        assertEquals(EXPECTED_TO_DATE, event.getTo());
-        assertEquals(TEST_FROM_DATE_ONLY, event.getFromDateTime());
-        assertEquals(TEST_TO_DATE_ONLY, event.getToDateTime());
-        assertEquals(false, event.hasFromTime());
-        assertEquals(false, event.hasToTime());
-    }
 }

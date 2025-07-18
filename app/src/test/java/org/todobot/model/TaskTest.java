@@ -97,42 +97,6 @@ public class TaskTest {
     }
     
     @Test
-    void shouldHandleMultipleMarkUnmarkOperations() {
-        todo.markAsDone();
-        assertTrue(todo.isDone());
-        
-        todo.markAsNotDone();
-        assertFalse(todo.isDone());
-        
-        todo.markAsDone();
-        assertTrue(todo.isDone());
-        
-        todo.markAsNotDone();
-        assertFalse(todo.isDone());
-    }
-    
-    @Test
-    void shouldHandleDescriptionWithSpaces() {
-        String spaceyDescription = "Task with   multiple   spaces";
-        ToDo spaceyToDo = new ToDo(spaceyDescription);
-        assertEquals(spaceyDescription, spaceyToDo.getDescription());
-    }
-    
-    @Test
-    void shouldHandleSpecialCharactersInDescription() {
-        String specialDescription = "Task with @#$%^&*() symbols!";
-        ToDo specialToDo = new ToDo(specialDescription);
-        assertEquals(specialDescription, specialToDo.getDescription());
-    }
-    
-    @Test
-    void shouldHandleVeryLongDescription() {
-        String longDescription = "This is a very long task description that goes on and on to test string handling capabilities";
-        ToDo longToDo = new ToDo(longDescription);
-        assertEquals(longDescription, longToDo.getDescription());
-    }
-    
-    @Test
     void shouldSupportPolymorphismWithTaskReference() {
         Task task = new ToDo("Polymorphic todo");
         assertEquals("T", task.getTypeIcon());

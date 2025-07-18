@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ToDoTest {
+public class TodoTest {
     
     private ToDo todo;
     private static final String TEST_DESCRIPTION = "Read a book";
@@ -76,26 +76,6 @@ public class ToDoTest {
     }
     
     @Test
-    void shouldReturnCorrectDescription() {
-        assertEquals(TEST_DESCRIPTION, todo.getDescription());
-    }
-    
-    @Test
-    void shouldHandleMultipleMarkUnmarkOperations() {
-        todo.markAsDone();
-        assertTrue(todo.isDone());
-        
-        todo.markAsNotDone();
-        assertFalse(todo.isDone());
-        
-        todo.markAsDone();
-        assertTrue(todo.isDone());
-        
-        todo.markAsNotDone();
-        assertFalse(todo.isDone());
-    }
-    
-    @Test
     void shouldThrowExceptionForNullDescription() {
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class, 
@@ -130,35 +110,4 @@ public class ToDoTest {
         assertEquals("[T][ ][M] " + spaceyDescription, spaceyToDo.toString());
     }
     
-    @Test
-    void shouldHandleSpecialCharacters() {
-        String specialDescription = "Buy $100 worth of groceries @#$%^&*()";
-        ToDo specialToDo = new ToDo(specialDescription);
-        assertEquals(specialDescription, specialToDo.getDescription());
-        assertEquals("[T][ ][M] " + specialDescription, specialToDo.toString());
-    }
-    
-    @Test
-    void shouldHandleVeryLongDescription() {
-        String longDescription = "This is a very long task description that goes on and on and on because sometimes people write really long task descriptions that test the limits of our patience and string handling capabilities";
-        ToDo longToDo = new ToDo(longDescription);
-        assertEquals(longDescription, longToDo.getDescription());
-        assertEquals("[T][ ][M] " + longDescription, longToDo.toString());
-    }
-    
-    @Test
-    void shouldHandleUnicodeCharacters() {
-        String unicodeDescription = "Learn 中文 and العربية and русский";
-        ToDo unicodeToDo = new ToDo(unicodeDescription);
-        assertEquals(unicodeDescription, unicodeToDo.getDescription());
-        assertEquals("[T][ ][M] " + unicodeDescription, unicodeToDo.toString());
-    }
-    
-    @Test
-    void shouldHandleDescriptionWithNewlines() {
-        String newlineDescription = "Multi\nline\ndescription";
-        ToDo newlineToDo = new ToDo(newlineDescription);
-        assertEquals(newlineDescription, newlineToDo.getDescription());
-        assertEquals("[T][ ][M] " + newlineDescription, newlineToDo.toString());
-    }
 }

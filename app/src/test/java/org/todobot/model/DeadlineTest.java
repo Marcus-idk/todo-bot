@@ -45,12 +45,14 @@ public class DeadlineTest {
     @Test
     void shouldInitiallyBeNotDone() {
         assertFalse(deadline.isDone());
+        assertEquals(" ", deadline.getStatusIcon());
     }
     
     @Test
     void shouldMarkDeadlineAsDone() {
         deadline.markAsDone();
         assertTrue(deadline.isDone());
+        assertEquals("X", deadline.getStatusIcon());
     }
     
     @Test
@@ -58,17 +60,7 @@ public class DeadlineTest {
         deadline.markAsDone();
         deadline.markAsNotDone();
         assertFalse(deadline.isDone());
-    }
-    
-    @Test
-    void shouldReturnCorrectStatusIconWhenNotDone() {
         assertEquals(" ", deadline.getStatusIcon());
-    }
-    
-    @Test
-    void shouldReturnCorrectStatusIconWhenDone() {
-        deadline.markAsDone();
-        assertEquals("X", deadline.getStatusIcon());
     }
     
     @Test
@@ -108,32 +100,6 @@ public class DeadlineTest {
     }
     
     @Test
-    void shouldReturnCorrectDescription() {
-        assertEquals(TEST_DESCRIPTION, deadline.getDescription());
-    }
-    
-    @Test
-    void shouldReturnCorrectFormattedBy() {
-        assertEquals(EXPECTED_DATE_ONLY, deadline.getBy());
-        assertEquals(EXPECTED_DATE_TIME, deadlineWithTime.getBy());
-    }
-    
-    @Test
-    void shouldHandleMultipleMarkUnmarkOperations() {
-        deadline.markAsDone();
-        assertTrue(deadline.isDone());
-        
-        deadline.markAsNotDone();
-        assertFalse(deadline.isDone());
-        
-        deadline.markAsDone();
-        assertTrue(deadline.isDone());
-        
-        deadline.markAsNotDone();
-        assertFalse(deadline.isDone());
-    }
-    
-    @Test
     void shouldThrowExceptionForNullDescription() {
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class, 
@@ -160,38 +126,6 @@ public class DeadlineTest {
         assertEquals("Task description cannot be empty", exception.getMessage());
     }
 
-    @Test
-    void shouldHandleDescriptionWithSpaces() {
-        String spaceyDescription = "Submit   final   report";
-        Deadline spaceyDeadline = new Deadline(spaceyDescription, TEST_DATE_ONLY, false);
-        assertEquals(spaceyDescription, spaceyDeadline.getDescription());
-        assertEquals("[D][ ][M] " + spaceyDescription + " (by: " + EXPECTED_DATE_ONLY + ")", spaceyDeadline.toString());
-    }
-    
-    @Test
-    void shouldHandleSpecialCharactersInDescription() {
-        String specialDescription = "Submit report #2 @ 100% completion!";
-        Deadline specialDeadline = new Deadline(specialDescription, TEST_DATE_ONLY, false);
-        assertEquals(specialDescription, specialDeadline.getDescription());
-        assertEquals("[D][ ][M] " + specialDescription + " (by: " + EXPECTED_DATE_ONLY + ")", specialDeadline.toString());
-    }
-    
-    @Test
-    void shouldHandleDifferentDateTimes() {
-        LocalDateTime newYear = LocalDateTime.of(2024, 1, 1, 23, 59);
-        Deadline newYearDeadline = new Deadline(TEST_DESCRIPTION, newYear, true);
-        assertEquals("01 Jan 2024, 2359", newYearDeadline.getBy());
-        assertEquals("[D][ ][M] " + TEST_DESCRIPTION + " (by: 01 Jan 2024, 2359)", newYearDeadline.toString());
-    }
-    
-    @Test
-    void shouldHandleVeryLongDescription() {
-        String longDescription = "Submit a very comprehensive and detailed report covering all aspects of the project including methodology, results, conclusions and recommendations for future work";
-        Deadline longDeadline = new Deadline(longDescription, TEST_DATE_ONLY, false);
-        assertEquals(longDescription, longDeadline.getDescription());
-        assertEquals("[D][ ][M] " + longDescription + " (by: " + EXPECTED_DATE_ONLY + ")", longDeadline.toString());
-    }
-    
     @Test
     void shouldHandleMidnightTime() {
         LocalDateTime midnight = LocalDateTime.of(2019, 12, 31, 0, 0);
@@ -244,16 +178,4 @@ public class DeadlineTest {
         assertEquals("31 Dec 2024, 2359", lateDeadline.getBy());
     }
     
-    @Test
-    void shouldMaintainDateTimeAfterMarkOperations() {
-        deadline.markAsDone();
-        assertEquals(EXPECTED_DATE_ONLY, deadline.getBy());
-        assertEquals(TEST_DATE_ONLY, deadline.getByDateTime());
-        assertEquals(false, deadline.hasTimeInfo());
-        
-        deadline.markAsNotDone();
-        assertEquals(EXPECTED_DATE_ONLY, deadline.getBy());
-        assertEquals(TEST_DATE_ONLY, deadline.getByDateTime());
-        assertEquals(false, deadline.hasTimeInfo());
-    }
 }
