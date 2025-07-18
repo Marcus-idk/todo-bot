@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.todobot.common.BotMessages;
 import org.todobot.common.CommandType;
+import org.todobot.parsers.command.task.EventParser;
+import org.todobot.parsers.core.ParseResult;
 
 public class EventParserTest {
     

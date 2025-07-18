@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
 import org.junit.jupiter.api.Test;
-import org.todobot.parsers.DateTimeParser.DateTimeResult;
+import org.todobot.parsers.util.DateTimeParser;
+import org.todobot.parsers.util.DateTimeParser.DateTimeResult;
 
 public class DateTimeParserTest {
     

@@ -1,19 +1,19 @@
 package org.todobot.service;
 
-import org.todobot.commands.AddCommand;
-import org.todobot.commands.Command;
-import org.todobot.commands.DeleteCommand;
-import org.todobot.commands.DeleteAllCommand;
-import org.todobot.commands.DeleteAllConfirmCommand;
-import org.todobot.commands.FindCommand;
-import org.todobot.commands.HelpCommand;
-import org.todobot.commands.ListCommand;
-import org.todobot.commands.MarkCommand;
-import org.todobot.commands.PriorityCommand;
+import org.todobot.commands.core.Command;
+import org.todobot.commands.system.HelpCommand;
+import org.todobot.commands.task.AddCommand;
+import org.todobot.commands.task.DeleteAllCommand;
+import org.todobot.commands.task.DeleteAllConfirmCommand;
+import org.todobot.commands.task.DeleteCommand;
+import org.todobot.commands.task.FindCommand;
+import org.todobot.commands.task.ListCommand;
+import org.todobot.commands.task.MarkCommand;
+import org.todobot.commands.task.PriorityCommand;
 import org.todobot.common.BotMessages;
 import org.todobot.common.CommandType;
-import org.todobot.parsers.ParseResult;
-import org.todobot.parsers.Parser;
+import org.todobot.parsers.core.ParseResult;
+import org.todobot.parsers.core.Parser;
 import org.todobot.storage.TaskStorage;
 
 public class ToDoBotService {

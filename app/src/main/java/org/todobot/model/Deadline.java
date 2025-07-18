@@ -1,7 +1,8 @@
 package org.todobot.model;
 
 import java.time.LocalDateTime;
-import org.todobot.parsers.DateTimeParser;
+
+import org.todobot.parsers.util.DateTimeParser;
 
 public class Deadline extends Task {
     private LocalDateTime by;
