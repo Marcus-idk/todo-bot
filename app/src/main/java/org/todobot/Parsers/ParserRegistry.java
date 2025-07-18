@@ -18,6 +18,7 @@ public class ParserRegistry {
         registerParser(new ListParser());
         registerParser(new HelpParser());
         registerParser(new ByeParser());
+        registerParser(new PriorityParser());
     }
     
     private static void registerParser(CommandParser parser) {

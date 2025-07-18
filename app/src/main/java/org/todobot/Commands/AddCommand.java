@@ -1,10 +1,13 @@
 package org.todobot.commands;
 import java.time.LocalDateTime;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.todobot.common.BotMessages;
 import org.todobot.common.CommandType;
 import org.todobot.model.Deadline;
 import org.todobot.model.Event;
+import org.todobot.model.Priority;
 import org.todobot.model.Task;
 import org.todobot.model.ToDo;
 import org.todobot.parsers.ParseResult;
@@ -31,7 +34,10 @@ public class AddCommand extends Command {
         
         String[] arguments = parseResult.getArguments();
         Object[] timeData = parseResult.getTimeData();
-        String description = arguments[0];
+        String fullDescription = arguments[0];
+        
+        Priority priority = extractPriority(fullDescription);
+        String description = removePriority(fullDescription);
         
         Task task;
         switch (taskType) {
@@ -66,7 +72,46 @@ public class AddCommand extends Command {
             }
         }
         
+        task.setPriority(priority);
         taskList.addTask(task);
         return BotMessages.formatAddedTask(task, taskList.getTaskCount());
+    }
+    
+    private Priority extractPriority(String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return Priority.MEDIUM;
+        }
+        
+        Pattern pattern = Pattern.compile("!([a-zA-Z]+)");
+        Matcher matcher = pattern.matcher(input);
+        
+        if (matcher.find()) {
+            String token = matcher.group(1).toLowerCase();
+            switch (token) {
+                case "high":
+                case "h":
+                    return Priority.HIGH;
+                case "medium":
+                case "m":
+                    return Priority.MEDIUM;
+                case "low":
+                case "l":
+                    return Priority.LOW;
+                default:
+                    return Priority.MEDIUM; // invalid priority defaults to medium
+            }
+        }
+        
+        return Priority.MEDIUM; // no priority found
+    }
+    
+    private String removePriority(String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return input;
+        }
+        
+        return input.replaceFirst("![a-zA-Z]+", "")
+                   .replaceAll("\\s+", " ")
+                   .trim();
     }
 }

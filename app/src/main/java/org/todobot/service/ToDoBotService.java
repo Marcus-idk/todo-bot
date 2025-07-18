@@ -9,6 +9,7 @@ import org.todobot.commands.FindCommand;
 import org.todobot.commands.HelpCommand;
 import org.todobot.commands.ListCommand;
 import org.todobot.commands.MarkCommand;
+import org.todobot.commands.PriorityCommand;
 import org.todobot.common.BotMessages;
 import org.todobot.common.CommandType;
 import org.todobot.parsers.ParseResult;
@@ -65,6 +66,7 @@ public class ToDoBotService {
             case DELETE_ALL_CONFIRM -> new DeleteAllConfirmCommand(taskList);
             case FIND -> new FindCommand(taskList);
             case HELP -> new HelpCommand(taskList);
+            case PRIORITY -> new PriorityCommand(taskList);
             default -> null;
         };
     }
@@ -77,7 +79,8 @@ public class ToDoBotService {
                commandType == CommandType.UNMARK ||
                commandType == CommandType.DELETE ||
                commandType == CommandType.DELETE_ALL ||
-               commandType == CommandType.DELETE_ALL_CONFIRM;
+               commandType == CommandType.DELETE_ALL_CONFIRM ||
+               commandType == CommandType.PRIORITY;
     }
     
     public boolean shouldExit(String input) {

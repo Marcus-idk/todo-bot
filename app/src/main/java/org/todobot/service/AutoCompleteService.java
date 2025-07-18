@@ -15,6 +15,7 @@ import org.todobot.parsers.FindParser;
 import org.todobot.parsers.HelpParser;
 import org.todobot.parsers.ListParser;
 import org.todobot.parsers.MarkParser;
+import org.todobot.parsers.PriorityParser;
 import org.todobot.parsers.ToDoParser;
 import org.todobot.parsers.UnmarkParser;
 
@@ -39,7 +40,8 @@ public class AutoCompleteService {
             new FindParser(),
             new ListParser(),
             new HelpParser(),
-            new ByeParser()
+            new ByeParser(),
+            new PriorityParser()
         };
         
         for (CommandParser parser : parsers) {

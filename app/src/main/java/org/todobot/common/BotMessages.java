@@ -27,6 +27,10 @@ public class BotMessages {
             "Did you count with your fingers? Try again! 🤔👆" + RESET;
     public static final String INVALID_NUMBER_FORMAT = RED + " That's not a valid number! " +
             "I may be a bot, but I still know what numbers look like! 🤖🔢" + RESET;
+    public static final String INVALID_PRIORITY_FORMAT = RED + " Priority format should be: priority [task number] [priority level] " +
+            "Example: priority 3 high 🎯" + RESET;
+    public static final String INVALID_PRIORITY_LEVEL = RED + " Priority level should be high/h, medium/m, or low/l " +
+            "Let's keep it simple! 🎯🤖" + RESET;
     
     // Format error messages
     public static final String INVALID_TODO_FORMAT = RED + " Oops! ToDo format should be: todo [description] " +
@@ -67,6 +71,10 @@ public class BotMessages {
         } else {
             return " Noted. I've removed all " + deletedCount + " tasks. Your list is now empty.";
         }
+    }
+    
+    public static String formatPriorityChanged(Task task) {
+        return " Got it! I've updated the priority for this task:\n   " + task;
     }
     
     public static String formatDeleteAllWarning(int taskCount) {
@@ -117,6 +125,7 @@ public class BotMessages {
         help.append("   find, search [keyword]                 - Find tasks by keyword\n");
         help.append("   mark [number]                          - Mark task as done\n");
         help.append("   unmark [number]                        - Mark task as not done\n");
+        help.append("   priority [number] [level]              - Change task priority (high/medium/low)\n");
         help.append("   delete, del, d, remove, rm [number]    - Delete a task\n");
         help.append("   delete, del, d, remove, rm all         - Show delete all confirmation\n");
         help.append("   delete, del, d, remove, rm all confirm - Actually delete all tasks\n\n");
@@ -126,12 +135,13 @@ public class BotMessages {
         help.append("   bye, exit, quit, goodbye               - Exit the program\n\n");
         
         help.append(" Examples:\n");
-        help.append("   todo read a book\n");
+        help.append("   todo read a book !high\n");
         help.append("   deadline submit report /by 25-12-2024\n");
         help.append("   deadline submit report /by 25-12-2024 17:00\n");
         help.append("   event team meeting /from 25-12-2024 14:00 /to 25-12-2024 16:00\n");
         help.append("   find book\n");
         help.append("   mark 1\n");
+        help.append("   priority 3 high\n");
         help.append("   delete 3\n");
         help.append("   delete all\n");
         help.append("   delete all confirm\n");

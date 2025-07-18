@@ -12,7 +12,8 @@ public enum CommandType {
     DELETE_ALL_CONFIRM("delete_all_confirm"),
     FIND("find"),
     HELP("help"),
-    BYE("bye");
+    BYE("bye"),
+    PRIORITY("priority");
     
     private final String command;
     
