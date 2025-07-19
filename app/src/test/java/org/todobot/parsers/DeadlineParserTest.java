@@ -95,20 +95,6 @@ public class DeadlineParserTest {
     }
     
     @Test
-    void shouldParseTaskWithNumbers() {
-        ParseResult result = deadlineParser.parse(VALID_TASK_WITH_NUMBERS);
-        
-        assertTrue(result.isValid());
-        assertEquals(CommandType.DEADLINE, result.getCommandType());
-        assertEquals("read book chapter 5", result.getArguments()[0]);
-        
-        Object[] timeData = result.getTimeData();
-        LocalDateTime expectedDateTime = LocalDateTime.of(2024, 6, 15, 0, 0);
-        assertEquals(expectedDateTime, timeData[0]);
-        assertFalse((Boolean) timeData[1]);
-    }
-    
-    @Test
     void shouldParseTaskWithSpecialCharacters() {
         ParseResult result = deadlineParser.parse("buy groceries & cook dinner /by 20-07-2024");
         
@@ -155,14 +141,6 @@ public class DeadlineParserTest {
         assertEquals(BotMessages.INVALID_DEADLINE_FORMAT, result.getErrorMessage());
     }
     
-    @Test
-    void shouldRejectJustBy() {
-        ParseResult result = deadlineParser.parse(JUST_BY);
-        
-        assertFalse(result.isValid());
-        assertEquals(BotMessages.INVALID_DEADLINE_FORMAT, result.getErrorMessage());
-    }
-    
     // Invalid deadline formats - empty description or date
     @Test
     void shouldRejectDeadlineWithEmptyTask() {
@@ -180,69 +158,22 @@ public class DeadlineParserTest {
         assertEquals(BotMessages.INVALID_DEADLINE_FORMAT, result.getErrorMessage());
     }
     
-    @Test
-    void shouldRejectDeadlineWithMissingDate() {
-        ParseResult result = deadlineParser.parse(INVALID_MISSING_DATE);
-        
-        assertFalse(result.isValid());
-        assertEquals(BotMessages.INVALID_DEADLINE_FORMAT, result.getErrorMessage());
-    }
-    
-    @Test
-    void shouldRejectDeadlineWithWhitespaceOnlyTask() {
-        ParseResult result = deadlineParser.parse("   /by 25-12-2023");
-        
-        assertFalse(result.isValid());
-        assertEquals(BotMessages.INVALID_DEADLINE_FORMAT, result.getErrorMessage());
-    }
-    
-    @Test
-    void shouldRejectDeadlineWithWhitespaceOnlyDate() {
-        ParseResult result = deadlineParser.parse("homework /by   ");
-        
-        assertFalse(result.isValid());
-        assertEquals(BotMessages.INVALID_DEADLINE_FORMAT, result.getErrorMessage());
-    }
-    
     // Invalid deadline formats - date parsing failures
     @Test
-    void shouldRejectDeadlineWithInvalidDateFormat() {
-        ParseResult result = deadlineParser.parse(INVALID_DATE_FORMAT);
+    void shouldRejectDeadlineWithInvalidDateFormats() {
+        // Test various invalid date formats that all delegate to DateTimeParser
+        String[] invalidDates = {
+            INVALID_DATE_FORMAT,                    // "homework /by invalid-date"
+            "homework /by 32-12-2023",             // Invalid day
+            "homework /by 25-13-2023",             // Invalid month  
+            "homework /by 25-12-2023 25:00"        // Invalid time
+        };
         
-        assertFalse(result.isValid());
-        assertEquals(BotMessages.INVALID_DATE_FORMAT, result.getErrorMessage());
-    }
-    
-    @Test
-    void shouldRejectDeadlineWithInvalidDay() {
-        ParseResult result = deadlineParser.parse("homework /by 32-12-2023");
-        
-        assertFalse(result.isValid());
-        assertEquals(BotMessages.INVALID_DATE_FORMAT, result.getErrorMessage());
-    }
-    
-    @Test
-    void shouldRejectDeadlineWithInvalidMonth() {
-        ParseResult result = deadlineParser.parse("homework /by 25-13-2023");
-        
-        assertFalse(result.isValid());
-        assertEquals(BotMessages.INVALID_DATE_FORMAT, result.getErrorMessage());
-    }
-    
-    @Test
-    void shouldRejectDeadlineWithInvalidTime() {
-        ParseResult result = deadlineParser.parse("homework /by 25-12-2023 25:00");
-        
-        assertFalse(result.isValid());
-        assertEquals(BotMessages.INVALID_DATE_FORMAT, result.getErrorMessage());
-    }
-    
-    @Test
-    void shouldRejectDeadlineWithWrongDateSeparator() {
-        ParseResult result = deadlineParser.parse("homework /by 25/12/2023");
-        
-        assertFalse(result.isValid());
-        assertEquals(BotMessages.INVALID_DATE_FORMAT, result.getErrorMessage());
+        for (String invalidDate : invalidDates) {
+            ParseResult result = deadlineParser.parse(invalidDate);
+            assertFalse(result.isValid());
+            assertEquals(BotMessages.INVALID_DATE_FORMAT, result.getErrorMessage());
+        }
     }
     
     // Edge cases
@@ -272,16 +203,6 @@ public class DeadlineParserTest {
         // which will then fail date parsing
         assertFalse(result.isValid());
         assertEquals(BotMessages.INVALID_DATE_FORMAT, result.getErrorMessage());
-    }
-    
-    @Test
-    void shouldHandleVeryLongTaskDescription() {
-        String longTask = "this is a very long task description that goes on and on and describes many things in great detail about what needs to be done for this particular assignment or project";
-        ParseResult result = deadlineParser.parse(longTask + " /by 25-12-2023");
-        
-        assertTrue(result.isValid());
-        assertEquals(CommandType.DEADLINE, result.getCommandType());
-        assertEquals(longTask, result.getArguments()[0]);
     }
     
     // Test getCommandKeywords

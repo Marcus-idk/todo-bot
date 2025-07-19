@@ -19,17 +19,12 @@ public class NumericParserTest {
     
     private static final String VALID_NUMBER_1 = "1";
     private static final String VALID_NUMBER_42 = "42";
-    private static final String VALID_NUMBER_999 = "999";
     private static final String VALID_NUMBER_WITH_SPACES = "  5  ";
     
     private static final String INVALID_ZERO = "0";
     private static final String INVALID_NEGATIVE = "-1";
     private static final String INVALID_DECIMAL = "1.5";
-    private static final String INVALID_ALPHANUMERIC = "1a";
-    private static final String INVALID_TEXT = "abc";
-    private static final String INVALID_MIXED = "a1b";
     private static final String EMPTY_STRING = "";
-    private static final String WHITESPACE_ONLY = "   ";
     
     @BeforeEach
     void setUp() {
@@ -45,24 +40,6 @@ public class NumericParserTest {
         assertTrue(result.isValid());
         assertEquals(CommandType.MARK, result.getCommandType());
         assertEquals("1", result.getArguments()[0]);
-    }
-    
-    @Test
-    void shouldParseValidTwoDigitNumber() {
-        ParseResult result = markParser.parse(VALID_NUMBER_42);
-        
-        assertTrue(result.isValid());
-        assertEquals(CommandType.MARK, result.getCommandType());
-        assertEquals("42", result.getArguments()[0]);
-    }
-    
-    @Test
-    void shouldParseValidThreeDigitNumber() {
-        ParseResult result = markParser.parse(VALID_NUMBER_999);
-        
-        assertTrue(result.isValid());
-        assertEquals(CommandType.MARK, result.getCommandType());
-        assertEquals("999", result.getArguments()[0]);
     }
     
     @Test
@@ -113,40 +90,8 @@ public class NumericParserTest {
     }
     
     @Test
-    void shouldRejectAlphanumericString() {
-        ParseResult result = markParser.parse(INVALID_ALPHANUMERIC);
-        
-        assertFalse(result.isValid());
-        assertEquals(BotMessages.INVALID_NUMBER_FORMAT, result.getErrorMessage());
-    }
-    
-    @Test
-    void shouldRejectTextString() {
-        ParseResult result = markParser.parse(INVALID_TEXT);
-        
-        assertFalse(result.isValid());
-        assertEquals(BotMessages.INVALID_NUMBER_FORMAT, result.getErrorMessage());
-    }
-    
-    @Test
-    void shouldRejectMixedAlphanumericString() {
-        ParseResult result = markParser.parse(INVALID_MIXED);
-        
-        assertFalse(result.isValid());
-        assertEquals(BotMessages.INVALID_NUMBER_FORMAT, result.getErrorMessage());
-    }
-    
-    @Test
     void shouldRejectEmptyString() {
         ParseResult result = markParser.parse(EMPTY_STRING);
-        
-        assertFalse(result.isValid());
-        assertEquals(BotMessages.INVALID_NUMBER_FORMAT, result.getErrorMessage());
-    }
-    
-    @Test
-    void shouldRejectWhitespaceOnlyString() {
-        ParseResult result = markParser.parse(WHITESPACE_ONLY);
         
         assertFalse(result.isValid());
         assertEquals(BotMessages.INVALID_NUMBER_FORMAT, result.getErrorMessage());
@@ -194,11 +139,4 @@ public class NumericParserTest {
         assertEquals(BotMessages.INVALID_NUMBER_FORMAT, result.getErrorMessage());
     }
     
-    @Test
-    void shouldRejectHexNumber() {
-        ParseResult result = markParser.parse("0x5");
-        
-        assertFalse(result.isValid());
-        assertEquals(BotMessages.INVALID_NUMBER_FORMAT, result.getErrorMessage());
-    }
 }

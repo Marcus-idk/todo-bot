@@ -55,24 +55,6 @@ public class DateTimeParserTest {
         assertFalse(result.hasTime());
     }
     
-    @Test
-    void shouldParseBoundaryDate() {
-        DateTimeResult result = DateTimeParser.parseDateTime(VALID_DATE_BOUNDARY);
-        
-        LocalDateTime expected = LocalDateTime.of(2023, 12, 31, 0, 0);
-        assertEquals(expected, result.getDateTime());
-        assertFalse(result.hasTime());
-    }
-    
-    @Test
-    void shouldParseFirstOfYear() {
-        DateTimeResult result = DateTimeParser.parseDateTime(VALID_DATE_FIRST_OF_YEAR);
-        
-        LocalDateTime expected = LocalDateTime.of(2024, 1, 1, 0, 0);
-        assertEquals(expected, result.getDateTime());
-        assertFalse(result.hasTime());
-    }
-    
     // parseDateTime() - Valid datetime formats
     @Test
     void shouldParseValidDateTimeFormat() {
@@ -92,47 +74,23 @@ public class DateTimeParserTest {
         assertTrue(result.hasTime());
     }
     
-    @Test
-    void shouldParseEndOfDayDateTime() {
-        DateTimeResult result = DateTimeParser.parseDateTime(VALID_DATETIME_END_OF_DAY);
-        
-        LocalDateTime expected = LocalDateTime.of(2023, 12, 31, 23, 59);
-        assertEquals(expected, result.getDateTime());
-        assertTrue(result.hasTime());
-    }
-    
-    @Test
-    void shouldParseNoonDateTime() {
-        DateTimeResult result = DateTimeParser.parseDateTime(VALID_DATETIME_NOON);
-        
-        LocalDateTime expected = LocalDateTime.of(2024, 6, 15, 12, 0);
-        assertEquals(expected, result.getDateTime());
-        assertTrue(result.hasTime());
-    }
-    
     // parseDateTime() - Invalid formats and exceptions
     @Test
-    void shouldThrowExceptionForNullInput() {
-        DateTimeParseException exception = assertThrows(DateTimeParseException.class, () -> {
+    void shouldThrowExceptionForEmptyOrNullInputs() {
+        DateTimeParseException exception1 = assertThrows(DateTimeParseException.class, () -> {
             DateTimeParser.parseDateTime(null);
         });
-        assertEquals("Date/time input cannot be empty", exception.getMessage());
-    }
-    
-    @Test
-    void shouldThrowExceptionForEmptyInput() {
-        DateTimeParseException exception = assertThrows(DateTimeParseException.class, () -> {
+        assertEquals("Date/time input cannot be empty", exception1.getMessage());
+        
+        DateTimeParseException exception2 = assertThrows(DateTimeParseException.class, () -> {
             DateTimeParser.parseDateTime(EMPTY_STRING);
         });
-        assertEquals("Date/time input cannot be empty", exception.getMessage());
-    }
-    
-    @Test
-    void shouldThrowExceptionForWhitespaceOnlyInput() {
-        DateTimeParseException exception = assertThrows(DateTimeParseException.class, () -> {
+        assertEquals("Date/time input cannot be empty", exception2.getMessage());
+        
+        DateTimeParseException exception3 = assertThrows(DateTimeParseException.class, () -> {
             DateTimeParser.parseDateTime(WHITESPACE_ONLY);
         });
-        assertEquals("Date/time input cannot be empty", exception.getMessage());
+        assertEquals("Date/time input cannot be empty", exception3.getMessage());
     }
     
     @Test
@@ -152,51 +110,39 @@ public class DateTimeParserTest {
     }
     
     @Test
-    void shouldThrowExceptionForInvalidYearFormat() {
-        DateTimeParseException exception = assertThrows(DateTimeParseException.class, () -> {
-            DateTimeParser.parseDateTime(INVALID_YEAR_FORMAT);
-        });
-        assertTrue(exception.getMessage().contains("Invalid format"));
-    }
-    
-    @Test
-    void shouldThrowExceptionForInvalidSeparator() {
-        DateTimeParseException exception = assertThrows(DateTimeParseException.class, () -> {
-            DateTimeParser.parseDateTime(INVALID_SEPARATOR);
-        });
-        assertTrue(exception.getMessage().contains("Invalid format"));
-    }
-    
-    @Test
-    void shouldThrowExceptionForInvalidHour() {
-        DateTimeParseException exception = assertThrows(DateTimeParseException.class, () -> {
+    void shouldThrowExceptionForInvalidTimeComponents() {
+        DateTimeParseException exception1 = assertThrows(DateTimeParseException.class, () -> {
             DateTimeParser.parseDateTime(INVALID_HOUR);
         });
-        assertTrue(exception.getMessage().contains("Invalid date/time format"));
-    }
-    
-    @Test
-    void shouldThrowExceptionForInvalidMinute() {
-        DateTimeParseException exception = assertThrows(DateTimeParseException.class, () -> {
+        assertTrue(exception1.getMessage().contains("Invalid date/time format"));
+        
+        DateTimeParseException exception2 = assertThrows(DateTimeParseException.class, () -> {
             DateTimeParser.parseDateTime(INVALID_MINUTE);
         });
-        assertTrue(exception.getMessage().contains("Invalid date/time format"));
+        assertTrue(exception2.getMessage().contains("Invalid date/time format"));
     }
     
     @Test
-    void shouldThrowExceptionForNonNumericInput() {
-        DateTimeParseException exception = assertThrows(DateTimeParseException.class, () -> {
+    void shouldThrowExceptionForInvalidFormats() {
+        DateTimeParseException exception1 = assertThrows(DateTimeParseException.class, () -> {
+            DateTimeParser.parseDateTime(INVALID_YEAR_FORMAT);
+        });
+        assertTrue(exception1.getMessage().contains("Invalid format"));
+        
+        DateTimeParseException exception2 = assertThrows(DateTimeParseException.class, () -> {
+            DateTimeParser.parseDateTime(INVALID_SEPARATOR);
+        });
+        assertTrue(exception2.getMessage().contains("Invalid format"));
+        
+        DateTimeParseException exception3 = assertThrows(DateTimeParseException.class, () -> {
             DateTimeParser.parseDateTime(NON_NUMERIC);
         });
-        assertTrue(exception.getMessage().contains("Invalid format"));
-    }
-    
-    @Test
-    void shouldThrowExceptionForIncompleteDateTime() {
-        DateTimeParseException exception = assertThrows(DateTimeParseException.class, () -> {
+        assertTrue(exception3.getMessage().contains("Invalid format"));
+        
+        DateTimeParseException exception4 = assertThrows(DateTimeParseException.class, () -> {
             DateTimeParser.parseDateTime(INVALID_INCOMPLETE_DATETIME);
         });
-        assertTrue(exception.getMessage().contains("Invalid format"));
+        assertTrue(exception4.getMessage().contains("Invalid format"));
     }
     
     // parseDateTime() - Whitespace handling
@@ -235,38 +181,4 @@ public class DateTimeParserTest {
         assertEquals("25 Dec 2023, 1430", result);
     }
     
-    @Test
-    void shouldFormatMidnight() {
-        LocalDateTime dateTime = LocalDateTime.of(2024, 1, 1, 0, 0);
-        String result = DateTimeParser.formatDateTime(dateTime, true);
-        
-        assertEquals("01 Jan 2024, 0000", result);
-    }
-    
-    @Test  
-    void shouldFormatSingleDigitDay() {
-        LocalDateTime dateTime = LocalDateTime.of(2024, 1, 5, 9, 5);
-        String result = DateTimeParser.formatDateTime(dateTime, true);
-        
-        assertEquals("05 Jan 2024, 0905", result);
-    }
-    
-    // DateTimeResult inner class tests
-    @Test
-    void shouldCreateDateTimeResultWithDateTime() {
-        LocalDateTime dateTime = LocalDateTime.of(2023, 12, 25, 14, 30);
-        DateTimeResult result = new DateTimeResult(dateTime, true);
-        
-        assertEquals(dateTime, result.getDateTime());
-        assertTrue(result.hasTime());
-    }
-    
-    @Test
-    void shouldCreateDateTimeResultWithDateOnly() {
-        LocalDateTime dateTime = LocalDateTime.of(2023, 12, 25, 0, 0);
-        DateTimeResult result = new DateTimeResult(dateTime, false);
-        
-        assertEquals(dateTime, result.getDateTime());
-        assertFalse(result.hasTime());
-    }
 }

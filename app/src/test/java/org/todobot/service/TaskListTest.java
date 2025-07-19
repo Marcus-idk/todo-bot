@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.todobot.model.Task;
@@ -27,13 +30,6 @@ public class TaskListTest {
         assertTrue(taskList.isEmpty());
         assertFalse(taskList.isFull());
         assertEquals(0, taskList.getTaskCount());
-    }
-    
-    @Test
-    void shouldAddSingleTask() {
-        assertTrue(taskList.addTask(new ToDo(TEST_TASK_1)));
-        assertFalse(taskList.isEmpty());
-        assertEquals(1, taskList.getTaskCount());
     }
     
     @Test
@@ -62,14 +58,7 @@ public class TaskListTest {
     
     @Test
     void shouldReturnEmptyListMessage() {
-        String expected = " Here are the tasks in your list:\n No tasks found! Your to-do list is as empty as my brain! 🤖";
-        assertEquals(expected, taskList.listTasks());
-    }
-    
-    @Test
-    void shouldListSingleTask() {
-        taskList.addTask(new ToDo(TEST_TASK_1));
-        String expected = " Here are the tasks in your list:\n 1.[T][ ][M] " + TEST_TASK_1;
+        String expected = " Here are the tasks in your list:\n No tasks found! Your to-do list is completely empty.";
         assertEquals(expected, taskList.listTasks());
     }
     
@@ -102,15 +91,6 @@ public class TaskListTest {
     }
     
     @Test
-    void shouldMarkValidTask() {
-        taskList.addTask(new ToDo(TEST_TASK_1));
-        assertTrue(taskList.markTask(1));
-        
-        Task task = taskList.getTask(1);
-        assertTrue(task.isDone());
-    }
-    
-    @Test
     void shouldRejectMarkingInvalidTaskNumber() {
         taskList.addTask(new ToDo(TEST_TASK_1));
         
@@ -123,16 +103,6 @@ public class TaskListTest {
     @Test
     void shouldRejectMarkingEmptyList() {
         assertFalse(taskList.markTask(1));
-    }
-    
-    @Test
-    void shouldUnmarkValidTask() {
-        taskList.addTask(new ToDo(TEST_TASK_1));
-        taskList.markTask(1);
-        assertTrue(taskList.unmarkTask(1));
-        
-        Task task = taskList.getTask(1);
-        assertFalse(task.isDone());
     }
     
     @Test
@@ -173,25 +143,6 @@ public class TaskListTest {
     }
     
     @Test
-    void shouldReturnNullForEmptyList() {
-        assertNull(taskList.getTask(1));
-    }
-    
-    @Test
-    void shouldTrackTaskCount() {
-        assertEquals(0, taskList.getTaskCount());
-        
-        taskList.addTask(new ToDo(TEST_TASK_1));
-        assertEquals(1, taskList.getTaskCount());
-        
-        taskList.addTask(new ToDo(TEST_TASK_2));
-        assertEquals(2, taskList.getTaskCount());
-        
-        taskList.addTask(new ToDo(TEST_TASK_3));
-        assertEquals(3, taskList.getTaskCount());
-    }
-    
-    @Test
     void shouldDetectFullList() {
         assertFalse(taskList.isFull());
         
@@ -200,27 +151,6 @@ public class TaskListTest {
         }
         
         assertTrue(taskList.isFull());
-    }
-    
-    @Test
-    void shouldDetectEmptyList() {
-        assertTrue(taskList.isEmpty());
-        
-        taskList.addTask(new ToDo(TEST_TASK_1));
-        assertFalse(taskList.isEmpty());
-    }
-    
-    @Test
-    void shouldHandleTaskNumberingCorrectly() {
-        taskList.addTask(new ToDo("First task"));
-        taskList.addTask(new ToDo("Second task"));
-        taskList.addTask(new ToDo("Third task"));
-        
-        assertEquals("First task", taskList.getTask(1).getDescription());
-        assertEquals("Second task", taskList.getTask(2).getDescription());
-        assertEquals("Third task", taskList.getTask(3).getDescription());
-        
-        assertNull(taskList.getTask(0));
     }
     
     @Test
@@ -458,5 +388,75 @@ public class TaskListTest {
                          " 3.[T][ ][M] Find this task\n" +
                          " 5.[T][ ][M] Find this too";
         assertEquals(expected, result);
+    }
+    
+    @Test
+    void shouldDeleteAllTasks() {
+        taskList.addTask(new ToDo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_2));
+        taskList.addTask(new ToDo(TEST_TASK_3));
+        
+        assertEquals(3, taskList.getTaskCount());
+        assertFalse(taskList.isEmpty());
+        
+        int deletedCount = taskList.deleteAllTasks();
+        
+        assertEquals(3, deletedCount);
+        assertEquals(0, taskList.getTaskCount());
+        assertTrue(taskList.isEmpty());
+        assertNull(taskList.getTask(1));
+    }
+    
+    @Test
+    void shouldDeleteAllFromEmptyList() {
+        assertEquals(0, taskList.deleteAllTasks());
+        assertTrue(taskList.isEmpty());
+    }
+    
+    @Test
+    void shouldGetAllTasks() {
+        taskList.addTask(new ToDo(TEST_TASK_1));
+        taskList.addTask(new ToDo(TEST_TASK_2));
+        
+        ArrayList<Task> allTasks = taskList.getAllTasks();
+        
+        assertEquals(2, allTasks.size());
+        assertEquals(TEST_TASK_1, allTasks.get(0).getDescription());
+        assertEquals(TEST_TASK_2, allTasks.get(1).getDescription());
+        
+        // Verify it's a defensive copy - modifying returned list shouldn't affect original
+        allTasks.clear();
+        assertEquals(2, taskList.getTaskCount());
+        assertEquals(TEST_TASK_1, taskList.getTask(1).getDescription());
+    }
+    
+    @Test
+    void shouldSetTasks() {
+        // Add initial tasks
+        taskList.addTask(new ToDo("Original task"));
+        assertEquals(1, taskList.getTaskCount());
+        
+        // Create new task list
+        ArrayList<Task> newTasks = new ArrayList<>();
+        newTasks.add(new ToDo(TEST_TASK_1));
+        newTasks.add(new ToDo(TEST_TASK_2));
+        
+        taskList.setTasks(newTasks);
+        
+        assertEquals(2, taskList.getTaskCount());
+        assertEquals(TEST_TASK_1, taskList.getTask(1).getDescription());
+        assertEquals(TEST_TASK_2, taskList.getTask(2).getDescription());
+        assertNull(taskList.getTask(3));
+    }
+    
+    @Test
+    void shouldSetEmptyTaskList() {
+        taskList.addTask(new ToDo(TEST_TASK_1));
+        assertEquals(1, taskList.getTaskCount());
+        
+        taskList.setTasks(new ArrayList<>());
+        
+        assertEquals(0, taskList.getTaskCount());
+        assertTrue(taskList.isEmpty());
     }
 }

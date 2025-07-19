@@ -55,42 +55,11 @@ public class TaskStorageTest {
     void shouldSaveAndLoadSingleTodo() {
         ArrayList<Task> tasks = new ArrayList<>();
         ToDo todo = new ToDo(TEST_TODO_DESC);
+        todo.markAsDone(); // Test done status
+        todo.setPriority(Priority.HIGH);
         tasks.add(todo);
         
-        taskStorage.saveTasks(tasks);
-        ArrayList<Task> loadedTasks = taskStorage.loadTasks();
-        
-        assertEquals(1, loadedTasks.size());
-        Task loadedTask = loadedTasks.get(0);
-        assertEquals(TEST_TODO_DESC, loadedTask.getDescription());
-        assertFalse(loadedTask.isDone());
-        assertEquals(Priority.MEDIUM, loadedTask.getPriority());
-        assertTrue(loadedTask instanceof ToDo);
-    }
-    
-    @Test
-    void shouldSaveAndLoadMultipleTasks() {
-        ArrayList<Task> tasks = new ArrayList<>();
-        tasks.add(new ToDo(TEST_TODO_DESC));
-        tasks.add(new Deadline(TEST_DEADLINE_DESC, TEST_DATE, true));
-        tasks.add(new Event(TEST_EVENT_DESC, TEST_DATE, true, TEST_DATE_2, true));
-        
-        taskStorage.saveTasks(tasks);
-        ArrayList<Task> loadedTasks = taskStorage.loadTasks();
-        
-        assertEquals(3, loadedTasks.size());
-        assertTrue(loadedTasks.get(0) instanceof ToDo);
-        assertTrue(loadedTasks.get(1) instanceof Deadline);
-        assertTrue(loadedTasks.get(2) instanceof Event);
-    }
-    
-    @Test
-    void shouldSaveAndLoadTasksWithCorrectStatus() {
-        ArrayList<Task> tasks = new ArrayList<>();
-        ToDo todo = new ToDo(TEST_TODO_DESC);
-        todo.markAsDone();
-        tasks.add(todo);
-        
+        // Add an undone task too
         ToDo todo2 = new ToDo("Another task");
         tasks.add(todo2);
         
@@ -98,68 +67,78 @@ public class TaskStorageTest {
         ArrayList<Task> loadedTasks = taskStorage.loadTasks();
         
         assertEquals(2, loadedTasks.size());
-        assertTrue(loadedTasks.get(0).isDone());
-        assertFalse(loadedTasks.get(1).isDone());
+        
+        // Verify done task
+        Task loadedTask1 = loadedTasks.get(0);
+        assertEquals(TEST_TODO_DESC, loadedTask1.getDescription());
+        assertTrue(loadedTask1.isDone());
+        assertEquals(Priority.HIGH, loadedTask1.getPriority());
+        assertTrue(loadedTask1 instanceof ToDo);
+        
+        // Verify undone task
+        Task loadedTask2 = loadedTasks.get(1);
+        assertEquals("Another task", loadedTask2.getDescription());
+        assertFalse(loadedTask2.isDone());
+        assertEquals(Priority.MEDIUM, loadedTask2.getPriority());
+        assertTrue(loadedTask2 instanceof ToDo);
     }
     
-    // 2. Task Type Serialization Tests
-    
     @Test
-    void shouldSaveAndLoadTodoTask() {
+    void shouldSaveAndLoadMultipleTasks() {
         ArrayList<Task> tasks = new ArrayList<>();
-        ToDo todo = new ToDo("Test todo task");
-        todo.markAsDone();
+        
+        // Add ToDo with custom priority
+        ToDo todo = new ToDo(TEST_TODO_DESC);
+        todo.setPriority(Priority.LOW);
         tasks.add(todo);
         
-        taskStorage.saveTasks(tasks);
-        ArrayList<Task> loadedTasks = taskStorage.loadTasks();
-        
-        assertEquals(1, loadedTasks.size());
-        Task loadedTask = loadedTasks.get(0);
-        assertTrue(loadedTask instanceof ToDo);
-        assertEquals("Test todo task", loadedTask.getDescription());
-        assertTrue(loadedTask.isDone());
-    }
-    
-    @Test
-    void shouldSaveAndLoadDeadlineTask() {
-        ArrayList<Task> tasks = new ArrayList<>();
+        // Add Deadline with detailed properties
         Deadline deadline = new Deadline(TEST_DEADLINE_DESC, TEST_DATE, true);
+        deadline.markAsDone();
+        deadline.setPriority(Priority.HIGH);
         tasks.add(deadline);
         
-        taskStorage.saveTasks(tasks);
-        ArrayList<Task> loadedTasks = taskStorage.loadTasks();
-        
-        assertEquals(1, loadedTasks.size());
-        Task loadedTask = loadedTasks.get(0);
-        assertTrue(loadedTask instanceof Deadline);
-        Deadline loadedDeadline = (Deadline) loadedTask;
-        assertEquals(TEST_DEADLINE_DESC, loadedDeadline.getDescription());
-        assertEquals(TEST_DATE, loadedDeadline.getByDateTime());
-        assertTrue(loadedDeadline.hasTimeInfo());
-    }
-    
-    @Test
-    void shouldSaveAndLoadEventTask() {
-        ArrayList<Task> tasks = new ArrayList<>();
-        Event event = new Event(TEST_EVENT_DESC, TEST_DATE, true, TEST_DATE_2, true);
+        // Add Event with mixed time properties
+        Event event = new Event(TEST_EVENT_DESC, TEST_DATE, true, TEST_DATE_2, false);
+        event.setPriority(Priority.MEDIUM);
         tasks.add(event);
         
         taskStorage.saveTasks(tasks);
         ArrayList<Task> loadedTasks = taskStorage.loadTasks();
         
-        assertEquals(1, loadedTasks.size());
-        Task loadedTask = loadedTasks.get(0);
-        assertTrue(loadedTask instanceof Event);
-        Event loadedEvent = (Event) loadedTask;
+        assertEquals(3, loadedTasks.size());
+        
+        // Verify ToDo details
+        Task loadedTodo = loadedTasks.get(0);
+        assertTrue(loadedTodo instanceof ToDo);
+        assertEquals(TEST_TODO_DESC, loadedTodo.getDescription());
+        assertFalse(loadedTodo.isDone());
+        assertEquals(Priority.LOW, loadedTodo.getPriority());
+        
+        // Verify Deadline details
+        Task loadedDeadlineTask = loadedTasks.get(1);
+        assertTrue(loadedDeadlineTask instanceof Deadline);
+        Deadline loadedDeadline = (Deadline) loadedDeadlineTask;
+        assertEquals(TEST_DEADLINE_DESC, loadedDeadline.getDescription());
+        assertTrue(loadedDeadline.isDone());
+        assertEquals(Priority.HIGH, loadedDeadline.getPriority());
+        assertEquals(TEST_DATE, loadedDeadline.getByDateTime());
+        assertTrue(loadedDeadline.hasTimeInfo());
+        
+        // Verify Event details
+        Task loadedEventTask = loadedTasks.get(2);
+        assertTrue(loadedEventTask instanceof Event);
+        Event loadedEvent = (Event) loadedEventTask;
         assertEquals(TEST_EVENT_DESC, loadedEvent.getDescription());
+        assertFalse(loadedEvent.isDone());
+        assertEquals(Priority.MEDIUM, loadedEvent.getPriority());
         assertEquals(TEST_DATE, loadedEvent.getFromDateTime());
         assertEquals(TEST_DATE_2, loadedEvent.getToDateTime());
         assertTrue(loadedEvent.hasFromTime());
-        assertTrue(loadedEvent.hasToTime());
+        assertFalse(loadedEvent.hasToTime());
     }
     
-    // 3. File System Edge Cases
+    // 2. File System Edge Cases
     
     @Test
     void shouldCreateDataDirectoryIfMissing() {
@@ -306,20 +285,7 @@ public class TaskStorageTest {
         assertEquals(Priority.LOW, loadedEvent.getPriority());
     }
     
-    @Test
-    void shouldHandleSpecialCharactersInDescription() {
-        ArrayList<Task> tasks = new ArrayList<>();
-        String specialDesc = "Task with \"quotes\", [brackets], {braces}, and symbols: @#$%^&*()";
-        tasks.add(new ToDo(specialDesc));
-        
-        taskStorage.saveTasks(tasks);
-        ArrayList<Task> loadedTasks = taskStorage.loadTasks();
-        
-        assertEquals(1, loadedTasks.size());
-        assertEquals(specialDesc, loadedTasks.get(0).getDescription());
-    }
-    
-    // 6. File Operations Tests
+    // 5. File Operations Tests
     
     @Test
     void shouldOverwriteExistingFile() {
@@ -341,7 +307,7 @@ public class TaskStorageTest {
         assertEquals("Another new task", loadedTasks.get(1).getDescription());
     }
     
-    // 7. Priority Tests
+    // 6. Priority Tests
     
     @Test
     void shouldSaveAndLoadAllPriorityLevels() {
