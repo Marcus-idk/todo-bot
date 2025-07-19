@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class TodoTest {
+public class ToDoTest {
     
     private ToDo todo;
     private static final String TEST_DESCRIPTION = "Read a book";
