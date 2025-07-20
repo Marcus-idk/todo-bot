@@ -10,6 +10,7 @@ import org.todobot.common.BotMessages;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -255,7 +256,7 @@ public class ToDoBotGUI extends Application {
     }
     
     private void scrollToBottom() {
-        javafx.application.Platform.runLater(() -> {
+        Platform.runLater(() -> {
             scrollPane.setVvalue(1.0);
         });
     }

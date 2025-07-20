@@ -1,5 +1,6 @@
 package org.todobot.ui;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -31,7 +32,7 @@ public class AnimatedMessage extends HBox {
             this.getChildren().add(label);
             
             // Start animation after construction is complete
-            javafx.application.Platform.runLater(() -> 
+            Platform.runLater(() -> 
                 AnimationUtils.slideInFromRight(this).play()
             );
             
@@ -48,7 +49,7 @@ public class AnimatedMessage extends HBox {
             this.getChildren().add(label);
             
             // Start animation after construction is complete
-            javafx.application.Platform.runLater(() -> 
+            Platform.runLater(() -> 
                 AnimationUtils.slideInFromLeft(this).play()
             );
         }
