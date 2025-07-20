@@ -33,39 +33,39 @@ public class ThemeManager {
     
     public static final String CHAT_CONTAINER = 
         "-fx-background-color: " + BG_SURFACE + "; " +
-        "-fx-background-radius: 8; " +
+        "-fx-background-radius: 14; " +
         "-fx-border-color: " + BG_ACCENT + "; " +
         "-fx-border-width: 1; " +
-        "-fx-border-radius: 8; " +
-        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 15, 0, 0, 2);";
+        "-fx-border-radius: 14; " +
+        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 4);";
     
     // === MESSAGE STYLES ===
     
     public static final String USER_MESSAGE = 
-        "-fx-background-color: " + USER_SECONDARY + "; " +
+        "-fx-background-color: linear-gradient(to bottom, " + USER_PRIMARY + ", " + USER_SECONDARY + "); " +
         "-fx-text-fill: " + TEXT_PRIMARY + "; " +
         "-fx-font-family: 'JetBrains Mono', 'SF Mono', 'Monaco', 'Consolas', monospace; " +
         "-fx-font-size: 11px; " +
         "-fx-font-weight: 400; " +
-        "-fx-padding: 8 12 8 12; " +
-        "-fx-background-radius: 6; " +
-        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 4, 0, 0, 1);" +
+        "-fx-padding: 12 16 12 16; " +
+        "-fx-background-radius: 16 16 4 16; " +
+        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 12, 0, 0, 3);" +
         "-fx-border-color: " + USER_PRIMARY + "; " +
         "-fx-border-width: 1; " +
-        "-fx-border-radius: 6;";
+        "-fx-border-radius: 16 16 4 16;";
     
     public static final String BOT_MESSAGE = 
-        "-fx-background-color: " + BG_ACCENT + "; " +
+        "-fx-background-color: linear-gradient(to bottom, " + BG_ACCENT + ", " + BG_SURFACE + "); " +
         "-fx-text-fill: " + TEXT_PRIMARY + "; " +
         "-fx-font-family: 'JetBrains Mono', 'SF Mono', 'Monaco', 'Consolas', monospace; " +
         "-fx-font-size: 11px; " +
         "-fx-font-weight: 400; " +
-        "-fx-padding: 8 12 8 12; " +
-        "-fx-background-radius: 6; " +
-        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 4, 0, 0, 1);" +
+        "-fx-padding: 12 16 12 16; " +
+        "-fx-background-radius: 16 16 16 4; " +
+        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 12, 0, 0, 3);" +
         "-fx-border-color: " + BOT_PRIMARY + "; " +
         "-fx-border-width: 1; " +
-        "-fx-border-radius: 6;";
+        "-fx-border-radius: 16 16 16 4;";
     
     // === INPUT AREA STYLES ===
     
@@ -76,10 +76,10 @@ public class ThemeManager {
         "-fx-font-size: 12px; " +
         "-fx-border-color: " + BG_ACCENT + "; " +
         "-fx-border-width: 1; " +
-        "-fx-border-radius: 6; " +
-        "-fx-background-radius: 6; " +
-        "-fx-padding: 10 16 10 16; " +
-        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0, 0, 1);";
+        "-fx-border-radius: 12; " +
+        "-fx-background-radius: 12; " +
+        "-fx-padding: 12 18 12 18; " +
+        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);";
     
     public static final String INPUT_FIELD_FOCUSED = 
         "-fx-background-color: " + BG_PRIMARY + "; " +
@@ -88,43 +88,43 @@ public class ThemeManager {
         "-fx-font-size: 12px; " +
         "-fx-border-color: " + USER_PRIMARY + "; " +
         "-fx-border-width: 1; " +
-        "-fx-border-radius: 6; " +
-        "-fx-background-radius: 6; " +
-        "-fx-padding: 10 16 10 16; " +
-        "-fx-effect: dropshadow(gaussian, " + USER_GLOW + ", 6, 0, 0, 1);";
+        "-fx-border-radius: 12; " +
+        "-fx-background-radius: 12; " +
+        "-fx-padding: 12 18 12 18; " +
+        "-fx-effect: dropshadow(gaussian, " + USER_GLOW + ", 10, 0, 0, 2);";
     
     public static final String SEND_BUTTON = 
-        "-fx-background-color: " + USER_SECONDARY + "; " +
+        "-fx-background-color: linear-gradient(to bottom, " + USER_PRIMARY + ", " + USER_SECONDARY + "); " +
         "-fx-text-fill: " + TEXT_PRIMARY + "; " +
         "-fx-font-family: 'JetBrains Mono', 'SF Mono', 'Monaco', 'Consolas', monospace; " +
         "-fx-font-size: 11px; " +
         "-fx-font-weight: 500; " +
-        "-fx-background-radius: 6; " +
-        "-fx-border-radius: 6; " +
+        "-fx-background-radius: 12; " +
+        "-fx-border-radius: 12; " +
         "-fx-border-color: " + USER_PRIMARY + "; " +
         "-fx-border-width: 1; " +
-        "-fx-padding: 10 16 10 16; " +
-        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0, 0, 1);";
+        "-fx-padding: 12 18 12 18; " +
+        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);";
     
     public static final String SEND_BUTTON_HOVER = 
-        "-fx-background-color: " + USER_PRIMARY + "; " +
+        "-fx-background-color: linear-gradient(to bottom, " + USER_PRIMARY + ", " + USER_PRIMARY + "); " +
         "-fx-text-fill: " + TEXT_PRIMARY + "; " +
         "-fx-font-family: 'JetBrains Mono', 'SF Mono', 'Monaco', 'Consolas', monospace; " +
         "-fx-font-size: 11px; " +
         "-fx-font-weight: 500; " +
-        "-fx-background-radius: 6; " +
-        "-fx-border-radius: 6; " +
+        "-fx-background-radius: 12; " +
+        "-fx-border-radius: 12; " +
         "-fx-border-color: " + USER_PRIMARY + "; " +
         "-fx-border-width: 1; " +
-        "-fx-padding: 10 16 10 16; " +
-        "-fx-effect: dropshadow(gaussian, " + USER_GLOW + ", 8, 0, 0, 1);";
+        "-fx-padding: 12 18 12 18; " +
+        "-fx-effect: dropshadow(gaussian, " + USER_GLOW + ", 12, 0, 0, 3);";
     
     // === CONTAINER STYLES ===
     
     public static final String INPUT_CONTAINER = 
         "-fx-background-color: " + BG_SECONDARY + "; " +
-        "-fx-background-radius: 0 0 8 8; " +
-        "-fx-padding: 16; " +
+        "-fx-background-radius: 0 0 14 14; " +
+        "-fx-padding: 18; " +
         "-fx-border-color: " + BG_ACCENT + "; " +
         "-fx-border-width: 1 0 0 0;";
     
