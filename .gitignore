@@ -50,3 +50,6 @@ target/
 application-local.properties
 
 .claude/
+
+# Local Summary
+Summary.md
