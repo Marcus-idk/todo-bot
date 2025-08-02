@@ -9,6 +9,7 @@ import org.todobot.parsers.core.CommandParser;
 import org.todobot.parsers.core.ParseResult;
 
 public class PriorityParser extends CommandParser {
+    // Regex: Matches task number (positive integer) followed by priority level (optional ! prefix + alphabetic chars)
     private static final Pattern PRIORITY_PATTERN = Pattern.compile("^\\s*([1-9]\\d*)\\s+(!?[a-zA-Z]+)\\s*$");
     
     @Override

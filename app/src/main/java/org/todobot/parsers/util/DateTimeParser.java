@@ -40,6 +40,7 @@ public class DateTimeParser {
         String trimmedInput = input.trim();
         
         // Try to parse as date with time first (DD-MM-YYYY HH:MM)
+        // Regex: Matches 2 digits-2 digits-4 digits, followed by whitespace, then 2 digits:2 digits (date with time format)
         if (trimmedInput.matches("\\d{2}-\\d{2}-\\d{4}\\s+\\d{2}:\\d{2}")) {
             try {
                 LocalDateTime dateTime = LocalDateTime.parse(trimmedInput, INPUT_DATETIME_FORMAT);
@@ -51,6 +52,7 @@ public class DateTimeParser {
         }
         
         // Try to parse as date only (DD-MM-YYYY)
+        // Regex: Matches exactly 2 digits-2 digits-4 digits (date only format)
         if (trimmedInput.matches("\\d{2}-\\d{2}-\\d{4}")) {
             try {
                 LocalDate date = LocalDate.parse(trimmedInput, INPUT_DATE_FORMAT);

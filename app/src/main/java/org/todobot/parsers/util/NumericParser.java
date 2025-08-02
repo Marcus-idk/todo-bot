@@ -9,6 +9,7 @@ import org.todobot.parsers.core.CommandParser;
 import org.todobot.parsers.core.ParseResult;
 
 public abstract class NumericParser extends CommandParser {
+    // Regex: Matches positive integers (1-9 followed by any digits), with optional whitespace at start/end
     private static final Pattern POSITIVE_INTEGER_PATTERN = Pattern.compile("^\\s*([1-9]\\d*)\\s*$");
     
     @Override

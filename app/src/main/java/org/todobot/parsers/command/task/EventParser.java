@@ -11,6 +11,7 @@ import org.todobot.parsers.core.ParseResult;
 import org.todobot.parsers.util.DateTimeParser;
 
 public class EventParser extends CommandParser {
+    // Regex: Captures event description, "/from" start date/time, and "/to" end date/time
     private static final Pattern EVENT_PATTERN = Pattern.compile("^(.+?)\\s*/from\\s+(.+?)\\s*/to\\s+(.+)$");
     
     @Override
